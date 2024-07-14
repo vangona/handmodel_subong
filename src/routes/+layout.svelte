@@ -4,6 +4,8 @@
 </script>
 
 <Header></Header>
-<slot></slot>
+<div class="bg-warmgray-light">
+	<slot></slot>
+</div>
 
 <style></style>
