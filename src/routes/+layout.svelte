@@ -1,9 +1,11 @@
 <script>
 	import '../app.css';
 	import Analytics from '$lib/analytics.svelte';
+	import TagManager from '$lib/tag-manager.svelte';
 </script>
 
 <Analytics />
+<TagManager />
 <div class="app-container flex">
 	<div class="hidden xl:block">test</div>
 	<div class="bg-warmgray-light mobile-main max-w-[768px] flex-grow">
