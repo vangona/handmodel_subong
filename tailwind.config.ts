@@ -1,5 +1,6 @@
 import { fontFamily } from 'tailwindcss/defaultTheme';
 import type { Config } from 'tailwindcss';
+import daisyui from 'daisyui';
 
 const config: Config = {
 	darkMode: ['class'],
@@ -13,6 +14,7 @@ const config: Config = {
 				sm: '640px',
 				md: '768px',
 				lg: '1024px',
+				xl: '1280px',
 				'2xl': '1400px'
 			}
 		},
@@ -66,7 +68,8 @@ const config: Config = {
 				sans: [...fontFamily.sans]
 			}
 		}
-	}
+	},
+	plugins: [daisyui]
 };
 
 export default config;
