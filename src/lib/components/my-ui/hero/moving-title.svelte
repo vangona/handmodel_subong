@@ -37,11 +37,11 @@
 <div
 	class="moving-container xs:text-5xl xs:min-h-[500px] relative h-full min-h-[400px] w-full min-w-[360px] text-4xl"
 >
-	<span class="up absolute left-10 top-[20%] z-0 font-serif text-white">Handmodel</span>
+	<span class="up absolute left-10 top-[25%] z-0 font-serif text-white">Handmodel</span>
 	<div class="absolute bottom-0 w-full">
 		<img src={handSrc} alt="손모델 심수연의 손" class="z-10 w-full" />
 	</div>
-	<span class="down absolute bottom-[25%] right-10 z-20 font-serif font-bold text-white"
+	<span class="down absolute bottom-[30%] right-10 z-20 font-serif font-bold text-white"
 		>심 수 연</span
 	>
 </div>
