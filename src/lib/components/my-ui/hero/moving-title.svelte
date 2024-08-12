@@ -10,8 +10,9 @@
 
 		gsap.to('.up', {
 			y: -30,
-			duration: 1.5,
+			duration: 2,
 			delay: 0.1,
+			ease: 'expo',
 			scrollTrigger: {
 				trigger: '.app-container',
 				start: 'top center',
@@ -21,8 +22,9 @@
 
 		gsap.to('.down', {
 			y: 35,
-			duration: 1.5,
+			duration: 2,
 			delay: 0.1,
+			ease: 'expo',
 			scrollTrigger: {
 				trigger: '.app-container',
 				start: 'top center',
