@@ -7,7 +7,9 @@
 <Analytics />
 <TagManager />
 <div class="app-container flex">
-	<div class="sticky top-0 hidden h-dvh min-w-32 items-center justify-center bg-slate-300 md:flex">
+	<div
+		class="sticky top-0 hidden h-dvh min-w-32 max-w-80 flex-grow items-center justify-center bg-slate-300 md:flex"
+	>
 		test
 	</div>
 	<div class="mobile-main max-w-[640px] flex-grow-[2] bg-warmgray-light">
