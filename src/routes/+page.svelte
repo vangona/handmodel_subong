@@ -11,11 +11,11 @@
 	{:then data}
 		<div class="grid grid-cols-2 grid-rows-2 gap-4 p-4">
 			{#each data as testRow}
-				<div class="card image-full aspect-square">
+				<div class="test card image-full aspect-square">
 					<figure class="object-cover">
 						<img src={handSrc} alt="hands" class="w-full object-cover" />
 					</figure>
-					<div class="card-body bg-transparent">
+					<div class="card-body items-center justify-center bg-transparent">
 						<div class="card-title">
 							{testRow.test}
 						</div>
@@ -25,3 +25,23 @@
 		</div>
 	{/await}
 </div>
+
+<style lang="scss">
+	div.card.test {
+		&::before {
+			opacity: 0;
+			transition: 200ms all ease-in-out;
+			color: transparent;
+		}
+		&:hover::before {
+			opacity: 0.75;
+		}
+		.card-title {
+			color: transparent;
+			transition: 150ms all ease-in-out 50ms;
+		}
+		&:hover .card-title {
+			color: var(--fallback-nc, oklch(var(--nc) / var(--tw-text-opacity)));
+		}
+	}
+</style>
