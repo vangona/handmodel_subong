@@ -9,9 +9,9 @@
 	{#await getTest()}
 		Loading...
 	{:then data}
-		<div class="grid grid-cols-2 grid-rows-2 gap-4 p-4">
+		<div class="card-container grid grid-cols-1 grid-rows-1 p-14">
 			{#each data as testRow}
-				<div class="test card image-full aspect-square">
+				<div class="card--main card image-full aspect-square">
 					<figure class="object-cover">
 						<img src={handSrc} alt="hands" class="w-full object-cover" />
 					</figure>
@@ -27,7 +27,7 @@
 </div>
 
 <style lang="scss">
-	div.card.test {
+	div.card.card--main {
 		&::before {
 			opacity: 0;
 			transition: 200ms all ease-in-out;
