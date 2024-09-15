@@ -16,18 +16,18 @@
 						<img src={handSrc} alt="hands" class="w-full object-cover" />
 					</figure>
 					<div class="card-body items-center justify-center bg-transparent">
-						<div class="card-title">
+						<div class="card-title hover-transition">
 							<div>
 								{testRow.test}
 							</div>
 							<div class="category-wrapper">
 								{#each testRow.category as categoryData}
-									<div class="badge category-badge">{categoryData}</div>
+									<div class="badge category-badge hover-transition">{categoryData}</div>
 								{/each}
 							</div>
 						</div>
 						<div class="card-actions">
-							<div class="card-description">
+							<div class="card-description hover-transition">
 								{testRow.description}
 							</div>
 						</div>
@@ -51,24 +51,16 @@
 		.card-title {
 			display: flex;
 			flex-direction: column;
+		}
+		.hover-transition {
 			color: transparent;
 			transition: 150ms all ease-in-out 50ms;
+			background-color: transparent;
+			border-color: transparent;
 		}
 		.category-wrapper {
 			display: flex;
 			gap: 8px;
-			.category-badge {
-				color: transparent;
-				background-color: transparent;
-				border-color: transparent;
-				transition: 150ms all ease-in-out 50ms;
-			}
-		}
-		.card-actions {
-			.card-description {
-				color: transparent;
-				transition: 150ms all ease-in-out 50ms;
-			}
 		}
 		&:hover .card-title {
 			color: var(--fallback-nc, oklch(var(--nc) / var(--tw-text-opacity)));
