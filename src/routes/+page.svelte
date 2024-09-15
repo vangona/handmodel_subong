@@ -17,7 +17,19 @@
 					</figure>
 					<div class="card-body items-center justify-center bg-transparent">
 						<div class="card-title">
-							{testRow.test}
+							<div>
+								{testRow.test}
+							</div>
+							<div class="category-wrapper">
+								{#each testRow.category as categoryData}
+									<div class="badge category-badge">{categoryData}</div>
+								{/each}
+							</div>
+						</div>
+						<div class="card-actions">
+							<div class="card-description">
+								{testRow.description}
+							</div>
 						</div>
 					</div>
 				</div>
@@ -37,10 +49,36 @@
 			opacity: 0.75;
 		}
 		.card-title {
+			display: flex;
+			flex-direction: column;
 			color: transparent;
 			transition: 150ms all ease-in-out 50ms;
 		}
+		.category-wrapper {
+			display: flex;
+			gap: 8px;
+			.category-badge {
+				color: transparent;
+				background-color: transparent;
+				border-color: transparent;
+				transition: 150ms all ease-in-out 50ms;
+			}
+		}
+		.card-actions {
+			.card-description {
+				color: transparent;
+				transition: 150ms all ease-in-out 50ms;
+			}
+		}
 		&:hover .card-title {
+			color: var(--fallback-nc, oklch(var(--nc) / var(--tw-text-opacity)));
+		}
+		&:hover .category-badge {
+			color: black;			
+			background-color: var(--fallback-nc, oklch(var(--nc) / var(--tw-text-opacity)));			
+			border-color: var(--fallback-nc, oklch(var(--nc) / var(--tw-text-opacity)));	
+		}
+		&:hover .card-description {
 			color: var(--fallback-nc, oklch(var(--nc) / var(--tw-text-opacity)));
 		}
 	}

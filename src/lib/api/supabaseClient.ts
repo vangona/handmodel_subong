@@ -10,6 +10,8 @@ export interface SupabaseTables {
 			id: number;
 			created_at: string;
 			test: string;
+			category: Array<string>;
+			description: string;
 		};
 		Insert: {
 			// the data to be passed to .insert()
