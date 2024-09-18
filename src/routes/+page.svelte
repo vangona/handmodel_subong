@@ -50,6 +50,23 @@
 					</button>
 				{/each}
 			</div>
+			<swiper-container slides-per-view={1} centered-slides={true} pagination={true} mousewheel-control={true} effect={'cards'}>
+				<swiper-slide>
+					<swiper-zoom-container>
+						<img src={handSrc} alt="hands" />
+					</swiper-zoom-container>
+				</swiper-slide>
+				<swiper-slide>
+					<swiper-zoom-container>
+						<img src={handSrc} alt="hands" />
+					</swiper-zoom-container>
+				</swiper-slide>
+				<swiper-slide>
+					<swiper-zoom-container>
+						<img src={handSrc} alt="hands" />
+					</swiper-zoom-container>
+				</swiper-slide>
+			</swiper-container>
 			{#each data as testRow}
 				<div class="card--main card image-full aspect-square">
 					<figure class="object-cover">
@@ -132,5 +149,10 @@
 		&:hover .card-description {
 			color: var(--fallback-nc, oklch(var(--nc) / var(--tw-text-opacity)));
 		}
+	}
+
+	swiper-container {
+		min-height: 300px;
+		max-width: 100%;
 	}
 </style>
