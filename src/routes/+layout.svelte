@@ -1,7 +1,7 @@
 <script>
+	import Analytics from '$lib/components/common/Analytics.svelte';
+	import TagManager from '$lib/components/common/TagManager.svelte';
 	import '../app.css';
-	import Analytics from '$lib/analytics.svelte';
-	import TagManager from '$lib/tag-manager.svelte';
 </script>
 
 <Analytics />
