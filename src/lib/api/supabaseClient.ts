@@ -6,7 +6,6 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 export interface SupabaseTables {
 	test: {
 		Row: {
-			// the data expected from .select()
 			id: number;
 			created_at: string;
 			test: string;
@@ -14,12 +13,14 @@ export interface SupabaseTables {
 			description: string;
 		};
 		Insert: {
-			// the data to be passed to .insert()
 			test: string;
+			description: string;
+			category: Array<string>;
 		};
 		Update: {
-			// the data to be passed to .update()
 			test: string;
+			description: string;
+			category: Array<string>;
 		};
 	};
 }

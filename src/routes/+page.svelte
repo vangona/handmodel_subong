@@ -41,11 +41,11 @@
 				선택된 카테고리 : {selectedCategory}
 			</h3>
 			<div class="category-filter__wrapper">
-				<button class="category-filter__item badge badge-lg badge-ghost" on:click={() => handleClickCategory('all')}>
+				<button class="category-filter__item {selectedCategory === 'all' ? 'selected' : ''}" on:click={() => handleClickCategory('all')}>
 					all
 				</button>
 				{#each categoryArr as category}
-					<button class="category-filter__item badge badge-lg badge-ghost" on:click={() => handleClickCategory(category)}>
+					<button class="category-filter__item {selectedCategory === category ? 'selected' : ''}" on:click={() => handleClickCategory(category)}>
 						{category}
 					</button>
 				{/each}
@@ -100,19 +100,46 @@
 		display: flex;
 		gap: 8px;
 		margin-bottom: 16px;
+		justify-content: center;
 	}
 	.category-filter__item {
 		position: relative;
-		transition: transform 0.2s ease-in-out;
+		transition: transform 0.2s ease-in-out, background-color 0.3s ease, box-shadow 0.3s ease;
 		user-select: none;
+		padding: 0.5rem 1rem;
+		border-radius: 0.375rem;
+		background-color: var(--primary);
+		color: var(--primary-foreground);
+		border: 1px solid var(--border);
+		font-size: 1rem;
+		font-weight: 500;
 		&:hover {
 			cursor: pointer;
-
+			background-color: var(--primary-foreground);
+			color: var(--primary);
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 		}
 		&:active {
 			transform: scale(0.95);
 		}
-
+		&.selected {
+			@apply bg-secondary text-secondary-foreground border-secondary;
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+		}
+		&::after {
+			content: '';
+			position: absolute;
+			left: 50%;
+			bottom: -4px;
+			width: 0;
+			height: 2px;
+			background-color: var(--secondary);
+			transition: width 0.3s ease, left 0.3s ease;
+		}
+		&.selected::after {
+			width: 100%;
+			left: 0;
+		}
 	}
 
 	div.card.card--main {
