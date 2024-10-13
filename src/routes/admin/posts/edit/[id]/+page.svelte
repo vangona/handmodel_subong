@@ -1,10 +1,11 @@
 <script lang="ts">
-	import { supabase } from '$lib/api/supabaseClient';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import CategoryFilter from '$lib/components/ui/CategoryFilter.svelte';
 	import { page } from '$app/stores';
 	import { get } from 'svelte/store';
+	import { apiGetPostById, apiPutUpdatePost } from '$lib/api/posts';
+	import { apiGetCategories } from '$lib/api/categories';
 
 	let postId: number;
 	let title = '';
@@ -12,7 +13,6 @@
 	let categories: Array<string> = [];
 	let errorMessage = '';
 	let categoryArr: Array<string> = [];
-	let selectedCategory: string = 'all';
 	let successMessage = '';
 
 	// URL에서 postId를 가져옵니다.
@@ -24,43 +24,34 @@
 			return;
 		}
 
-		const { data, error } = await supabase.from('test').select('*').eq('id', postId).single();
-		if (error) {
-			errorMessage = error.message;
-		} else {
-			title = data.test;
+		try {
+			const data = await apiGetPostById(postId);
+			title = data.title;
 			description = data.description;
 			categories = data.category;
-			selectedCategory = categories[0] || 'all';
 
-			// 카테고리 목록 가져오기
-			const { data: categoryData, error: categoryError } = await supabase.from('categories').select('*');
-			if (categoryError) {
-				errorMessage = categoryError.message;
-			} else {
-				categoryArr = categoryData.map(cat => cat.name);
-			}
+			const categoryData = await apiGetCategories();
+			categoryArr = categoryData.map(cat => cat.name);
+		} catch (error) {
+			errorMessage = error.message;
 		}
 	};
 
 	const handleEditPost = async () => {
-		const { error } = await supabase.from('test').update({
-			test: title,
-			description: description,
-			category: categories
-		}).eq('id', postId);
-		if (error) {
-			errorMessage = error.message;
-		} else {
+		try {
+			await apiPutUpdatePost(postId, { title, description, category: categories });
 			successMessage = '포스트 수정 완료!';
-			goto('/admin');
+			goto('/admin/posts');
+		} catch (error) {
+			errorMessage = error.message;
 		}
 	};
 
 	const handleCategorySelect = (category: string) => {
-		selectedCategory = category;
 		if (!categories.includes(category)) {
-			categories.push(category);
+			categories = [...categories, category];
+		} else {
+			categories = categories.filter(cat => cat !== category);
 		}
 	};
 
@@ -82,7 +73,7 @@
 		</div>
 		<div>
 			<label for="categories">카테고리</label>
-			<CategoryFilter categories={categoryArr} selectedCategory={selectedCategory} onSelect={handleCategorySelect} />
+			<CategoryFilter categories={categoryArr} selectedCategories={categories} onSelect={handleCategorySelect} />
 		</div>
 		<button type="submit">수정</button>
 		{#if errorMessage}

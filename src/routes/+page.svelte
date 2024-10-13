@@ -1,31 +1,31 @@
 <script lang="ts">
-	import { getTest } from '$lib/api/test/testApis';
+	import { apiGetPosts } from '$lib/api/posts'; // posts API로 변경
 	import Hero from '$lib/components/my-ui/hero/hero.svelte';
 	import handSrc from '$lib/assets/images/hero-hand.png';
-	import type { TestTable } from '$lib/api/supabaseClient';
+	import type { PostTable } from '$lib/api/supabaseClient'; // PostTable 타입으로 변경
 	import { onMount } from 'svelte';
 	import CategoryFilter from '$lib/components/ui/CategoryFilter.svelte';
 
 	let categorySet: Set<string> = new Set();
 	let categoryArr: Array<string> = [];
 	let selectedCategory: string = 'all';
-	const fetcehdData: Array<TestTable> = [];
-	let processedData: Array<TestTable> = [];
+	const fetchedData: Array<PostTable> = []; // PostTable 타입으로 변경
+	let processedData: Array<PostTable> = [];
 	let errorMessage = '';
 
-	async function mountTestFetchData() {
+	async function mountPostFetchData() {
 		try {
-			const data = await getTest();
+			const data = await apiGetPosts(); // posts API로 변경
 			// category를 맵으로 변환
-			data.forEach((testRow) => {			
-				testRow.category.forEach(item => categorySet.add(item));
+			data.forEach((postRow) => {			
+				postRow.category.forEach(item => categorySet.add(item));
 			});
 
 			categoryArr = Array.from(categorySet);
 
 			errorMessage = ''; // 데이터를 가져오면 에러메시지 초기화
-			fetcehdData.push(...data);
-			processedData = fetcehdData;
+			fetchedData.push(...data);
+			processedData = fetchedData;
 		} catch (error) {
 			if (error instanceof Error) {
 				errorMessage = error.message;
@@ -37,11 +37,11 @@
 
 	const handleClickCategory = (category: string) => {
 		selectedCategory = category;
-		processedData = category === 'all' ? fetcehdData : fetcehdData.filter(item => item.category.includes(category));
+		processedData = category === 'all' ? fetchedData : fetchedData.filter(item => item.category.includes(category));
 	}
 
 	onMount(() => {
-		mountTestFetchData();
+		mountPostFetchData();
 	});
 </script>
 
@@ -81,33 +81,38 @@
 					</swiper-zoom-container>
 				</swiper-slide>
 			</swiper-container>
-			{#each data as testRow}
-				<div class="card--main card image-full aspect-square">
+			{#each data as postRow}
+				<a href={`/post/${postRow.id}`} class="card--main card image-full aspect-square">
 					<figure class="object-cover">
 						<img src={handSrc} alt="hands" class="w-full object-cover" />
 					</figure>
 					<div class="card-body items-center justify-center bg-transparent">
 						<div class="card-title hover-transition">
 							<div>
-								{testRow.test}
+								{postRow.title}
 							</div>
 							<div class="category-wrapper">
-								{#each testRow.category as categoryData}
+								{#each postRow.category as categoryData}
 									<div class="badge category-badge hover-transition">{categoryData}</div>
 								{/each}
 							</div>
 						</div>
 						<div class="card-actions">
 							<div class="card-description hover-transition">
-								{testRow.description}
+								{postRow.description}
 							</div>
 						</div>
 					</div>
-				</div>
+				</a>
 			{/each}
 		</div>
 	{/await}
 </div>
+
+<!-- 플로팅 버튼 추가 -->
+<a href="https://open.kakao.com/o/yourchat" target="_blank" class="floating-btn">
+	카카오톡 문의하기
+</a>
 
 <style lang="scss">
 	.category-filter__wrapper {
@@ -198,5 +203,40 @@
 	swiper-container {
 		min-height: 300px;
 		max-width: 100%;
+	}
+
+	.floating-btn {
+		@apply btn btn-primary; /* daisyui의 버튼 스타일 적용 */
+		position: fixed;
+		bottom: 20px;
+		right: 20px;
+		z-index: 1000;
+	}
+
+	.floating-btn:hover {
+		background-color: #e6b800;
+	}
+
+	.card-container {
+		@apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4;
+	}
+
+	.card--main {
+		@apply transition-transform duration-300 ease-in-out;
+		&:hover {
+			@apply transform scale-105;
+		}
+	}
+
+	.min-h-screen {
+		min-height: 100vh;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.floating-btn {
+		@apply fixed bottom-4 right-4 md:bottom-8 md:right-8;
 	}
 </style>

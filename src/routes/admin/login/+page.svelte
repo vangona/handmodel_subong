@@ -1,25 +1,27 @@
 <script lang="ts">
-	import { supabase } from '$lib/api/supabaseClient';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
+	import { apiPostLogin, apiGetUser } from '$lib/api/auth';
 
 	let email = '';
 	let password = '';
 	let errorMessage = '';
 
 	const handleLogin = async () => {
-		const { error } = await supabase.auth.signInWithPassword({ email, password });
-		if (error) {
-			errorMessage = error.message;
-		} else {
+		try {
+			await apiPostLogin(email, password);
 			goto('/admin');
+		} catch (error) {
+			errorMessage = error.message;
 		}
 	};
 
 	onMount(async () => {
-		const user = await supabase.auth.getUser();
-		if (user) {
+		try {
+			await apiGetUser();
 			goto('/admin');
+		} catch {
+			// 로그인 필요
 		}
 	});
 </script>
@@ -50,28 +52,6 @@
 		background-color: #fff;
 		border-radius: 8px;
 		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-	}
-	form div {
-		margin-bottom: 1rem;
-	}
-	label {
-		display: block;
-		margin-bottom: 0.5rem;
-	}
-	input {
-		width: 100%;
-		padding: 0.5rem;
-		border: 1px solid #ccc;
-		border-radius: 4px;
-	}
-	button {
-		width: 100%;
-		padding: 0.75rem;
-		background-color: #007bff;
-		color: #fff;
-		border: none;
-		border-radius: 4px;
-		cursor: pointer;
 	}
 	.error {
 		color: red;

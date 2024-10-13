@@ -7,7 +7,7 @@
 	let totalUsers = 0;
 	let errorMessage = '';
 
-	const loadDashboardData = async () => {
+	const fetchDashboardData = async () => {
 		try {
 			const data = await apiGetDashboardData();
 			totalPosts = data.totalPosts;
@@ -19,7 +19,7 @@
 	};
 
 	onMount(() => {
-		loadDashboardData();
+		fetchDashboardData();
 	});
 </script>
 

@@ -1,45 +1,41 @@
 <script lang="ts">
-	import { supabase } from '$lib/api/supabaseClient';
 	import { goto } from '$app/navigation';
 	import CategoryFilter from '$lib/components/ui/CategoryFilter.svelte';
 	import { onMount } from 'svelte';
+	import { apiPostAddPost } from '$lib/api/posts';
+	import { apiGetCategories } from '$lib/api/categories';
 
 	let title = '';
 	let description = '';
 	let categories: Array<string> = [];
 	let errorMessage = '';
 	let categoryArr: Array<string> = [];
-	let selectedCategory: string = 'all';
 	let successMessage = '';
 
 	const handleAddPost = async () => {
-		const { error } = await supabase.from('test').insert({
-			test: title,
-			description: description,
-			category: categories
-		});
-		if (error) {
-			errorMessage = error.message;
-		} else {
+		try {
+			await apiPostAddPost({ title, description, category: categories });
 			successMessage = '포스트가 성공적으로 추가되었습니다.';
-			goto('/admin');
+			goto('/admin/posts');
+		} catch (error) {
+			errorMessage = error.message;
 		}
 	};
 
 	const handleCategorySelect = (category: string) => {
-		selectedCategory = category;
 		if (!categories.includes(category)) {
-			categories.push(category);
+			categories = [...categories, category];
+		} else {
+			categories = categories.filter(cat => cat !== category);
 		}
 	};
 
 	onMount(async () => {
-		// 카테고리 목록 가져오기
-		const { data: categoryData, error: categoryError } = await supabase.from('categories').select('*');
-		if (categoryError) {
-			errorMessage = categoryError.message;
-		} else {
+		try {
+			const categoryData = await apiGetCategories();
 			categoryArr = categoryData.map(cat => cat.name);
+		} catch (error) {
+			errorMessage = error.message;
 		}
 	});
 </script>
@@ -57,7 +53,7 @@
 		</div>
 		<div>
 			<label for="categories">카테고리</label>
-			<CategoryFilter categories={categoryArr} selectedCategory={selectedCategory} onSelect={handleCategorySelect} />
+			<CategoryFilter categories={categoryArr} selectedCategories={categories} onSelect={handleCategorySelect} />
 		</div>
 		<button type="submit">추가</button>
 		{#if errorMessage}
