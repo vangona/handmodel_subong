@@ -3,6 +3,7 @@
 	import Hero from '$lib/components/my-ui/hero/hero.svelte';
 	import handSrc from '$lib/assets/images/hero-hand.png';
 	import type { TestTable } from '$lib/api/supabaseClient';
+	import { onMount } from 'svelte';
 
 	let categorySet: Set<string> = new Set();
 	let categoryArr: Array<string> = [];
@@ -30,6 +31,12 @@
 
 	mountTestFetchData();
 </script>
+
+<svelte:head>
+	<title>포트폴리오 메인 페이지</title>
+	<meta name="description" content="손모델의 포트폴리오 사이트입니다." />
+	<meta name="keywords" content="포트폴리오, 손모델, 사진" />
+</svelte:head>
 
 <Hero />
 <div class="min-h-screen">
