@@ -4,24 +4,35 @@
 	import handSrc from '$lib/assets/images/hero-hand.png';
 	import type { TestTable } from '$lib/api/supabaseClient';
 	import { onMount } from 'svelte';
+	import CategoryFilter from '$lib/components/ui/CategoryFilter.svelte';
 
 	let categorySet: Set<string> = new Set();
 	let categoryArr: Array<string> = [];
 	let selectedCategory: string = 'all';
 	const fetcehdData: Array<TestTable> = [];
 	let processedData: Array<TestTable> = [];
+	let errorMessage = '';
 
 	async function mountTestFetchData() {
-		const data = await getTest();
-		// category를 맵으로 변환
-		data.forEach((testRow) => {			
-			testRow.category.forEach(item => categorySet.add(item));
-		});
+		try {
+			const data = await getTest();
+			// category를 맵으로 변환
+			data.forEach((testRow) => {			
+				testRow.category.forEach(item => categorySet.add(item));
+			});
 
-		categoryArr = Array.from(categorySet);
+			categoryArr = Array.from(categorySet);
 
-		fetcehdData.push(...data);
-		processedData = fetcehdData;
+			errorMessage = ''; // 데이터를 가져오면 에러메시지 초기화
+			fetcehdData.push(...data);
+			processedData = fetcehdData;
+		} catch (error) {
+			if (error instanceof Error) {
+				errorMessage = error.message;
+			} else {
+				errorMessage = '데이터를 가져오는 중 오류가 발생했습니다.';
+			}
+		}
 	}
 
 	const handleClickCategory = (category: string) => {
@@ -29,7 +40,9 @@
 		processedData = category === 'all' ? fetcehdData : fetcehdData.filter(item => item.category.includes(category));
 	}
 
-	mountTestFetchData();
+	onMount(() => {
+		mountTestFetchData();
+	});
 </script>
 
 <svelte:head>
@@ -40,23 +53,17 @@
 
 <Hero />
 <div class="min-h-screen">
+	{#if errorMessage}
+		<p class="error">{errorMessage}</p>
+	{/if}
 	{#await processedData}
 		Loading...
 	{:then data}
 		<div class="card-container grid grid-cols-1 grid-rows-1 p-14">
-			<h3 >				
+			<h3>				
 				선택된 카테고리 : {selectedCategory}
 			</h3>
-			<div class="category-filter__wrapper">
-				<button class="category-filter__item {selectedCategory === 'all' ? 'selected' : ''}" on:click={() => handleClickCategory('all')}>
-					all
-				</button>
-				{#each categoryArr as category}
-					<button class="category-filter__item {selectedCategory === category ? 'selected' : ''}" on:click={() => handleClickCategory(category)}>
-						{category}
-					</button>
-				{/each}
-			</div>
+			<CategoryFilter categories={categoryArr} selectedCategory={selectedCategory} onSelect={handleClickCategory} />
 			<swiper-container slides-per-view={1} centered-slides={true} pagination={true} mousewheel-control={true} effect={'cards'}>
 				<swiper-slide>
 					<swiper-zoom-container>

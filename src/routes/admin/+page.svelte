@@ -3,6 +3,7 @@
 	import { onMount } from 'svelte';
 	import type { TestTable } from '$lib/api/supabaseClient';
 	import { goto } from '$app/navigation';
+	import CategoryFilter from '$lib/components/ui/CategoryFilter.svelte';
 
 	let posts: Array<TestTable> = [];
 	let filteredPosts: Array<TestTable> = [];
@@ -78,18 +79,10 @@
 		<p class="error">{errorMessage}</p>
 	{/if}
 	<div class="search-bar">
-		<input type="text" placeholder="검색..." bind:value={searchQuery} on:input={searchPosts} />
+		<input type="text" placeholder="검색..." bind:value={searchQuery} />
+		<button on:click={searchPosts}>검색</button>
 	</div>
-	<div class="category-filter__wrapper">
-		<button class="category-filter__item {selectedCategory === 'all' ? 'selected' : ''}" on:click={() => filterPosts('all')}>
-			all
-		</button>
-		{#each categoryArr as category}
-			<button class="category-filter__item {selectedCategory === category ? 'selected' : ''}" on:click={() => filterPosts(category)}>
-				{category}
-			</button>
-		{/each}
-	</div>
+	<CategoryFilter categories={categoryArr} selectedCategory={selectedCategory} onSelect={filterPosts} />
 	<table class="post-table">
 		<thead>
 			<tr>
@@ -134,14 +127,26 @@
 		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 	}
 	.search-bar {
-		margin-bottom: 1rem;
-		text-align: center;
+		display: flex;
+		gap: 8px;
+		margin-bottom: 16px;
 	}
 	.search-bar input {
 		width: 100%;
 		padding: 0.5rem;
 		border: 1px solid #ccc;
 		border-radius: 4px;
+	}
+	.search-bar button {
+		padding: 0.5rem 1rem;
+		background-color: #007bff;
+		color: white;
+		border: none;
+		border-radius: 4px;
+		cursor: pointer;
+	}
+	.search-bar button:hover {
+		background-color: #0056b3;
 	}
 	.category-filter__wrapper {
 		display: flex;

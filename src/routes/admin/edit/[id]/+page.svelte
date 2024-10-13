@@ -1,24 +1,37 @@
 <script lang="ts">
 	import { supabase } from '$lib/api/supabaseClient';
 	import { onMount } from 'svelte';
-	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
+	import CategoryFilter from '$lib/components/ui/CategoryFilter.svelte';
+	import { page } from '$app/stores';
 	import { get } from 'svelte/store';
 
-	let postId = get(page).params.id;
+	let postId: number;
 	let title = '';
 	let description = '';
-	let categories = '';
+	let categories: Array<string> = [];
 	let errorMessage = '';
+	let categoryArr: Array<string> = [];
+	let selectedCategory: string = 'all';
+	let successMessage = '';
+
+	// URL에서 postId를 가져옵니다.
+	postId = Number(get(page).params.id);
 
 	const fetchPost = async () => {
+		if (!postId) {
+			errorMessage = '유효하지 않은 포스트 ID입니다.';
+			return;
+		}
+
 		const { data, error } = await supabase.from('test').select('*').eq('id', postId).single();
 		if (error) {
 			errorMessage = error.message;
 		} else {
 			title = data.test;
 			description = data.description;
-			categories = data.category.join(', ');
+			categories = data.category;
+			selectedCategory = categories[0] || 'all';
 		}
 	};
 
@@ -26,12 +39,20 @@
 		const { error } = await supabase.from('test').update({
 			test: title,
 			description: description,
-			category: categories.split(',').map(cat => cat.trim())
+			category: categories
 		}).eq('id', postId);
 		if (error) {
 			errorMessage = error.message;
 		} else {
+			successMessage = '포스트 수정 완료!';
 			goto('/admin');
+		}
+	};
+
+	const handleCategorySelect = (category: string) => {
+		selectedCategory = category;
+		if (!categories.includes(category)) {
+			categories.push(category);
 		}
 	};
 
@@ -52,12 +73,14 @@
 			<textarea id="description" bind:value={description} required></textarea>
 		</div>
 		<div>
-			<label for="categories">카테고리 (쉼표로 구분)</label>
-			<input id="categories" type="text" bind:value={categories} required />
+			<label for="categories">카테고리</label>
+			<CategoryFilter categories={categoryArr} selectedCategory={selectedCategory} onSelect={handleCategorySelect} />
 		</div>
 		<button type="submit">수정</button>
 		{#if errorMessage}
 			<p class="error">{errorMessage}</p>
+		{:else if successMessage}
+			<p class="success">{successMessage}</p>
 		{/if}
 	</form>
 </div>
@@ -95,6 +118,10 @@
 	}
 	.error {
 		color: red;
+		margin-top: 1rem;
+	}
+	.success {
+		color: green;
 		margin-top: 1rem;
 	}
 </style>
