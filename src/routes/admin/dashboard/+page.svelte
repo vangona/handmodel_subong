@@ -23,22 +23,22 @@
 	});
 </script>
 
-<div class="dashboard-container">
-	<h1>관리자 대시보드</h1>
+<div class="dashboard-container max-w-4xl mx-auto p-8 bg-white rounded-lg shadow-lg">
+	<h1 class="text-2xl font-bold mb-4">관리자 대시보드</h1>
 	{#if errorMessage}
-		<p class="error">{errorMessage}</p>
+		<p class="text-red-500">{errorMessage}</p>
 	{:else}
-		<div class="stats">
-			<div class="stat">
-				<h2>총 포스트</h2>
+		<div class="stats flex justify-around mt-8">
+			<div class="stat bg-gray-100 p-4 rounded-lg text-center w-1/3">
+				<h2 class="mb-2 text-lg font-semibold">총 포스트</h2>
 				<p>{totalPosts}</p>
 			</div>
-			<div class="stat">
-				<h2>총 카테고리</h2>
+			<div class="stat bg-gray-100 p-4 rounded-lg text-center w-1/3">
+				<h2 class="mb-2 text-lg font-semibold">총 카테고리</h2>
 				<p>{totalCategories}</p>
 			</div>
-			<div class="stat">
-				<h2>총 사용자</h2>
+			<div class="stat bg-gray-100 p-4 rounded-lg text-center w-1/3">
+				<h2 class="mb-2 text-lg font-semibold">총 사용자</h2>
 				<p>{totalUsers}</p>
 			</div>
 		</div>
@@ -46,18 +46,6 @@
 </div>
 
 <style>
-	.dashboard-container {
-		@apply max-w-4xl mx-auto p-8 bg-white rounded-lg shadow-lg;
-	}
-	.stats {
-		@apply flex justify-around mt-8;
-	}
-	.stat {
-		@apply bg-gray-100 p-4 rounded-lg text-center w-1/3;
-	}
-	.stat h2 {
-		@apply mb-2 text-lg font-semibold;
-	}
 	.error {
 		@apply text-red-500 mt-4;
 	}

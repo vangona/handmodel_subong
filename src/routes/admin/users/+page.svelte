@@ -48,18 +48,18 @@
 	});
 </script>
 
-<div class="user-container">
-	<h1>사용자 관리</h1>
+<div class="user-container max-w-4xl mx-auto p-8 bg-white rounded-lg shadow-lg">
+	<h1 class="text-2xl font-bold mb-4">사용자 관리</h1>
 	{#if errorMessage}
-		<p class="error">{errorMessage}</p>
+		<p class="text-red-500">{errorMessage}</p>
 	{:else if successMessage}
-		<p class="success">{successMessage}</p>
+		<p class="text-green-500">{successMessage}</p>
 	{/if}
-	<div class="add-user">
-		<input type="email" placeholder="새 사용자 이메일" bind:value={newUserEmail} />
-		<button on:click={addUser}>추가</button>
+	<div class="add-user flex gap-2 mb-4">
+		<input type="email" placeholder="새 사용자 이메일" bind:value={newUserEmail} class="input input-bordered w-full" />
+		<button on:click={addUser} class="btn btn-primary">추가</button>
 	</div>
-	<table class="user-table">
+	<table class="user-table table-auto w-full mt-4">
 		<thead>
 			<tr>
 				<th>ID</th>
@@ -73,7 +73,7 @@
 					<td>{user.id}</td>
 					<td>{user.email}</td>
 					<td>
-						<button class="btn btn-delete" on:click={() => deleteUser(user.id)}>삭제</button>
+						<button class="btn btn-error" on:click={() => deleteUser(user.id)}>삭제</button>
 					</td>
 				</tr>
 			{/each}
@@ -83,71 +83,12 @@
 
 <style>
 	.user-container {
-		max-width: 600px;
-		margin: 0 auto;
-		padding: 2rem;
-		background-color: #fff;
-		border-radius: 8px;
-		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-	}
-	.add-user {
-		display: flex;
-		gap: 8px;
-		margin-bottom: 16px;
-	}
-	.add-user input {
-		flex: 1;
-		padding: 0.5rem;
-		border: 1px solid #ccc;
-		border-radius: 4px;
-	}
-	.add-user button {
-		padding: 0.5rem 1rem;
-		background-color: #007bff;
-		color: white;
-		border: none;
-		border-radius: 4px;
-		cursor: pointer;
-	}
-	.add-user button:hover {
-		background-color: #0056b3;
-	}
-	.user-table {
-		width: 100%;
-		border-collapse: collapse;
-		margin-top: 1rem;
+		@apply max-w-4xl mx-auto p-8 bg-white rounded-lg shadow-lg;
 	}
 	.user-table th, .user-table td {
-		border: 1px solid #ccc;
-		padding: 0.5rem;
-		text-align: left;
+		@apply border border-gray-300 p-2;
 	}
 	.user-table th {
-		background-color: #f4f4f4;
-	}
-	.btn-delete {
-		background-color: #f44336;
-		color: white;
-		border: none;
-		padding: 0.5rem 1rem;
-		border-radius: 4px;
-		cursor: pointer;
-	}
-	.btn-delete:hover {
-		background-color: #e53935;
-	}
-	.error {
-		color: red;
-		margin-top: 1rem;
-	}
-	.success {
-		color: green;
-		margin-top: 1rem;
-	}
-	.add-user button {
-		@apply btn btn-primary; /* daisyui의 기본 버튼 스타일 적용 */
-	}
-	.btn-delete {
-		@apply btn btn-error; /* daisyui의 에러 버튼 스타일 적용 */
+		@apply bg-gray-100;
 	}
 </style>

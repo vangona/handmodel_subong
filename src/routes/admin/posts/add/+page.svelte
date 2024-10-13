@@ -40,67 +40,32 @@
 	});
 </script>
 
-<div class="add-container">
-	<h1>포스트 추가</h1>
-	<form on:submit|preventDefault={handleAddPost}>
+<div class="add-container max-w-4xl mx-auto p-8 bg-white rounded-lg shadow-lg">
+	<h1 class="text-2xl font-bold mb-4">포스트 추가</h1>
+	<form on:submit|preventDefault={handleAddPost} class="space-y-4">
 		<div>
-			<label for="title">제목</label>
-			<input id="title" type="text" bind:value={title} required />
+			<label for="title" class="block text-sm font-medium text-gray-700">제목</label>
+			<input id="title" type="text" bind:value={title} required class="input input-bordered w-full mt-1" />
 		</div>
 		<div>
-			<label for="description">설명</label>
-			<textarea id="description" bind:value={description} required></textarea>
+			<label for="description" class="block text-sm font-medium text-gray-700">설명</label>
+			<textarea id="description" bind:value={description} required class="textarea textarea-bordered w-full mt-1"></textarea>
 		</div>
 		<div>
-			<label for="categories">카테고리</label>
+			<label for="categories" class="block text-sm font-medium text-gray-700">카테고리</label>
 			<CategoryFilter categories={categoryArr} selectedCategories={categories} onSelect={handleCategorySelect} />
 		</div>
-		<button type="submit">추가</button>
+		<button type="submit" class="btn btn-primary w-full">추가</button>
 		{#if errorMessage}
-			<p class="error">{errorMessage}</p>
+			<p class="text-red-500 mt-2">{errorMessage}</p>
 		{:else if successMessage}
-			<p class="success">{successMessage}</p>
+			<p class="text-green-500 mt-2">{successMessage}</p>
 		{/if}
 	</form>
 </div>
 
 <style>
 	.add-container {
-		max-width: 800px;
-		margin: 0 auto;
-		padding: 2rem;
-		background-color: #fff;
-		border-radius: 8px;
-		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-	}
-	form div {
-		margin-bottom: 1rem;
-	}
-	label {
-		display: block;
-		margin-bottom: 0.5rem;
-	}
-	input, textarea {
-		width: 100%;
-		padding: 0.5rem;
-		border: 1px solid #ccc;
-		border-radius: 4px;
-	}
-	button {
-		width: 100%;
-		padding: 0.75rem;
-		background-color: #007bff;
-		color: #fff;
-		border: none;
-		border-radius: 4px;
-		cursor: pointer;
-	}
-	.error {
-		color: red;
-		margin-top: 1rem;
-	}
-	.success {
-		color: green;
-		margin-top: 1rem;
+		@apply max-w-4xl mx-auto p-8 bg-white rounded-lg shadow-lg;
 	}
 </style>

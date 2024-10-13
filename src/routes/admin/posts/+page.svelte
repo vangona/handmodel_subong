@@ -10,7 +10,7 @@
 	let errorMessage = '';
 	let categorySet: Set<string> = new Set();
 	let categoryArr: Array<string> = [];
-	let selectedCategories: Array<string> = []; // 여러 카테고리 선택을 위한 배열
+	let selectedCategories: Array<string> = [];
 	let currentPage = 1;
 	let postsPerPage = 10;
 	let searchQuery = '';
@@ -96,20 +96,20 @@
 </script>
 
 <div class="admin-container">
-	<h1>포스트 관리</h1>
+	<h1 class="text-2xl font-bold mb-4">포스트 관리</h1>
 	{#if errorMessage}
-		<p class="error">{errorMessage}</p>
+		<p class="text-red-500">{errorMessage}</p>
 	{/if}
-	<div class="search-bar">
-		<input type="text" placeholder="검색..." bind:value={searchQuery} />
+	<div class="search-bar flex gap-2 mb-4">
+		<input type="text" placeholder="검색..." bind:value={searchQuery} class="input input-bordered w-full" />
 		<button on:click={searchPosts} class="btn btn-primary">검색</button>
 	</div>
 	<CategoryFilter categories={categoryArr} selectedCategories={selectedCategories} onSelect={handleCategorySelect} />
-	<button on:click={addPost} class="btn btn-success">포스트 추가</button>
+	<button on:click={addPost} class="btn btn-success mt-4">포스트 추가</button>
 	{#if loading}
 		<p>로딩 중...</p>
 	{:else}
-		<table class="post-table">
+		<table class="post-table table-auto w-full mt-4">
 			<thead>
 				<tr>
 					<th>ID</th>
@@ -134,7 +134,7 @@
 				{/each}
 			</tbody>
 		</table>
-		<div class="pagination">
+		<div class="pagination flex justify-center mt-4">
 			{#each Array(Math.ceil(filteredPosts.length / postsPerPage)).fill(0) as _, index}
 				<button class:active={currentPage === index + 1} on:click={() => paginate(index + 1)}>
 					{index + 1}
@@ -146,91 +146,18 @@
 
 <style>
 	.admin-container {
-		max-width: 800px;
-		margin: 0 auto;
-		padding: 2rem;
-		background-color: #fff;
-		border-radius: 8px;
-		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-	}
-	.search-bar {
-		display: flex;
-		gap: 8px;
-		margin-bottom: 16px;
-	}
-	.search-bar input {
-		width: 100%;
-		padding: 0.5rem;
-		border: 1px solid #ccc;
-		border-radius: 4px;
-	}
-	.search-bar button {
-		padding: 0.5rem 1rem;
-		background-color: #007bff;
-		color: white;
-		border: none;
-		border-radius: 4px;
-		cursor: pointer;
-	}
-	.search-bar button:hover {
-		background-color: #0056b3;
-	}
-	.btn-add {
-		margin-bottom: 1rem;
-		background-color: #28a745;
-		color: white;
-		border: none;
-		padding: 0.5rem 1rem;
-		border-radius: 4px;
-		cursor: pointer;
-	}
-	.btn-add:hover {
-		background-color: #218838;
-	}
-	.post-table {
-		width: 100%;
-		margin-top: 1rem;
-		border-collapse: collapse;
+		@apply max-w-4xl mx-auto p-8 bg-primary rounded-lg shadow-lg;
 	}
 	.post-table th, .post-table td {
-		border: 1px solid #ccc;
-		padding: 0.5rem;
+		@apply border border-gray-300 p-2;
 	}
 	.post-table th {
-		background-color: #f9f9f9;
-	}
-	.btn {
-		padding: 0.5rem 1rem;
-		border-radius: 4px;
-		cursor: pointer;
-	}
-	.btn-edit {
-		background-color: #17a2b8;
-		color: white;
-	}
-	.btn-delete {
-		background-color: #dc3545;
-		color: white;
-	}
-	.pagination {
-		display: flex;
-		justify-content: center;
-		margin-top: 1rem;
+		@apply bg-gray-100;
 	}
 	.pagination button {
-		padding: 0.5rem 1rem;
-		margin: 0 0.25rem;
-		border: 1px solid #ccc;
-		border-radius: 4px;
-		background-color: white;
-		cursor: pointer;
+		@apply px-4 py-2 mx-1 border border-gray-300 rounded;
 	}
 	.pagination button.active {
-		background-color: #007bff;
-		color: white;
-	}
-	.error {
-		color: #e3342f;
-		margin-top: 1rem;
+		@apply bg-blue-500 text-white;
 	}
 </style>

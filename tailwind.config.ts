@@ -39,14 +39,11 @@ const config: Config = {
 				ring: 'hsl(var(--ring) / <alpha-value>)',
 				background: 'hsl(var(--background) / <alpha-value>)',
 				foreground: 'hsl(var(--foreground) / <alpha-value>)',
-				primary: {
-					DEFAULT: 'hsl(var(--primary) / <alpha-value>)',
-					foreground: 'hsl(var(--primary-foreground) / <alpha-value>)'
-				},
-				secondary: {
-					DEFAULT: 'hsl(var(--secondary) / <alpha-value>)',
-					foreground: 'hsl(var(--secondary-foreground) / <alpha-value>)'
-				},
+				primary: '#A8A29E', // warmgray 색상으로 설정
+				secondary: '#D1D5DB', // 밝은 회색
+				accent: '#F3F4F6', // 아주 밝은 회색
+				neutral: '#374151', // 어두운 회색
+				'base-100': '#FFFFFF', // 기본 배경색
 				destructive: {
 					DEFAULT: 'hsl(var(--destructive) / <alpha-value>)',
 					foreground: 'hsl(var(--destructive-foreground) / <alpha-value>)'
@@ -54,10 +51,6 @@ const config: Config = {
 				muted: {
 					DEFAULT: 'hsl(var(--muted) / <alpha-value>)',
 					foreground: 'hsl(var(--muted-foreground) / <alpha-value>)'
-				},
-				accent: {
-					DEFAULT: 'hsl(var(--accent) / <alpha-value>)',
-					foreground: 'hsl(var(--accent-foreground) / <alpha-value>)'
 				},
 				popover: {
 					DEFAULT: 'hsl(var(--popover) / <alpha-value>)',
@@ -78,7 +71,22 @@ const config: Config = {
 			}
 		}
 	},
-	plugins: [daisyui]
+	plugins: [daisyui],
+	daisyui: {
+		themes: [
+			{
+				mytheme: {
+					primary: '#A8A29E', // warmgray 색상으로 설정
+					secondary: '#D1D5DB',
+					accent: '#F3F4F6',
+					neutral: '#374151',
+					'base-100': '#FFFFFF',
+				},
+			},
+			'light',
+			'dark',
+		],
+	},
 };
 
 export default config;
