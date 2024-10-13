@@ -1,31 +1,32 @@
-/** @type { import("eslint").Linter.Config } */
-module.exports = {
+   /** @type { import("eslint").Linter.Config } */
+   module.exports = {
 	root: true,
 	extends: [
-		'eslint:recommended',
-		'plugin:@typescript-eslint/recommended',
-		'plugin:svelte/recommended',
-		'prettier'
+	  'eslint:recommended',
+	  'plugin:@typescript-eslint/recommended',
+	  'plugin:svelte/recommended',
+	  'prettier',
+	  'plugin:tailwindcss/recommended'
 	],
 	parser: '@typescript-eslint/parser',
-	plugins: ['@typescript-eslint'],
+	plugins: ['@typescript-eslint', 'tailwindcss'],
 	parserOptions: {
-		sourceType: 'module',
-		ecmaVersion: 2020,
-		extraFileExtensions: ['.svelte']
+	  sourceType: 'module',
+	  ecmaVersion: 2020,
+	  extraFileExtensions: ['.svelte']
 	},
 	env: {
-		browser: true,
-		es2017: true,
-		node: true
+	  browser: true,
+	  es2017: true,
+	  node: true
 	},
 	overrides: [
-		{
-			files: ['*.svelte'],
-			parser: 'svelte-eslint-parser',
-			parserOptions: {
-				parser: '@typescript-eslint/parser'
-			}
+	  {
+		files: ['*.svelte'],
+		parser: 'svelte-eslint-parser',
+		parserOptions: {
+		  parser: '@typescript-eslint/parser'
 		}
+	  }
 	]
-};
+  };

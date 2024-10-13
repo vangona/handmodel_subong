@@ -116,6 +116,7 @@
 		margin-bottom: 16px;
 		justify-content: center;
 	}
+
 	.category-filter__item {
 		position: relative;
 		transition: transform 0.2s ease-in-out, background-color 0.3s ease, box-shadow 0.3s ease;
@@ -137,7 +138,9 @@
 			transform: scale(0.95);
 		}
 		&.selected {
-			@apply bg-secondary text-secondary-foreground border-secondary;
+			background-color: var(--secondary);
+			color: var(--secondary-foreground);
+			border-color: var(--secondary);
 			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 		}
 		&::after {

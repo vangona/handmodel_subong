@@ -32,6 +32,14 @@
 			description = data.description;
 			categories = data.category;
 			selectedCategory = categories[0] || 'all';
+
+			// 카테고리 목록 가져오기
+			const { data: categoryData, error: categoryError } = await supabase.from('categories').select('*');
+			if (categoryError) {
+				errorMessage = categoryError.message;
+			} else {
+				categoryArr = categoryData.map(cat => cat.name);
+			}
 		}
 	};
 

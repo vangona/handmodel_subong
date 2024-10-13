@@ -2,6 +2,7 @@
 	import { supabase } from '$lib/api/supabaseClient';
 	import { goto } from '$app/navigation';
 	import CategoryFilter from '$lib/components/ui/CategoryFilter.svelte';
+	import { onMount } from 'svelte';
 
 	let title = '';
 	let description = '';
@@ -31,6 +32,16 @@
 			categories.push(category);
 		}
 	};
+
+	onMount(async () => {
+		// 카테고리 목록 가져오기
+		const { data: categoryData, error: categoryError } = await supabase.from('categories').select('*');
+		if (categoryError) {
+			errorMessage = categoryError.message;
+		} else {
+			categoryArr = categoryData.map(cat => cat.name);
+		}
+	});
 </script>
 
 <div class="add-container">

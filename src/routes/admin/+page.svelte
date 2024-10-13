@@ -155,42 +155,23 @@
 		justify-content: center;
 	}
 	.category-filter__item {
-		position: relative;
-		transition: transform 0.2s ease-in-out, background-color 0.3s ease, box-shadow 0.3s ease;
-		user-select: none;
-		padding: 0.5rem 1rem;
-		border-radius: 0.375rem;
-		background-color: var(--primary);
-		color: var(--primary-foreground);
-		border: 1px solid var(--border);
-		font-size: 1rem;
-		font-weight: 500;
+		@apply relative transition-transform duration-200 ease-in-out bg-blue-500 text-white border border-gray-300 font-medium;
 		&:hover {
-			cursor: pointer;
-			background-color: var(--primary-foreground);
-			color: var(--primary);
-			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+			@apply cursor-pointer bg-blue-600 text-white;
 		}
 		&:active {
-			transform: scale(0.95);
+			@apply transform scale-95;
 		}
 		&.selected {
-			@apply bg-secondary text-secondary-foreground border-secondary;
+			@apply bg-green-500 text-white border-green-500;
 			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 		}
 		&::after {
 			content: '';
-			position: absolute;
-			left: 50%;
-			bottom: -4px;
-			width: 0;
-			height: 2px;
-			background-color: var(--secondary);
-			transition: width 0.3s ease, left 0.3s ease;
+			@apply absolute left-1/2 bottom-[-4px] w-0 h-0.5 bg-green-500 transition-all duration-300 ease;
 		}
 		&.selected::after {
-			width: 100%;
-			left: 0;
+			@apply w-full left-0;
 		}
 	}
 	.post-table {
@@ -252,3 +233,4 @@
 		margin-top: 1rem;
 	}
 </style>
+
