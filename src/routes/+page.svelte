@@ -52,32 +52,32 @@
 </svelte:head>
 
 <Hero />
-<div class="min-h-screen relative z-20 bg-offwhite bg-opacity-90 left-[360px] w-[calc(100%-360px)]">
+<div class="min-h-screen relative z-20 bg-offwhite bg-opacity-90 w-full md:left-[360px] md:w-[calc(100%-360px)] pt-[200px] md:pt-0">
 	{#if errorMessage}
 		<p class="error">{errorMessage}</p>
 	{/if}
 	{#await processedData}
 		Loading...
 	{:then data}
-		<div class="card-container grid grid-cols-1 grid-rows-1 p-14">
-			<h3>				
+		<div class="card-container grid grid-cols-1 grid-rows-1 p-4 md:p-14">
+			<h3 class="text-center mb-4">				
 				선택된 카테고리 : {selectedCategory}
 			</h3>
 			<CategoryFilter categories={categoryArr} selectedCategory={selectedCategory} onSelect={handleClickCategory} />
-			<swiper-container slides-per-view={1} centered-slides={true} pagination={true} mousewheel-control={true} effect={'cards'}>
+			<swiper-container slides-per-view="auto" centered-slides={true} pagination={true} mousewheel-control={true} effect={'cards'}>
 				<swiper-slide>
 					<swiper-zoom-container>
-						<img src={handSrc} alt="hands" />
+							<img src={handSrc} alt="hands" />
 					</swiper-zoom-container>
 				</swiper-slide>
 				<swiper-slide>
 					<swiper-zoom-container>
-						<img src={handSrc} alt="hands" />
+							<img src={handSrc} alt="hands" />
 					</swiper-zoom-container>
 				</swiper-slide>
 				<swiper-slide>
 					<swiper-zoom-container>
-						<img src={handSrc} alt="hands" />
+							<img src={handSrc} alt="hands" />
 					</swiper-zoom-container>
 				</swiper-slide>
 			</swiper-container>
@@ -233,7 +233,7 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		justify-content: center;
+		justify-content: flex-start;
 	}
 
 	.floating-btn {

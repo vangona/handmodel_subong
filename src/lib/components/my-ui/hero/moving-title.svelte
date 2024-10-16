@@ -20,25 +20,25 @@
 	});
 </script>
 
-<div
-	class="moving-container xs:text-5xl xs:min-h-[500px] relative h-full min-h-[400px] w-full text-4xl"
->
-	<span class="up absolute left-5 top-[35%] z-0 font-serif text-white">Handmodel</span>
+<div class="moving-container relative h-full w-full">
+	<span class="up absolute left-4 md:left-5 top-[15%] md:top-[25%] z-0 font-serif text-white text-2xl md:text-4xl">Handmodel</span>
 	<div class="absolute bottom-0 w-full">
 		<img src={handSrc} alt="손모델 심수연의 손" class="z-10 w-full" />
 	</div>
-	<span class="down absolute bottom-[20%] right-5 z-20 font-serif font-bold text-white"
-		>심 수 연</span
-	>
+	<span class="down absolute bottom-[10%] md:bottom-[30%] right-4 md:right-5 z-20 font-serif font-bold text-white text-2xl md:text-4xl">
+		심 수 연
+	</span>
 </div>
 
 <style>
 	.moving-container {
 		display: flex;
+		min-height: 200px;
+		max-height: 100vh;
 	}
 
 	.up,
 	.down {
-		margin: 1rem;
+		margin: 0.5rem;
 	}
 </style>

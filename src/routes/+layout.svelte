@@ -14,6 +14,7 @@
 
 	let isNavVisible = true;
 	let lastScrollY = 0;
+	let isMenuOpen = false;
 
 	onMount(() => {
 		const handleScroll = () => {
@@ -25,6 +26,10 @@
 		window.addEventListener('scroll', handleScroll);
 		return () => window.removeEventListener('scroll', handleScroll);
 	});
+
+	function toggleMenu() {
+		isMenuOpen = !isMenuOpen;
+	}
 </script>
 
 <Analytics />
@@ -35,7 +40,12 @@
      class:-translate-y-full={!isNavVisible}>
 	<div class="container mx-auto flex justify-between items-center">
 		<a href="/" class="text-xl font-bold font-serif">손모델 심수연</a>
-		<ul class="flex space-x-4 font-serif">
+		<button class="md:hidden" on:click={toggleMenu}>
+			<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+			</svg>
+		</button>
+		<ul class="hidden md:flex space-x-4 font-serif">
 			{#each items as item}
 				<li>
 					<Button variant="ghost" asChild class="hover:bg-gray-500 text-lg">
@@ -46,6 +56,24 @@
 		</ul>
 	</div>
 </nav>
+
+{#if isMenuOpen}
+	<div class="fixed inset-0 bg-black bg-opacity-50 z-40" on:click={toggleMenu}></div>
+	<div class="fixed top-0 right-0 h-full w-64 bg-primary text-white z-50 p-4 transform transition-transform duration-300 ease-in-out" class:translate-x-0={isMenuOpen} class:translate-x-full={!isMenuOpen}>
+		<button class="absolute top-4 right-4" on:click={toggleMenu}>
+			<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+			</svg>
+		</button>
+		<ul class="mt-8 space-y-4 font-serif">
+			{#each items as item}
+				<li>
+					<a href={item.href} class="block py-2 hover:bg-gray-500" on:click={toggleMenu}>{item.label}</a>
+				</li>
+			{/each}
+		</ul>
+	</div>
+{/if}
 
 <div class="app-container flex pt-16">
 	<slot />
