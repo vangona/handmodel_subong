@@ -17,11 +17,11 @@
 
 <nav class="bg-primary text-white shadow-md p-4">
 	<div class="container mx-auto flex justify-between items-center">
-		<a href="/" class="text-lg font-bold">My Portfolio</a>
-		<ul class="flex space-x-4">
+		<a href="/" class="text-xl font-bold font-serif">손모델 심수연</a>
+		<ul class="flex space-x-4 font-serif">
 			{#each items as item}
 				<li>
-					<Button variant="ghost" asChild class="hover:bg-gray-500">
+					<Button variant="ghost" asChild class="hover:bg-gray-500 text-lg">
 						<a href={item.href}>{item.label}</a>
 					</Button>
 				</li>
