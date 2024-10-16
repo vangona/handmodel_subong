@@ -52,7 +52,7 @@
 </svelte:head>
 
 <Hero />
-<div class="min-h-screen">
+<div class="min-h-screen relative z-20 bg-offwhite bg-opacity-90 left-[360px] w-[calc(100%-360px)]">
 	{#if errorMessage}
 		<p class="error">{errorMessage}</p>
 	{/if}

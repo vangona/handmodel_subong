@@ -9,7 +9,7 @@
 		{ href: '/', label: '홈' },
 		{ href: '/about', label: '소개' },
 		{ href: '/contact', label: '연락처' },
-		{ href: '/admin', label: '관리자' }
+		// { href: '/admin', label: '관리자' }
 	];
 
 	let isNavVisible = true;
