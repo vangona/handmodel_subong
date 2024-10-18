@@ -4,7 +4,7 @@
 	<meta name="keywords" content="손모델, 포트폴리오, 연락처, 인스타그램, 카카오톡" />
 </svelte:head>
 
-<div class="min-h-screen relative z-20 bg-offwhite bg-opacity-90 w-full md:left-[360px] md:w-[calc(100%-360px)] pt-[200px] md:pt-8">
+<div class="flex justify-center items-start pt-20 md:pt-32 min-h-screen w-full bg-offwhite bg-opacity-90">
 	<div class="container mx-auto px-4 py-8 max-w-3xl">
 		<div class="bg-white rounded-lg shadow-xl overflow-hidden">
 			<div class="px-6 py-8">

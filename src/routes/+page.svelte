@@ -52,19 +52,19 @@
 </svelte:head>
 
 <Hero />
-<div class="min-h-screen relative z-20 bg-offwhite bg-opacity-90 w-full md:left-[360px] md:w-[calc(100%-360px)] pt-[200px] md:pt-0">
+<div class="min-h-screen relative z-20 bg-offwhite bg-opacity-90 w-full md:ml-[360px] md:w-[calc(100%-360px)] pt-[100vh] md:pt-0">
 	{#if errorMessage}
-		<p class="error">{errorMessage}</p>
+		<p class="error px-2 sm:px-4">{errorMessage}</p>
 	{/if}
 	{#await processedData}
-		Loading...
+		<p class="px-2 sm:px-4">Loading...</p>
 	{:then data}
-		<div class="card-container grid grid-cols-1 grid-rows-1 p-4 md:p-14">
-			<h3 class="text-center mb-4">				
+		<div class="card-container grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4 p-2 sm:p-4 md:p-8 lg:p-14">
+			<h3 class="text-center mb-2 sm:mb-4 col-span-full text-sm sm:text-base">				
 				선택된 카테고리 : {selectedCategory}
 			</h3>
 			<CategoryFilter categories={categoryArr} selectedCategory={selectedCategory} onSelect={handleClickCategory} />
-			<swiper-container slides-per-view="auto" centered-slides={true} pagination={true} mousewheel-control={true} effect={'cards'}>
+			<swiper-container slides-per-view="auto" centered-slides={true} pagination={true} mousewheel-control={true} effect={'cards'} class="col-span-full mb-4 sm:mb-8">
 				<swiper-slide>
 					<swiper-zoom-container>
 							<img src={handSrc} alt="hands" />
@@ -78,7 +78,7 @@
 				<swiper-slide>
 					<swiper-zoom-container>
 							<img src={handSrc} alt="hands" />
-					</swiper-zoom-container>
+						</swiper-zoom-container>
 				</swiper-slide>
 			</swiper-container>
 			{#each data as postRow}
@@ -218,7 +218,7 @@
 	}
 
 	.card-container {
-		@apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4;
+		@apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4;
 	}
 
 	.card--main {
@@ -237,6 +237,16 @@
 	}
 
 	.floating-btn {
-		@apply fixed bottom-4 right-4 md:bottom-8 md:right-8;
+		@apply fixed bottom-2 right-2 sm:bottom-4 sm:right-4 md:bottom-8 md:right-8 z-50;
+		font-size: 0.75rem;
+		padding: 0.5rem 0.75rem;
+		@screen sm {
+			font-size: 0.875rem;
+			padding: 0.75rem 1rem;
+		}
+	}
+
+	.floating-btn {
+		@apply fixed bottom-2 right-2 sm:bottom-4 sm:right-4 md:bottom-8 md:right-8 z-50;
 	}
 </style>

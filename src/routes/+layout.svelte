@@ -35,20 +35,20 @@
 <Analytics />
 <TagManager />
 
-<nav class="fixed top-0 left-0 right-0 bg-primary text-white shadow-md p-4 z-50 transition-all duration-300 ease-in-out"
+<nav class="fixed top-0 left-0 right-0 bg-primary text-white shadow-md p-2 sm:p-4 z-50 transition-all duration-300 ease-in-out"
      class:translate-y-0={isNavVisible}
      class:-translate-y-full={!isNavVisible}>
 	<div class="container mx-auto flex justify-between items-center">
-		<a href="/" class="text-xl font-bold font-serif">손모델 심수연</a>
+		<a href="/" class="text-lg sm:text-xl font-bold font-serif">손모델 심수연</a>
 		<button class="md:hidden" on:click={toggleMenu}>
-			<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+			<svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
 			</svg>
 		</button>
-		<ul class="hidden md:flex space-x-4 font-serif">
+		<ul class="hidden md:flex space-x-2 sm:space-x-4 font-serif">
 			{#each items as item}
 				<li>
-					<Button variant="ghost" asChild class="hover:bg-gray-500 text-lg">
+					<Button variant="ghost" asChild class="hover:bg-gray-500 text-sm sm:text-base lg:text-lg px-2 py-1 sm:px-3 sm:py-2">
 						<a href={item.href}>{item.label}</a>
 					</Button>
 				</li>
@@ -59,16 +59,16 @@
 
 {#if isMenuOpen}
 	<div class="fixed inset-0 bg-black bg-opacity-50 z-40" on:click={toggleMenu}></div>
-	<div class="fixed top-0 right-0 h-full w-64 bg-primary text-white z-50 p-4 transform transition-transform duration-300 ease-in-out" class:translate-x-0={isMenuOpen} class:translate-x-full={!isMenuOpen}>
-		<button class="absolute top-4 right-4" on:click={toggleMenu}>
-			<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+	<div class="fixed top-0 right-0 h-full w-48 sm:w-64 bg-primary text-white z-50 p-4 transform transition-transform duration-300 ease-in-out" class:translate-x-0={isMenuOpen} class:translate-x-full={!isMenuOpen}>
+		<button class="absolute top-2 right-2 sm:top-4 sm:right-4" on:click={toggleMenu}>
+			<svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
 			</svg>
 		</button>
-		<ul class="mt-8 space-y-4 font-serif">
+		<ul class="mt-8 space-y-2 sm:space-y-4 font-serif">
 			{#each items as item}
 				<li>
-					<a href={item.href} class="block py-2 hover:bg-gray-500" on:click={toggleMenu}>{item.label}</a>
+					<a href={item.href} class="block py-1 sm:py-2 hover:bg-gray-500 text-base sm:text-lg" on:click={toggleMenu}>{item.label}</a>
 				</li>
 			{/each}
 		</ul>
