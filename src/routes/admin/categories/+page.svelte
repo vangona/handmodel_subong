@@ -11,7 +11,11 @@
 		try {
 			categories = await apiGetCategories();
 		} catch (error) {
-			errorMessage = error.message;
+			if (error instanceof Error) {
+				errorMessage = error.message;
+			} else {
+				errorMessage = '알 수 없는 오류가 발생했습니다.';
+			}
 		}
 	};
 
@@ -27,7 +31,11 @@
 			newCategoryName = '';
 			fetchCategories();
 		} catch (error) {
-			errorMessage = error.message;
+			if (error instanceof Error) {
+				errorMessage = error.message;
+			} else {
+				errorMessage = '알 수 없는 오류가 발생했습니다.';
+			}
 		}
 	};
 
@@ -38,7 +46,11 @@
 				successMessage = '카테고리가 삭제되었습니다.';
 				fetchCategories();
 			} catch (error) {
-				errorMessage = error.message;
+				if (error instanceof Error) {
+					errorMessage = error.message;
+				} else {
+					errorMessage = '알 수 없는 오류가 발생했습니다.';
+				}
 			}
 		}
 	};
@@ -81,7 +93,7 @@
 	</table>
 </div>
 
-<style>
+<style lang="postcss">
 	.category-table th, .category-table td {
 		@apply border border-gray-300 p-2;
 	}

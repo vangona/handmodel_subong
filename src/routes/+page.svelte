@@ -40,8 +40,24 @@
 		processedData = category === 'all' ? fetchedData : fetchedData.filter(item => item.category.includes(category));
 	}
 
+	let showFloatingButton = false;
+	let innerHeight: number;
+	let isMobile: boolean;
+	let scrollY: number;
+
+	$: showFloatingButton = !isMobile || (isMobile && scrollY > innerHeight * 0.6);
+
 	onMount(() => {
-		mountPostFetchData();
+		const checkMobile = () => {
+			isMobile = window.innerWidth < 768; // md 브레이크포인트
+		};
+
+		checkMobile();
+		window.addEventListener('resize', checkMobile);
+
+		return () => {
+			window.removeEventListener('resize', checkMobile);
+		};
 	});
 </script>
 
@@ -50,6 +66,8 @@
 	<meta name="description" content="손모델의 포트폴리오 사이트입니다." />
 	<meta name="keywords" content="포트폴리오, 손모델, 사진" />
 </svelte:head>
+
+<svelte:window bind:innerHeight bind:scrollY />
 
 <Hero />
 <div class="min-h-screen relative z-20 bg-offwhite bg-opacity-90 w-full md:ml-[360px] md:w-[calc(100%-360px)] pt-[100vh] md:pt-0 overflow-x-hidden">
@@ -109,10 +127,15 @@
 	{/await}
 </div>
 
-<!-- 플로팅 버튼 추가 -->
-<a href="https://open.kakao.com/o/yourchat" target="_blank" class="floating-btn">
-	카카오톡 문의하기
-</a>
+<!-- 플로팅 버튼 수정 -->
+{#if showFloatingButton}
+	<a href="https://open.kakao.com/o/sUb0vbkf" 
+	   target="_blank" 
+	   class="floating-btn"
+	   class:hidden={!showFloatingButton}>
+		카카오톡 문의하기
+	</a>
+{/if}
 
 <style lang="scss">
 	.category-filter__wrapper {
@@ -206,15 +229,19 @@
 	}
 
 	.floating-btn {
-		@apply btn btn-primary; /* daisyui의 버튼 스타일 적용 */
-		position: fixed;
-		bottom: 20px;
-		right: 20px;
-		z-index: 1000;
+		@apply fixed bottom-2 right-2 sm:bottom-4 sm:right-4 md:bottom-8 md:right-8 z-50 btn btn-primary;
+		font-size: 0.75rem;
+		padding: 0.5rem 0.75rem;
+		transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+		@screen sm {
+			font-size: 0.875rem;
+			padding: 0.75rem 1rem;
+		}
 	}
 
-	.floating-btn:hover {
-		background-color: #e6b800;
+	.floating-btn.hidden {
+		opacity: 0;
+		pointer-events: none;
 	}
 
 	.card-container {
@@ -235,16 +262,6 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: flex-start;
-	}
-
-	.floating-btn {
-		@apply fixed bottom-2 right-2 sm:bottom-4 sm:right-4 md:bottom-8 md:right-8 z-50;
-		font-size: 0.75rem;
-		padding: 0.5rem 0.75rem;
-		@screen sm {
-			font-size: 0.875rem;
-			padding: 0.75rem 1rem;
-		}
 	}
 
 	.floating-btn {

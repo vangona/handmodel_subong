@@ -12,19 +12,35 @@
 		// { href: '/admin', label: '관리자' }
 	];
 
-	let isNavVisible = true;
+	let isNavVisible = false;
 	let lastScrollY = 0;
 	let isMenuOpen = false;
+	let innerHeight: number;
+	let isMobile: boolean;
+
+	$: showNav = !isMobile || !isHomePage || (isHomePage && lastScrollY > innerHeight * 0.6);
+
+	$: isHomePage = typeof window !== 'undefined' && window.location.pathname === '/';
 
 	onMount(() => {
+		const checkMobile = () => {
+			isMobile = window.innerWidth < 768; // md 브레이크포인트
+		};
+
 		const handleScroll = () => {
 			const currentScrollY = window.scrollY;
-			isNavVisible = currentScrollY < lastScrollY || currentScrollY < 50;
+			isNavVisible = !isHomePage || (isHomePage && isMobile && ((currentScrollY < lastScrollY && currentScrollY > 50) || currentScrollY > innerHeight * 0.6));
 			lastScrollY = currentScrollY;
 		}
 
+		checkMobile();
+		window.addEventListener('resize', checkMobile);
 		window.addEventListener('scroll', handleScroll);
-		return () => window.removeEventListener('scroll', handleScroll);
+
+		return () => {
+			window.removeEventListener('resize', checkMobile);
+			window.removeEventListener('scroll', handleScroll);
+		};
 	});
 
 	function toggleMenu() {
@@ -32,13 +48,15 @@
 	}
 </script>
 
+<svelte:window bind:innerHeight />
+
 <Analytics />
 <TagManager />
 
 <div class="overflow-x-hidden">
 	<nav class="fixed top-0 left-0 right-0 bg-primary text-white shadow-md p-2 sm:p-4 z-50 transition-all duration-300 ease-in-out"
-		 class:translate-y-0={isNavVisible}
-		 class:-translate-y-full={!isNavVisible}>
+		 class:translate-y-0={showNav}
+		 class:-translate-y-full={!showNav}>
 		<div class="container mx-auto flex justify-between items-center">
 			<a href="/" class="text-lg sm:text-xl font-bold font-serif">손모델 심수연</a>
 			<button class="md:hidden" on:click={toggleMenu}>
@@ -49,7 +67,7 @@
 			<ul class="hidden md:flex space-x-2 sm:space-x-4 font-serif">
 				{#each items as item}
 					<li>
-						<Button variant="ghost" asChild class="hover:bg-gray-500 text-sm sm:text-base lg:text-lg px-2 py-1 sm:px-3 sm:py-2">
+						<Button variant="ghost" class="hover:bg-gray-500 text-sm sm:text-base lg:text-lg px-2 py-1 sm:px-3 sm:py-2">
 							<a href={item.href}>{item.label}</a>
 						</Button>
 					</li>
@@ -59,7 +77,7 @@
 	</nav>
 
 	{#if isMenuOpen}
-		<div class="fixed inset-0 bg-black bg-opacity-50 z-40" on:click={toggleMenu}></div>
+		<button class="fixed inset-0 bg-black bg-opacity-50 z-40" on:click={toggleMenu}></button>
 		<div class="fixed top-0 right-0 h-full w-48 sm:w-64 bg-primary text-white z-50 p-4 transform transition-transform duration-300 ease-in-out" class:translate-x-0={isMenuOpen} class:translate-x-full={!isMenuOpen}>
 			<button class="absolute top-2 right-2 sm:top-4 sm:right-4" on:click={toggleMenu}>
 				<svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

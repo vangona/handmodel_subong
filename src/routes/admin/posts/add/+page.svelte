@@ -18,7 +18,11 @@
 			successMessage = '포스트가 성공적으로 추가되었습니다.';
 			goto('/admin/posts');
 		} catch (error) {
-			errorMessage = error.message;
+			if (error instanceof Error) {
+				errorMessage = error.message;
+			} else {
+				errorMessage = '알 수 없는 오류가 발생했습니다.';
+			}
 		}
 	};
 
@@ -35,7 +39,11 @@
 			const categoryData = await apiGetCategories();
 			categoryArr = categoryData.map(cat => cat.name);
 		} catch (error) {
-			errorMessage = error.message;
+			if (error instanceof Error) {
+				errorMessage = error.message;
+			} else {
+				errorMessage = '알 수 없는 오류가 발생했습니다.';
+			}
 		}
 	});
 </script>

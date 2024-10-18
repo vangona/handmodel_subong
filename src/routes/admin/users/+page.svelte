@@ -11,7 +11,11 @@
 		try {
 			users = await apiGetUsers();
 		} catch (error) {
-			errorMessage = error.message;
+			if (error instanceof Error) {
+				errorMessage = error.message;
+			} else {
+				errorMessage = '알 수 없는 오류가 발생했습니다.';
+			}
 		}
 	};
 
@@ -27,7 +31,11 @@
 			newUserEmail = '';
 			fetchUsers();
 		} catch (error) {
-			errorMessage = error.message;
+			if (error instanceof Error) {
+				errorMessage = error.message;
+			} else {
+				errorMessage = '알 수 없는 오류가 발생했습니다.';
+			}
 		}
 	};
 
@@ -38,7 +46,11 @@
 				successMessage = '사용자가 삭제되었습니다.';
 				fetchUsers();
 			} catch (error) {
-				errorMessage = error.message;
+				if (error instanceof Error) {
+					errorMessage = error.message;
+				} else {
+					errorMessage = '알 수 없는 오류가 발생했습니다.';
+				}
 			}
 		}
 	};
@@ -81,7 +93,7 @@
 	</table>
 </div>
 
-<style>
+<style lang="postcss">
 	.user-container {
 		@apply max-w-4xl mx-auto p-8 bg-white rounded-lg shadow-lg;
 	}

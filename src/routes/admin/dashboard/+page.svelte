@@ -14,7 +14,11 @@
 			totalCategories = data.totalCategories;
 			totalUsers = data.totalUsers;
 		} catch (error) {
-			errorMessage = error.message;
+			if (error instanceof Error) {
+				errorMessage = error.message;
+			} else {
+				errorMessage = '알 수 없는 오류가 발생했습니다.';
+			}
 		}
 	};
 

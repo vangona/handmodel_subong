@@ -34,6 +34,7 @@ const config: Config = {
 					DEFAULT: '#D6D1CB',
 					dark: '#D1CCC6'
 				},
+				offwhite: '#F5F5F5', // off-white 색상 추가
 				border: 'hsl(var(--border) / <alpha-value>)',
 				input: 'hsl(var(--input) / <alpha-value>)',
 				ring: 'hsl(var(--ring) / <alpha-value>)',

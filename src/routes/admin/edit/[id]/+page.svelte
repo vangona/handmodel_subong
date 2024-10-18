@@ -33,7 +33,11 @@
 			const categoryData = await apiGetCategories();
 			categoryArr = categoryData.map(cat => cat.name);
 		} catch (error) {
-			errorMessage = error.message;
+			if (error instanceof Error) {
+				errorMessage = error.message;
+			} else {
+				errorMessage = '알 수 없는 오류가 발생했습니다.';
+			}
 		}
 	};
 
@@ -43,7 +47,11 @@
 			successMessage = '포스트 수정 완료!';
 			goto('/admin/posts');
 		} catch (error) {
-			errorMessage = error.message;
+			if (error instanceof Error) {
+				errorMessage = error.message;
+			} else {
+				errorMessage = '알 수 없는 오류가 발생했습니다.';
+			}
 		}
 	};
 

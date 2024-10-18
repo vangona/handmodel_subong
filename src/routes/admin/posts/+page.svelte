@@ -28,7 +28,11 @@
 			});
 			categoryArr = Array.from(categorySet);
 		} catch (error) {
-			errorMessage = error.message;
+			if (error instanceof Error) {
+				errorMessage = error.message;
+			} else {
+				errorMessage = '알 수 없는 오류가 발생했습니다.';
+			}
 		} finally {
 			loading = false;
 		}
@@ -41,7 +45,11 @@
 				posts = posts.filter(post => post.id !== id);
 				filterPosts();
 			} catch (error) {
-				errorMessage = error.message;
+				if (error instanceof Error) {
+					errorMessage = error.message;
+				} else {
+					errorMessage = '알 수 없는 오류가 발생했습니다.';
+				}
 			}
 		}
 	};
@@ -144,7 +152,7 @@
 	{/if}
 </div>
 
-<style>
+<style lang="postcss">
 	.admin-container {
 		@apply max-w-4xl mx-auto p-8 bg-primary rounded-lg shadow-lg;
 	}

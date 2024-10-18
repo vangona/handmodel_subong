@@ -15,7 +15,11 @@
 		try {
 			post = await apiGetPostById(postId);
 		} catch (error) {
-			errorMessage = error.message;
+			if (error instanceof Error) {
+				errorMessage = error.message;
+			} else {
+				errorMessage = '알 수 없는 오류가 발생했습니다.';
+			}
 		}
 	});
 </script>
@@ -24,7 +28,7 @@
 	{#if errorMessage}
 		<p class="error">{errorMessage}</p>
 	{:else if post}
-		<h1>{post.test}</h1>
+		<h1>{post.title}</h1>
 		<div>
 			{#each post.category as category}
 				<span class="badge">{category}</span>
@@ -33,7 +37,7 @@
 		<p>{post.description}</p>
 		<!-- 여러 장의 사진을 표시할 수 있도록 추가 -->
 		{#each post.images as image}
-			<img src={image} alt="Post Image" />
+			<img src={image} alt="Post" />
 		{/each}
 	{/if}
 </div>

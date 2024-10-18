@@ -33,13 +33,3 @@
 		</div>
 	</div>
 </div>
-
-<style>
-	.about-section {
-		@apply mt-4;
-	}
-
-	.contact-buttons {
-		@apply mt-4 flex flex-col md:flex-row gap-4;
-	}
-</style>

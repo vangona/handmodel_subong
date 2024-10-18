@@ -6,7 +6,7 @@
 	let innerHeight: number;
 	let isMobile: boolean;
 
-	$: opacity = isMobile ? Math.max(1 - scrollY / (innerHeight * 0.7), 0) : 1;
+	$: opacity = isMobile ? Math.max(1 - scrollY / (innerHeight * 0.6), 0) : 1;
 
 	onMount(() => {
 		const checkMobile = () => {
@@ -28,7 +28,7 @@
 	class="hero fixed top-0 left-0 w-full md:w-[360px] pointer-events-none z-10 overflow-hidden"
 	class:h-full={!isMobile}
 	class:min-h-screen={isMobile}
-	style="opacity: {opacity};"
+	style="opacity: {isMobile ? opacity : 1};"
 >
 	<div class="hero-overlay bg-warmgray-dark opacity-50"></div>
 	<div class="hero-content w-full h-full p-0">
