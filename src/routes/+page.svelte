@@ -52,7 +52,7 @@
 </svelte:head>
 
 <Hero />
-<div class="min-h-screen relative z-20 bg-offwhite bg-opacity-90 w-full md:ml-[360px] md:w-[calc(100%-360px)] pt-[100vh] md:pt-0">
+<div class="min-h-screen relative z-20 bg-offwhite bg-opacity-90 w-full md:ml-[360px] md:w-[calc(100%-360px)] pt-[100vh] md:pt-0 overflow-x-hidden">
 	{#if errorMessage}
 		<p class="error px-2 sm:px-4">{errorMessage}</p>
 	{/if}
@@ -219,6 +219,7 @@
 
 	.card-container {
 		@apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4;
+		width: 100%;
 	}
 
 	.card--main {
