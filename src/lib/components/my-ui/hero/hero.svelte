@@ -25,7 +25,7 @@
 <svelte:window bind:scrollY bind:innerHeight />
 
 <div 
-	class="hero fixed top-0 left-0 w-full md:w-[360px] pointer-events-none z-10 overflow-hidden"
+	class="hero fixed top-0 left-0 w-full md:w-[360px] pointer-events-none z-30 overflow-hidden"
 	class:h-full={!isMobile}
 	class:min-h-screen={isMobile}
 	style="opacity: {isMobile ? opacity : 1};"
