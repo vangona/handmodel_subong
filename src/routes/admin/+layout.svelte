@@ -1,52 +1,122 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { apiPostLogout, apiGetUser } from '$lib/api/auth';
+	import { onMount, onDestroy } from 'svelte';
+	import type { User } from '@supabase/supabase-js';
+	import { writable } from 'svelte/store';
+	import { supabase } from '$lib/api/supabaseClient';
+	import { browser } from '$app/environment';
 
-	let user = null;
+	const user = writable<User | null>(null);
+	let loading = true;
+	let authListener: any;
 
 	const logout = async () => {
 		try {
 			await apiPostLogout();
+			user.set(null);
 			goto('/admin/login');
 		} catch (error) {
 			console.error(error);
 		}
 	};
 
-	onMount(async () => {
+	const checkUser = async () => {
 		try {
 			const data = await apiGetUser();
-			user = data;
-		} catch {
-			goto('/admin/login');
+			user.set(data);
+		} catch (error) {
+			user.set(null);
+			if ($page.url.pathname !== '/admin/login') {
+				goto('/admin/login');
+			}
+		} finally {
+			loading = false;
+		}
+	};
+
+	onMount(async () => {
+		await checkUser();
+
+		// Supabase 실시간 구독 설정
+		authListener = supabase.auth.onAuthStateChange((event, session) => {
+			if (event === 'SIGNED_IN') {
+				user.set(session?.user ?? null);
+				if ($page.url.pathname === '/admin/login') {
+					goto('/admin/dashboard');
+				}
+			} else if (event === 'SIGNED_OUT') {
+				user.set(null);
+				if ($page.url.pathname !== '/admin/login') {
+					goto('/admin/login');
+				}
+			}
+		});
+	});
+
+	onDestroy(() => {
+		// 컴포넌트가 파괴될 때 리스너 제거
+		if (authListener) {
+			authListener.unsubscribe();
 		}
 	});
+
+	// 사용자 상태가 변경될 때마다 실행
+	$: if (browser) {
+		if ($user) {
+			if ($page.url.pathname === '/admin/login') {
+				goto('/admin/dashboard');
+			}
+		} else {
+			if ($page.url.pathname !== '/admin/login') {
+				goto('/admin/login');
+			}
+		}
+	}
 </script>
 
-<nav class="admin-nav">
-	<ul>
-		<li><a href="/admin">대시보드</a></li>
-		<li><a href="/admin/posts">포스트 관리</a></li>
-		<li><a href="/admin/categories">카테고리 관리</a></li>
-		<li><a href="/admin/users">사용자 관리</a></li>
-		<li><a href="/" on:click={logout}>로그아웃</a></li>
-	</ul>
-</nav>
+{#if loading}
+	<div class="flex justify-center items-center h-screen w-screen">
+		<div class="loader"></div>
+	</div>
+{:else if $user}
+	<div class="flex h-screen bg-gray-100 overflow-hidden w-screen">
+		<!-- 사이드바 -->
+		<aside class="w-64 bg-white shadow-md overflow-y-auto">
+			<nav class="mt-5 px-2">
+				<a href="/admin/dashboard" class="group flex items-center px-2 py-2 text-base leading-6 font-medium rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-100 transition ease-in-out duration-150" class:active={$page.url.pathname === '/admin/dashboard'}>
+					대시보드
+				</a>
+				<a href="/admin/posts" class="mt-1 group flex items-center px-2 py-2 text-base leading-6 font-medium rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-100 transition ease-in-out duration-150" class:active={$page.url.pathname === '/admin/posts'}>
+					포스트 관리
+				</a>
+				<a href="/admin/categories" class="mt-1 group flex items-center px-2 py-2 text-base leading-6 font-medium rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-100 transition ease-in-out duration-150" class:active={$page.url.pathname === '/admin/categories'}>
+					카테고리 관리
+				</a>
+				<button on:click={logout} class="mt-1 w-full text-left group flex items-center px-2 py-2 text-base leading-6 font-medium rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-100 transition ease-in-out duration-150">
+					로그아웃
+				</button>
+			</nav>
+		</aside>
 
-<slot />
+		<!-- 메인 콘텐츠 -->
+		<main class="flex-1 overflow-y-auto p-5">
+			<div class="max-w-7xl mx-auto">
+				<slot />
+			</div>
+		</main>
+	</div>
+{:else}
+	<slot />
+{/if}
 
 <style lang="postcss">
-	.admin-nav {
-		@apply bg-gray-800 p-4; /* daisyui의 색상 및 패딩 스타일 적용 */
+	.active {
+		@apply text-gray-900 bg-gray-100;
 	}
-	.admin-nav ul {
-		@apply list-none flex gap-4;
-	}
-	.admin-nav a {
-		@apply text-white no-underline; /* daisyui의 텍스트 및 링크 스타일 적용 */
-	}
-	.admin-nav a:hover {
-		@apply underline;
+	.loader {
+		@apply border-4 border-gray-200 rounded-full w-12 h-12 animate-spin;
+		border-top-color: #3498db;
 	}
 </style>

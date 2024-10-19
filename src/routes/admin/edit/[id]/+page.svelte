@@ -92,7 +92,7 @@
 	</form>
 </div>
 
-<style>
+<style lang="postcss">
 	.edit-container {
 		@apply max-w-4xl mx-auto p-8 bg-white rounded-lg shadow-lg;
 	}

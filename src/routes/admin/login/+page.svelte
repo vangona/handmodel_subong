@@ -22,10 +22,18 @@
 
 	onMount(async () => {
 		try {
-			await apiGetUser();
-			goto('/admin');
-		} catch {
-			// 로그인 필요
+			const user = await apiGetUser();
+			if (user) {
+				goto('/admin');
+			} else {
+				throw new Error('로그인 필요');
+			}
+		} catch (error) {
+			if (error instanceof Error) {
+				errorMessage = error.message;
+			} else {
+				errorMessage = '알 수 없는 오류가 발생했습니다.';
+			}
 		}
 	});
 </script>
@@ -48,8 +56,8 @@
 	</form>
 </div>
 
-<style>
+<style lang="postcss">
 	.login-container {
-		@apply max-w-md mx-auto p-8 bg-white rounded-lg shadow-lg;
+		@apply max-w-md mx-auto p-8 bg-white rounded-lg shadow-lg w-screen m-16;
 	}
 </style>

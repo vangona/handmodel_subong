@@ -70,7 +70,7 @@
 </svelte:head>
 
 <Hero />
-<div class="my-min-h-screen relative z-20 bg-offwhite bg-opacity-90 w-full md:ml-[360px] md:w-[calc(100%-360px)] pt-[100vh] md:pt-0 overflow-x-hidden">
+<div class="min-h-screen relative z-20 bg-offwhite bg-opacity-90 w-full md:ml-[360px] md:w-[calc(100%-360px)] overflow-x-hidden mt-[100vh] md:mt-0">
 	{#if errorMessage}
 		<p class="error px-2 sm:px-4">{errorMessage}</p>
 	{/if}
@@ -81,7 +81,7 @@
 				<h3 class="text-xl font-semibold mb-4">카테고리 {(selectedCategories.length > 0 && !selectedCategories.includes('all')) ? " : " + selectedCategories.join(', ') : ''}</h3>
 				<CategoryFilter categories={categoryArr} selectedCategories={selectedCategories} onSelect={handleClickCategory} />
 			</div>
-			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+			<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
 				{#each processedData as postRow}
 					<a href={`/post/${postRow.id}`} class="card--main group">
 						<div class="aspect-square relative overflow-hidden rounded-lg shadow-md transition-transform duration-300 group-hover:scale-105">
