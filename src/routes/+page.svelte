@@ -75,28 +75,25 @@
 		<p class="error px-2 sm:px-4">{errorMessage}</p>
 	{/if}
 	{#if processedData.length > 0}
-		<div class="card-container p-2 sm:p-4 md:p-8 lg:p-14">
-			<h3 class="text-center mb-2 sm:mb-4 col-span-full text-sm sm:text-base">				
-				선택된 카테고리 : {selectedCategories.join(', ')}
-			</h3>
-			<CategoryFilter categories={categoryArr} selectedCategories={selectedCategories} onSelect={handleClickCategory} />
-			<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+		<div class="card-container p-4 sm:p-6 md:p-8 lg:p-12">
+			<h2 class="text-3xl font-bold text-center mb-8">포트폴리오</h2>
+			<div class="mb-8">
+				<h3 class="text-xl font-semibold mb-4">카테고리 {(selectedCategories.length > 0 && !selectedCategories.includes('all')) ? " : " + selectedCategories.join(', ') : ''}</h3>
+				<CategoryFilter categories={categoryArr} selectedCategories={selectedCategories} onSelect={handleClickCategory} />
+			</div>
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
 				{#each processedData as postRow}
-					<a href={`/post/${postRow.id}`} class="card--main card aspect-square">
-						<div class="card-content w-full h-full relative overflow-hidden">
-							<img src={handSrc} alt="hands" class="w-full h-full object-cover" />
-							<div class="card-body absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 opacity-0 hover:opacity-100 transition-opacity duration-300">
-								<div class="card-title text-white text-center">
-									<div class="text-lg font-bold mb-2">{postRow.title}</div>
-									<div class="category-wrapper flex flex-wrap justify-center gap-2 mb-2">
-										{#each postRow.category as categoryData}
-											<span class="badge category-badge">{categoryData}</span>
-										{/each}
-									</div>
+					<a href={`/post/${postRow.id}`} class="card--main group">
+						<div class="aspect-square relative overflow-hidden rounded-lg shadow-md transition-transform duration-300 group-hover:scale-105">
+							<img src={handSrc} alt="hands" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
+							<div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-4">
+								<h3 class="text-white text-xl font-bold mb-2 text-center">{postRow.title}</h3>
+								<div class="flex flex-wrap justify-center gap-2 mb-2">
+									{#each postRow.category as categoryData}
+										<span class="badge">{categoryData}</span>
+									{/each}
 								</div>
-								<div class="card-description text-white text-center text-sm">
-									{postRow.description}
-								</div>
+								<p class="text-white text-sm text-center line-clamp-3">{postRow.description}</p>
 							</div>
 						</div>
 					</a>
@@ -104,47 +101,40 @@
 			</div>
 		</div>
 	{:else}
-		<p class="px-2 sm:px-4">Loading...</p>
+		<div class="flex justify-center items-center h-64">
+			<div class="loader"></div>
+		</div>
 	{/if}
 </div>
 
 <style lang="postcss">
-	.category-filter__wrapper {
-		@apply flex flex-wrap gap-2 mb-4 justify-center;
+	.card--main {
+		@apply block transition-all duration-300 ease-in-out;
 	}
 
-	.category-filter__item {
-		@apply relative transition-all duration-200 ease-in-out cursor-pointer select-none py-2 px-4 rounded-md bg-primary text-primary-foreground border border-border text-sm font-medium;
+	.badge {
+		@apply bg-white text-gray-800 px-2 py-1 rounded-full text-xs font-semibold;
+	}
+
+	.loader {
+		@apply border-4 border-gray-200 rounded-full w-12 h-12 animate-spin;
+		border-top-color: #3498db;
+	}
+
+	:global(.category-filter__wrapper) {
+		@apply flex flex-wrap gap-2 justify-center;
+	}
+
+	:global(.category-filter__item) {
+		@apply relative transition-all duration-200 ease-in-out cursor-pointer select-none py-2 px-4 rounded-md bg-gray-200 text-gray-800 text-sm font-medium;
 		&:hover {
-			@apply bg-primary-foreground text-primary shadow-md;
+			@apply bg-gray-300;
 		}
 		&:active {
 			@apply transform scale-95;
 		}
 		&.selected {
-			@apply bg-secondary text-secondary-foreground border-secondary shadow-md;
+			@apply bg-primary text-white;
 		}
-		&::after {
-			content: '';
-			@apply absolute left-1/2 -bottom-1 w-0 h-0.5 bg-secondary transition-all duration-300 ease-in-out;
-		}
-		&.selected::after {
-			@apply w-full left-0;
-		}
-	}
-
-	.card--main {
-		@apply transition-all duration-300 ease-in-out;
-		&:hover {
-			@apply transform scale-105;
-		}
-	}
-
-	.badge {
-		@apply bg-gray-200 text-gray-800 px-2 py-1 rounded-full text-xs font-semibold;
-	}
-
-	.card-container {
-		@apply w-full;
 	}
 </style>
