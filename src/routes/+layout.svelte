@@ -12,15 +12,11 @@
 		// { href: '/admin', label: '관리자' }
 	];
 
-	let isNavVisible = false;
+	let isNavVisible = true;
 	let lastScrollY = 0;
 	let isMenuOpen = false;
 	let innerHeight: number;
 	let isMobile: boolean;
-
-	$: showNav = !isMobile || !isHomePage || (isHomePage && lastScrollY > innerHeight * 0.6);
-
-	$: isHomePage = typeof window !== 'undefined' && window.location.pathname === '/';
 
 	onMount(() => {
 		const checkMobile = () => {
@@ -29,11 +25,21 @@
 
 		const handleScroll = () => {
 			const currentScrollY = window.scrollY;
-			isNavVisible = !isHomePage || (isHomePage && isMobile && ((currentScrollY < lastScrollY && currentScrollY > 50) || currentScrollY > innerHeight * 0.6));
+			const scrollThreshold = isMobile ? innerHeight * 0.6 : 50;
+
+			if (currentScrollY < scrollThreshold) {
+				isNavVisible = true;
+			} else if (currentScrollY > lastScrollY) {
+				isNavVisible = false;
+			} else {
+				isNavVisible = true;
+			}
+
 			lastScrollY = currentScrollY;
 		}
 
 		checkMobile();
+		isMobile && (isNavVisible = false);
 		window.addEventListener('resize', checkMobile);
 		window.addEventListener('scroll', handleScroll);
 
@@ -55,24 +61,24 @@
 
 <div class="overflow-x-hidden">
 	<nav class="fixed top-0 left-0 right-0 bg-primary text-white shadow-md p-2 sm:p-4 z-50 transition-all duration-300 ease-in-out"
-		 class:translate-y-0={showNav}
-		 class:-translate-y-full={!showNav}>
+		 class:translate-y-0={isNavVisible}
+		 class:-translate-y-full={!isNavVisible}>
 		<div class="container mx-auto flex justify-between items-center">
 			<a href="/" class="text-lg sm:text-xl font-bold font-serif">손모델 심수연</a>
-			<button class="md:hidden" on:click={toggleMenu}>
-				<svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-				</svg>
-			</button>
-			<ul class="hidden md:flex space-x-2 sm:space-x-4 font-serif">
-				{#each items as item}
-					<li>
-						<Button variant="ghost" class="hover:bg-gray-500 text-sm sm:text-base lg:text-lg px-2 py-1 sm:px-3 sm:py-2">
-							<a href={item.href}>{item.label}</a>
-						</Button>
-					</li>
-				{/each}
-			</ul>
+				<button class="md:hidden" on:click={toggleMenu}>
+					<svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+					</svg>
+				</button>
+				<ul class="hidden md:flex space-x-2 sm:space-x-4 font-serif">
+					{#each items as item}
+						<li>
+							<Button variant="ghost" class="hover:bg-gray-500 text-sm sm:text-base lg:text-lg px-2 py-1 sm:px-3 sm:py-2">
+								<a href={item.href}>{item.label}</a>
+							</Button>
+						</li>
+					{/each}
+				</ul>
 		</div>
 	</nav>
 
@@ -99,7 +105,7 @@
 	</div>
 </div>
 
-<style>
+<style lang="postcss">
 	nav {
 		transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
 	}

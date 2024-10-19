@@ -14,7 +14,11 @@
 			totalCategories = data.totalCategories;
 			totalUsers = data.totalUsers;
 		} catch (error) {
-			errorMessage = error.message;
+			if (error instanceof Error) {
+				errorMessage = error.message;
+			} else {
+				errorMessage = '알 수 없는 오류가 발생했습니다.';
+			}
 		}
 	};
 
@@ -45,7 +49,7 @@
 	{/if}
 </div>
 
-<style>
+<style lang="postcss">
 	.dashboard-container {
 		@apply max-w-4xl mx-auto p-8 bg-white rounded-lg shadow-lg;
 	}

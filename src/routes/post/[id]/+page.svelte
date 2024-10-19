@@ -1,17 +1,14 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
-	import { get } from 'svelte/store';
 	import { apiGetPostById } from '$lib/api/posts';
 	import type { PostTable } from '$lib/api/supabaseClient';
 
-	let postId: number;
 	let post: PostTable | null = null;
 	let errorMessage = '';
 
-	postId = Number(get(page).params.id);
-
 	onMount(async () => {
+		const postId = Number($page.params.id);
 		try {
 			post = await apiGetPostById(postId);
 		} catch (error) {
@@ -24,21 +21,20 @@
 	});
 </script>
 
-<div>
+<div class="container mx-auto px-4 py-8">
 	{#if errorMessage}
 		<p class="error">{errorMessage}</p>
 	{:else if post}
-		<h1>{post.title}</h1>
-		<div>
+		<h1 class="text-3xl font-bold mb-4">{post.title}</h1>
+		<div class="mb-4">
 			{#each post.category as category}
-				<span class="badge">{category}</span>
+				<span class="badge mr-2">{category}</span>
 			{/each}
 		</div>
-		<p>{post.description}</p>
-		<!-- 여러 장의 사진을 표시할 수 있도록 추가 -->
-		{#each post.images as image}
-			<img src={image} alt="Post" />
-		{/each}
+		<p class="mb-4">{post.description}</p>
+		<!-- 여기에 추가적인 게시글 내용을 표시할 수 있습니다 -->
+	{:else}
+		<p>Loading...</p>
 	{/if}
 </div>
 
@@ -50,6 +46,5 @@
 		background-color: #eee;
 		padding: 0.5rem;
 		border-radius: 4px;
-		margin-right: 0.5rem;
 	}
 </style>

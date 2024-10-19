@@ -40,8 +40,14 @@ const config: Config = {
 				ring: 'hsl(var(--ring) / <alpha-value>)',
 				background: 'hsl(var(--background) / <alpha-value>)',
 				foreground: 'hsl(var(--foreground) / <alpha-value>)',
-				primary: '#A8A29E', // warmgray 색상으로 설정
-				secondary: '#D1D5DB', // 밝은 회색
+				primary: {
+					DEFAULT: '#A8A29E',
+					foreground: '#1F2937', // 어두운 회색 추가
+				},
+				secondary: {
+					DEFAULT: '#D1D5DB',
+					foreground: '#1F2937', // 어두운 회색 추가
+				},
 				accent: '#F3F4F6', // 아주 밝은 회색
 				neutral: '#374151', // 어두운 회색
 				'base-100': '#FFFFFF', // 기본 배경색
@@ -77,8 +83,10 @@ const config: Config = {
 		themes: [
 			{
 				mytheme: {
-					primary: '#A8A29E', // warmgray 색상으로 설정
+					primary: '#A8A29E',
+					'primary-foreground': '#1F2937',
 					secondary: '#D1D5DB',
+					'secondary-foreground': '#1F2937', // DaisyUI 테마에도 추가
 					accent: '#F3F4F6',
 					neutral: '#374151',
 					'base-100': '#FFFFFF',

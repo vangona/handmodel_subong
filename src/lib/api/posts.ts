@@ -1,8 +1,8 @@
-import { supabase } from './supabaseClient';
+import { supabase, type PostTable } from './supabaseClient';
 
 export const apiGetPosts = async () => {
-	const { data, error } = await supabase.from('posts').select('*');
-	if (error) throw new Error(error.message);
+	const { data, error } : { data: Array<PostTable> | null, error: unknown } = await supabase.from('posts').select('*');
+	if (error && error instanceof Error) throw new Error(error.message);
 	return data;
 };
 

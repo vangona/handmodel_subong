@@ -21,7 +21,7 @@
 	const loadPosts = async () => {
 		try {
 			loading = true;
-			posts = await apiGetPosts();
+			posts = await apiGetPosts() ?? [];
 			filteredPosts = posts;
 			posts.forEach((post) => {
 				post.category.forEach((cat: string) => categorySet.add(cat));

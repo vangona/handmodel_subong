@@ -21,11 +21,11 @@
 </script>
 
 <div class="moving-container relative h-full w-full overflow-hidden flex flex-col justify-between">
-	<span class="up absolute left-5 top-[30%] md:top-[33%] z-0 font-serif text-white text-3xl md:text-4xl">손모델</span>
+	<span class="up absolute left-5 top-[35%] md:top-[37%] z-0 font-serif text-white text-3xl md:text-4xl">손모델</span>
 	<div class="absolute top-[15%] md:top-[20%] w-full h-[160%] md:h-[70%]">
 		<img src={handSrc} alt="손모델 심수연의 손" class="z-10 w-full object-cover" />
 	</div>
-	<span class="down absolute bottom-[40%] md:bottom-[39%] right-5 z-20 font-serif font-bold text-white text-3xl md:text-4xl">
+	<span class="down absolute bottom-[35%] md:bottom-[37%] right-5 z-20 font-serif font-bold text-white text-3xl md:text-4xl">
 		심 수 연
 	</span>
 </div>
