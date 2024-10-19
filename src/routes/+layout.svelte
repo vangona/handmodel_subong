@@ -59,7 +59,7 @@
 <Analytics />
 <TagManager />
 
-<div class="overflow-x-hidden">
+<div class="overflow-x-hidden h-full">
 	<nav class="fixed top-0 left-0 right-0 bg-primary text-white shadow-md p-2 sm:p-4 z-50 transition-all duration-300 ease-in-out"
 		 class:translate-y-0={isNavVisible}
 		 class:-translate-y-full={!isNavVisible}>
@@ -100,7 +100,7 @@
 		</div>
 	{/if}
 
-	<div class="app-container flex pt-16">
+	<div class="app-container flex pt-16 h-full">
 		<slot />
 	</div>
 </div>

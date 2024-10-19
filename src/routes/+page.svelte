@@ -21,7 +21,7 @@
 			});
 
 			categoryArr = Array.from(categorySet);
-			categoryArr.unshift('all'); // 'all' 카테고리를 배열의 맨 앞에 추가
+			categoryArr.unshift('all');
 
 			errorMessage = '';
 			fetchedData = data ?? [];
@@ -35,39 +35,32 @@
 		}
 	}
 
-	const handleClickCategory = (category: 'all' | string) => {
-		if (selectedCategories.length === 1 && selectedCategories.includes('all')) {
-			selectedCategories = [category];
-		} else if (selectedCategories.length > 1 && category === 'all') {
-			selectedCategories = ['all'];
-		} else if (selectedCategories.includes(category)) {
-			selectedCategories = selectedCategories.filter(item => item !== category);
-		} else {
-			selectedCategories = selectedCategories.concat(category);
-		}
-		processedData = category === 'all' ? fetchedData : fetchedData.filter(item => item.category.includes(category));
-	}
-
-	let showFloatingButton = false;
-	let innerHeight: number;
-	let isDesktop: boolean;
-	let scrollY: number;
-
-	$: showFloatingButton = isDesktop || (!isDesktop && scrollY > innerHeight * 0.6);
-
 	onMount(() => {
 		mountPostFetchData();
-		const checkDesktop = () => {
-			isDesktop = window.innerWidth >= 768;
-		};
-
-		checkDesktop();
-		window.addEventListener('resize', checkDesktop);
-
-		return () => {
-			window.removeEventListener('resize', checkDesktop);
-		};
 	});
+
+	function handleClickCategory(category: string) {
+		if (category === 'all') {
+			selectedCategories = ['all'];
+			processedData = fetchedData;
+		} else {
+			selectedCategories = selectedCategories.filter(cat => cat !== 'all');
+			if (selectedCategories.includes(category)) {
+				selectedCategories = selectedCategories.filter(cat => cat !== category);
+			} else {
+				selectedCategories = [...selectedCategories, category];
+			}
+			
+			if (selectedCategories.length === 0) {
+				selectedCategories = ['all'];
+				processedData = fetchedData;
+			} else {
+				processedData = fetchedData.filter(post => 
+					post.category.some(cat => selectedCategories.includes(cat))
+				);
+			}
+		}
+	}
 </script>
 
 <svelte:head>
@@ -75,8 +68,6 @@
 	<meta name="description" content="손모델의 포트폴리오 사이트입니다." />
 	<meta name="keywords" content="포트폴리오, 손모델, 사진" />
 </svelte:head>
-
-<svelte:window bind:innerHeight bind:scrollY />
 
 <Hero />
 <div class="my-min-h-screen relative z-20 bg-offwhite bg-opacity-90 w-full md:ml-[360px] md:w-[calc(100%-360px)] pt-[100vh] md:pt-0 overflow-x-hidden">
@@ -89,42 +80,21 @@
 				선택된 카테고리 : {selectedCategories.join(', ')}
 			</h3>
 			<CategoryFilter categories={categoryArr} selectedCategories={selectedCategories} onSelect={handleClickCategory} />
-			<swiper-container slides-per-view="auto" centered-slides={true} pagination={true} mousewheel-control={true} effect={'cards'} class="col-span-full mb-4 sm:mb-8">
-				<swiper-slide>
-					<swiper-zoom-container>
-							<img src={handSrc} alt="hands" />
-					</swiper-zoom-container>
-				</swiper-slide>
-				<swiper-slide>
-					<swiper-zoom-container>
-							<img src={handSrc} alt="hands" />
-					</swiper-zoom-container>
-				</swiper-slide>
-				<swiper-slide>
-					<swiper-zoom-container>
-							<img src={handSrc} alt="hands" />
-						</swiper-zoom-container>
-				</swiper-slide>
-			</swiper-container>
-			<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">
+			<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
 				{#each processedData as postRow}
-					<a href={`/post/${postRow.id}`} class="card--main card image-full aspect-square">
-						<figure class="object-cover">
-							<img src={handSrc} alt="hands" class="w-full object-cover" />
-						</figure>
-						<div class="card-body items-center justify-center bg-transparent">
-							<div class="card-title hover-transition">
-								<div>
-									{postRow.title}
+					<a href={`/post/${postRow.id}`} class="card--main card aspect-square">
+						<div class="card-content w-full h-full relative overflow-hidden">
+							<img src={handSrc} alt="hands" class="w-full h-full object-cover" />
+							<div class="card-body absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 opacity-0 hover:opacity-100 transition-opacity duration-300">
+								<div class="card-title text-white text-center">
+									<div class="text-lg font-bold mb-2">{postRow.title}</div>
+									<div class="category-wrapper flex flex-wrap justify-center gap-2 mb-2">
+										{#each postRow.category as categoryData}
+											<span class="badge category-badge">{categoryData}</span>
+										{/each}
+									</div>
 								</div>
-								<div class="category-wrapper">
-									{#each postRow.category as categoryData}
-										<div class="badge category-badge hover-transition">{categoryData}</div>
-									{/each}
-								</div>
-							</div>
-							<div class="card-actions">
-								<div class="card-description hover-transition">
+								<div class="card-description text-white text-center text-sm">
 									{postRow.description}
 								</div>
 							</div>
@@ -137,14 +107,6 @@
 		<p class="px-2 sm:px-4">Loading...</p>
 	{/if}
 </div>
-
-<!-- 플로팅 버튼 -->
-<a href="https://open.kakao.com/o/sUb0vbkf" 
-	target="_blank" 
-	class="floating-btn"
-	class:show={showFloatingButton}>
-	카카오톡 문의하기
-</a>
 
 <style lang="postcss">
 	.category-filter__wrapper {
@@ -171,55 +133,18 @@
 		}
 	}
 
-	.floating-btn {
-		@apply fixed bottom-2 right-2 sm:bottom-4 sm:right-4 md:bottom-8 md:right-8 z-50 btn btn-primary text-xs sm:text-sm py-2 px-3 sm:py-3 sm:px-4 opacity-0 pointer-events-none transition-all duration-300 ease-in-out;
-		&.show {
-			@apply opacity-100 pointer-events-auto;
-		}
-	}
-
 	.card--main {
 		@apply transition-all duration-300 ease-in-out;
 		&:hover {
 			@apply transform scale-105;
 		}
-		&::before {
-			@apply opacity-0 transition-all duration-200 ease-in-out text-transparent;
-		}
-		&:hover::before {
-			@apply opacity-75;
-		}
-		.card-title {
-			@apply flex flex-col;
-		}
-		.hover-transition {
-			@apply text-transparent transition-all duration-150 ease-in-out delay-100 bg-transparent border-transparent;
-		}
-		.category-wrapper {
-			@apply flex flex-wrap gap-2;
-		}
-		&:hover .card-title,
-		&:hover .card-description {
-			@apply text-neutral-content;
-		}
-		&:hover .category-badge {
-			@apply text-black bg-neutral-content border-neutral-content;
-		}
 	}
 
-	swiper-container {
-		@apply min-h-[300px] max-w-full;
+	.badge {
+		@apply bg-gray-200 text-gray-800 px-2 py-1 rounded-full text-xs font-semibold;
 	}
 
 	.card-container {
-		@apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4 w-full;
-	}
-
-	.my-min-h-screen {
-		@apply min-h-screen flex flex-col items-center justify-start;
-	}
-
-	.error {
-		@apply text-red-500 font-bold;
+		@apply w-full;
 	}
 </style>
