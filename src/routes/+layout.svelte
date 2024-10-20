@@ -4,6 +4,7 @@
 	import TagManager from '$lib/components/common/TagManager.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import '../app.css';
+	import { slide } from 'svelte/transition';
 
 	const items = [
 		{ href: '/', label: '홈' },
@@ -18,6 +19,11 @@
 	let isMenuOpen = false;
 	let innerHeight: number;
 	let isMobile: boolean;
+	let menuTransitionDuration = 300; // 밀리초 단위
+
+	const handleClickBanner = () => {
+		isMobile && containerRef.scrollTop === 0 && containerRef.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
+	}
 
 	const handleScroll = (event: Event) => {
 		const target = event.target as HTMLElement;
@@ -41,15 +47,11 @@
 		};
 
 		checkMobile();
-		if (isMobile) {
-			setTimeout(() => {
-				containerRef.scrollTop === 0 && containerRef.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
-			}, 1500)
-		}
 		window.addEventListener('resize', checkMobile);
-
+		containerRef.addEventListener('click', handleClickBanner);
 		return () => {
 			window.removeEventListener('resize', checkMobile);
+			containerRef.removeEventListener('click', handleClickBanner);
 		};
 	});
 
@@ -89,11 +91,10 @@
 	<!-- 모바일 메뉴 -->
 	{#if isMenuOpen}
 		<button class="fixed inset-0 bg-black bg-opacity-50 z-40" on:click={toggleMenu} />
-		<div class="fixed top-0 right-0 h-full w-64 bg-primary text-white z-50 transform transition-transform duration-300 ease-in-out"
-			 class:translate-x-0={isMenuOpen}
-			 class:translate-x-full={!isMenuOpen}>
-			<div class="p-4">
-				<button class="absolute top-2 right-2" on:click={toggleMenu}>
+		<div class="fixed top-0 right-0 h-[320px] w-full bg-primary text-white z-50 overflow-hidden"
+			 transition:slide={{duration: menuTransitionDuration}}>
+			<div class="p-8">
+				<button class="absolute top-2 right-9" on:click={toggleMenu}>
 					<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
 					</svg>
