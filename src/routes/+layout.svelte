@@ -100,7 +100,7 @@
 		</div>
 	{/if}
 
-	<div class="app-container flex pt-16 h-full">
+	<div class="app-container flex flex-col md:flex-row md:pt-16 h-full">
 		<slot />
 	</div>
 </div>

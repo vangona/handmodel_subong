@@ -70,12 +70,12 @@
 </svelte:head>
 
 <Hero />
-<div class="min-h-screen relative z-20 bg-offwhite bg-opacity-90 w-full md:ml-[360px] md:w-[calc(100%-360px)] overflow-x-hidden mt-[100vh] md:mt-0">
+<div class="min-h-screen relative z-20 bg-offwhite bg-opacity-90 w-full md:ml-[360px] md:w-[calc(100%-360px)] overflow-x-hidden">
 	{#if errorMessage}
 		<p class="error px-2 sm:px-4">{errorMessage}</p>
 	{/if}
 	{#if processedData.length > 0}
-		<div class="card-container py-4 sm:py-6 md:py-8 lg:py-12">
+		<div class="card-container py-4 sm:py-6 md:py-8 lg:py-12 px-1 mb-20 md:mb-0">
 			<h2 class="text-3xl font-bold text-center my-8 font-serif text-gray-900">촬영기록</h2>
 			<div class="mb-6 md:mb-10">
 				<CategoryFilter categories={categoryArr} selectedCategories={selectedCategories} onSelect={handleClickCategory} />

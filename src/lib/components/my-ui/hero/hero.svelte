@@ -35,7 +35,7 @@
 
 <div 
 	role={isMobile ? 'button' : 'banner'}
-	class="hero fixed top-0 left-0 w-full md:w-[360px] z-30 overflow-hidden"
+	class="hero md:fixed top-0 left-0 w-full md:w-[360px] z-30 overflow-hidden"
 	class:h-full={!isMobile}
 	class:min-h-screen={isMobile}
 	style="opacity: {isMobile ? opacity : 1};"
