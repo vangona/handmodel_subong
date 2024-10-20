@@ -16,6 +16,17 @@
 	let errorMessage = '';
 	let scrollY = 0;
 
+	const restoreCategories = () => {
+			// 카테고리 필터 복원
+			const storedCategories = sessionStorage.getItem('selectedCategories');
+			if (storedCategories) {
+				selectedCategories = JSON.parse(storedCategories);
+				processedData = fetchedData.filter(post => 
+					post.category.some(cat => selectedCategories.includes(cat))
+				);
+			}
+	}
+
 	async function mountPostFetchData() {
 		try {
 			const data = await apiGetPosts();
@@ -30,11 +41,7 @@
 			fetchedData = data ?? [];
 			processedData = fetchedData;
 
-			// 카테고리 필터 복원
-			const storedCategories = sessionStorage.getItem('selectedCategories');
-			if (storedCategories) {
-				selectedCategories = JSON.parse(storedCategories);
-			}
+			restoreCategories()
 		} catch (error) {
 			if (error instanceof Error) {
 				errorMessage = error.message;
