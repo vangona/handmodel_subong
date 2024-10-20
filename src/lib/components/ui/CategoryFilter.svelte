@@ -4,7 +4,7 @@
   export let onSelect: (category: string) => void;
 
   const toggleCategory = (category: string, event: Event) => {
-    event.preventDefault(); // 기본 동작 방지
+    event.preventDefault();
     onSelect(category);
   };
 </script>
@@ -21,19 +21,18 @@
   {/each}
 </div>
 
-<style>
+<style lang="postcss">
+  .category-filter__wrapper {
+    @apply flex flex-wrap gap-2 justify-center;
+  }
+
   .category-filter__item {
-    padding: 0.5rem 1rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s, color 0.3s;
+    @apply px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ease-in-out;
+    @apply bg-gray-100 text-gray-700 hover:bg-gray-200;
+    @apply focus:outline-none focus:ring-2 focus:ring-gray-300;
   }
+
   .category-filter__item.selected {
-    background-color: #007bff;
-    color: white;
-  }
-  .category-filter__item:not(.selected):hover {
-    background-color: #e0e0e0;
+    @apply bg-gray-700 text-white hover:bg-gray-800;
   }
 </style>

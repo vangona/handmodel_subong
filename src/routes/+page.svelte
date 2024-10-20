@@ -75,16 +75,15 @@
 		<p class="error px-2 sm:px-4">{errorMessage}</p>
 	{/if}
 	{#if processedData.length > 0}
-		<div class="card-container p-4 sm:p-6 md:p-8 lg:p-12">
-			<h2 class="text-3xl font-bold text-center mb-8">포트폴리오</h2>
-			<div class="mb-8">
-				<h3 class="text-xl font-semibold mb-4">카테고리 {(selectedCategories.length > 0 && !selectedCategories.includes('all')) ? " : " + selectedCategories.join(', ') : ''}</h3>
+		<div class="card-container py-4 sm:py-6 md:py-8 lg:py-12">
+			<h2 class="text-3xl font-bold text-center my-8 font-serif text-gray-900">촬영기록</h2>
+			<div class="mb-6 md:mb-10">
 				<CategoryFilter categories={categoryArr} selectedCategories={selectedCategories} onSelect={handleClickCategory} />
 			</div>
-			<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+			<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
 				{#each processedData as postRow}
 					<a href={`/post/${postRow.id}`} class="card--main group">
-						<div class="aspect-square relative overflow-hidden rounded-lg shadow-md transition-transform duration-300 group-hover:scale-105">
+						<div class="aspect-square relative overflow-hidden rounded-lg transition-transform duration-300 group-hover:scale-105 border border-gray-300">
 							<img src={postRow.images && postRow.images.length > 0 ? postRow.images[0] : handSrc} alt={postRow.title} class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
 							<div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-4">
 								<h3 class="text-white text-xl font-bold mb-2 text-center">{postRow.title}</h3>
