@@ -3,7 +3,7 @@
 	import Hero from '$lib/components/my-ui/hero/hero.svelte';
 	import handSrc from '$lib/assets/images/hero-hand.png';
 	import type { PostTable } from '$lib/api/supabaseClient';
-	import { onMount, afterUpdate, getContext } from 'svelte';
+	import { onMount, afterUpdate } from 'svelte';
 	import CategoryFilter from '$lib/components/ui/CategoryFilter.svelte';
 	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
@@ -46,15 +46,6 @@
 
 	onMount(() => {
 		mountPostFetchData();
-		
-		// 스크롤 위치 복원
-		const storedScrollY = sessionStorage.getItem('scrollY');
-		console.log(storedScrollY)
-		if (storedScrollY) {
-			setTimeout(() => {
-				window.scrollTo({top: parseInt(storedScrollY), behavior: 'smooth'});
-			}, 100);
-		}
 	});
 
 	afterUpdate(() => {
@@ -88,7 +79,6 @@
 		event.preventDefault();
 		if (browser) {
 			sessionStorage.setItem('selectedCategories', JSON.stringify(selectedCategories));
-			sessionStorage.setItem('scrollY', scrollY.toString());
 		}
 		goto(`/post/${postId}`);
 	}

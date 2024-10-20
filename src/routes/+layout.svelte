@@ -1,10 +1,13 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount, setContext } from 'svelte';
 	import Analytics from '$lib/components/common/Analytics.svelte';
 	import TagManager from '$lib/components/common/TagManager.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import '../app.css';
 	import { slide, fade } from 'svelte/transition';
+	import { browser } from '$app/environment';
+	import { page } from '$app/stores';
+	import { beforeNavigate, afterNavigate } from '$app/navigation';
 
 	const items = [
 		{ href: '/', label: '홈' },
@@ -22,6 +25,8 @@
 	let isMobile: boolean;
 	let menuTransitionDuration = 300; // 밀리초 단위
 	let showScrollTopButton = false;
+	let scrollY = 0;
+	let isNavigating = false;
 	
 	const handleClickBanner = () => {
 		isMobile && containerRef.scrollTop === 0 && containerRef.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
@@ -43,11 +48,32 @@
 		showScrollTopButton = isMobile ? currentScrollY > window.innerHeight + 50 : currentScrollY > 50;
 
 		lastScrollY = currentScrollY;
+		scrollY = currentScrollY;
+	}
+
+	function restoreScrollPosition() {
+		const storedScrollY = sessionStorage.getItem('scrollY');
+		if (storedScrollY) {
+			setTimeout(() => {
+				containerRef.scrollTo({ top: parseInt(storedScrollY), behavior: 'smooth' });
+			}, 100);
+		}
 	}
 
 	function scrollToTop() {
 		containerRef.scrollTo({ top: isMobile ? window.innerHeight + 0 : 0, behavior: 'smooth' });
 	}
+
+	// 페이지 이동 완료 후 실행
+	beforeNavigate((navigated) => {
+		if (browser) {
+			if (navigated.to?.route.id === '/') {
+				restoreScrollPosition();
+			} else {
+				sessionStorage.setItem('scrollY', scrollY.toString());
+			}
+		}
+	});
 
 	onMount(() => {
 		const checkMobile = () => {
@@ -57,11 +83,22 @@
 		checkMobile();
 		window.addEventListener('resize', checkMobile);
 		containerRef.addEventListener('click', handleClickBanner);
+
+		if (browser) {
+			restoreScrollPosition();
+		}
+
 		return () => {
 			window.removeEventListener('resize', checkMobile);
 			containerRef.removeEventListener('click', handleClickBanner);
 		};
 	});
+
+	let currentPath = '';
+
+	$: if (browser && $page.url.pathname !== currentPath) {
+		currentPath = $page.url.pathname;
+	}
 
 	function toggleMenu() {
 		isMenuOpen = !isMenuOpen;

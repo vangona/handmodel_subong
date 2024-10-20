@@ -63,17 +63,9 @@
 			loading = false;
 		}
 	});
-
-	function formatDate(dateString: string): string {
-		return new Date(dateString).toLocaleDateString('ko-KR', {
-			year: 'numeric',
-			month: 'long',
-			day: 'numeric'
-		});
-	}
 </script>
 
-<div class="container mx-auto px-4 py-8 max-w-3xl">
+<div class="container mx-auto px-4 py-12 max-w-3xl">
 	{#if loading}
 		<div class="flex justify-center items-center h-64">
 			<div class="loader"></div>
@@ -118,7 +110,6 @@
 						<span class="badge mr-2 mb-2">{category}</span>
 					{/each}
 				</div>
-					<p class="text-sm text-gray-600 mb-4">작성일: {formatDate(post.created_at)}</p>
 					<p class="text-gray-700 leading-relaxed mb-6 whitespace-pre-wrap">{post.description}</p>
 			</div>
 		</article>
