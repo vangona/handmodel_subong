@@ -16,7 +16,11 @@
 	let searchQuery = '';
 	let loading = true;
 
-	$: currentPosts = getCurrentPosts(filteredPosts, currentPage, postsPerPage);
+	$: sortedPosts = filteredPosts.sort((a, b) => a.id - b.id);
+	$: currentPosts = sortedPosts.slice(
+		(currentPage - 1) * postsPerPage,
+		currentPage * postsPerPage
+	);
 
 	const loadPosts = async () => {
 		try {
@@ -71,22 +75,12 @@
 		currentPage = 1;
 	};
 
-	const getCurrentPosts = (posts: Array<PostTable>, page: number, perPage: number) => {
-		const startIndex = (page - 1) * perPage;
-		const endIndex = startIndex + perPage;
-		return posts.slice(startIndex, endIndex);
-	};
-
 	const paginate = (pageNumber: number) => {
 		currentPage = pageNumber;
 	};
 
 	const addPost = () => {
 		goto('/admin/posts/add');
-	};
-
-	const editPost = (id: number) => {
-		goto(`/admin/posts/edit/${id}`);
 	};
 
 	const handleCategorySelect = (category: string) => {
@@ -97,6 +91,10 @@
 		}
 		filterPosts();
 	};
+
+	function handleRowClick(postId: number) {
+		goto(`/admin/posts/edit/${postId}`);
+	}
 
 	onMount(() => {
 		loadPosts();
@@ -109,8 +107,8 @@
 		<p class="text-red-500">{errorMessage}</p>
 	{/if}
 	<div class="search-bar flex gap-2 mb-4">
-		<input type="text" placeholder="검색..." bind:value={searchQuery} class="input input-bordered w-full" />
-		<button on:click={searchPosts} class="btn btn-primary">검색</button>
+			<input type="text" placeholder="검색..." bind:value={searchQuery} class="input input-bordered w-full" />
+			<button on:click={searchPosts} class="btn btn-primary">검색</button>
 	</div>
 	<CategoryFilter categories={categoryArr} selectedCategories={selectedCategories} onSelect={handleCategorySelect} />
 	<button on:click={addPost} class="btn btn-success mt-4">포스트 추가</button>
@@ -124,26 +122,36 @@
 					<th>제목</th>
 					<th>카테고리</th>
 					<th>설명</th>
-					<th>액션</th>
+					<th class="w-24">액션</th>
 				</tr>
 			</thead>
 			<tbody>
 				{#each currentPosts as post}
-					<tr>
+					<tr class="cursor-pointer hover:bg-gray-100" on:click={() => handleRowClick(post.id)}>
 						<td>{post.id}</td>
 						<td>{post.title}</td>
-						<td>{post.category.join(', ')}</td>
-						<td>{post.description}</td>
 						<td>
-							<button class="btn btn-info" on:click={() => editPost(post.id)}>수정</button>
-							<button class="btn btn-error" on:click={() => handleDeletePost(post.id)}>삭제</button>
+							<div class="flex flex-wrap gap-1">
+								{#each post.category as cat}
+									<span class="bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded">{cat}</span>
+								{/each}
+							</div>
+						</td>
+						<td class="max-w-xs overflow-hidden text-ellipsis whitespace-nowrap">{post.description}</td>
+						<td class="w-24">
+							<button class="btn btn-error btn-sm w-full" on:click|stopPropagation={() => handleDeletePost(post.id)}>
+								<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+								</svg>
+								삭제
+							</button>
 						</td>
 					</tr>
 				{/each}
 			</tbody>
 		</table>
 		<div class="pagination flex justify-center mt-4">
-			{#each Array(Math.ceil(filteredPosts.length / postsPerPage)).fill(0) as _, index}
+			{#each Array(Math.ceil(sortedPosts.length / postsPerPage)).fill(0) as _, index}
 				<button class:active={currentPage === index + 1} on:click={() => paginate(index + 1)}>
 					{index + 1}
 				</button>
@@ -154,7 +162,7 @@
 
 <style lang="postcss">
 	.admin-container {
-		@apply max-w-4xl mx-auto p-8 bg-primary rounded-lg shadow-lg;
+		@apply max-w-4xl mx-auto p-8 bg-white rounded-lg shadow-lg;
 	}
 	.post-table th, .post-table td {
 		@apply border border-gray-300 p-2;
@@ -164,8 +172,11 @@
 	}
 	.pagination button {
 		@apply px-4 py-2 mx-1 border border-gray-300 rounded;
-	} 
+	}
 	.pagination button.active {
 		@apply bg-blue-500 text-white;
+	}
+	.btn-error {
+		@apply bg-red-500 hover:bg-red-600 text-white transition-colors duration-200;
 	}
 </style>

@@ -94,9 +94,11 @@
 				<a href="/admin/categories" class="mt-1 group flex items-center px-2 py-2 text-base leading-6 font-medium rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-100 transition ease-in-out duration-150" class:active={$page.url.pathname === '/admin/categories'}>
 					카테고리 관리
 				</a>
-				<button on:click={logout} class="mt-1 w-full text-left group flex items-center px-2 py-2 text-base leading-6 font-medium rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-100 transition ease-in-out duration-150">
-					로그아웃
-				</button>
+				<div class="mt-8 border-t pt-4">
+					<button on:click={logout} class="w-full text-left group flex items-center px-2 py-2 text-sm leading-5 font-medium text-gray-600 rounded-md hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-100 transition ease-in-out duration-150">
+						로그아웃
+					</button>
+				</div>
 			</nav>
 		</aside>
 
