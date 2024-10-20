@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { onMount, setContext } from 'svelte';
+	import { onMount } from 'svelte';
 	import Analytics from '$lib/components/common/Analytics.svelte';
 	import TagManager from '$lib/components/common/TagManager.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import '../app.css';
-	import { slide } from 'svelte/transition';
+	import { slide, fade } from 'svelte/transition';
 
 	const items = [
 		{ href: '/', label: '홈' },
@@ -20,6 +20,7 @@
 	let innerHeight: number;
 	let isMobile: boolean;
 	let menuTransitionDuration = 300; // 밀리초 단위
+	let showScrollTopButton = false;
 
 	const handleClickBanner = () => {
 		isMobile && containerRef.scrollTop === 0 && containerRef.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
@@ -38,7 +39,13 @@
 			isNavVisible = true;
 		}
 
+		showScrollTopButton = isMobile ? currentScrollY > window.innerHeight + 50 : currentScrollY > 50;
+
 		lastScrollY = currentScrollY;
+	}
+
+	function scrollToTop() {
+		containerRef.scrollTo({ top: isMobile ? window.innerHeight + 0 : 0, behavior: 'smooth' });
 	}
 
 	onMount(() => {
@@ -108,6 +115,18 @@
 				</ul>
 			</div>
 		</div>
+	{/if}
+
+	{#if showScrollTopButton}
+		<button
+			on:click={scrollToTop}
+			class="fixed bottom-4 right-4 bg-primary text-white p-2 rounded-full shadow-lg z-40 hover:bg-primary-dark transition-colors duration-300"
+			transition:fade
+		>
+			<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+			</svg>
+		</button>
 	{/if}
 
 	<main class="md:pt-[72px]">
