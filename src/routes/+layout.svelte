@@ -13,6 +13,7 @@
 		// { href: '/admin', label: '관리자' }
 	];
 
+	
 	let containerRef: HTMLDivElement;
 	let isNavVisible = true;
 	let lastScrollY = 0;
@@ -21,7 +22,7 @@
 	let isMobile: boolean;
 	let menuTransitionDuration = 300; // 밀리초 단위
 	let showScrollTopButton = false;
-
+	
 	const handleClickBanner = () => {
 		isMobile && containerRef.scrollTop === 0 && containerRef.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
 	}

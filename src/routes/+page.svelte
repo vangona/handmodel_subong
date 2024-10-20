@@ -3,15 +3,18 @@
 	import Hero from '$lib/components/my-ui/hero/hero.svelte';
 	import handSrc from '$lib/assets/images/hero-hand.png';
 	import type { PostTable } from '$lib/api/supabaseClient';
-	import { onMount } from 'svelte';
+	import { onMount, afterUpdate, getContext } from 'svelte';
 	import CategoryFilter from '$lib/components/ui/CategoryFilter.svelte';
+	import { browser } from '$app/environment';
+	import { goto } from '$app/navigation';
 
-	$: selectedCategories = ['all'];
+	let selectedCategories = ['all'];
 	let categorySet: Set<string> = new Set();
 	let categoryArr: Array<string> = [];
 	let fetchedData: Array<PostTable> = [];
 	let processedData: Array<PostTable> = [];
 	let errorMessage = '';
+	let scrollY = 0;
 
 	async function mountPostFetchData() {
 		try {
@@ -26,6 +29,12 @@
 			errorMessage = '';
 			fetchedData = data ?? [];
 			processedData = fetchedData;
+
+			// 카테고리 필터 복원
+			const storedCategories = sessionStorage.getItem('selectedCategories');
+			if (storedCategories) {
+				selectedCategories = JSON.parse(storedCategories);
+			}
 		} catch (error) {
 			if (error instanceof Error) {
 				errorMessage = error.message;
@@ -37,6 +46,19 @@
 
 	onMount(() => {
 		mountPostFetchData();
+		
+		// 스크롤 위치 복원
+		const storedScrollY = sessionStorage.getItem('scrollY');
+		console.log(storedScrollY)
+		if (storedScrollY) {
+			setTimeout(() => {
+				window.scrollTo({top: parseInt(storedScrollY), behavior: 'smooth'});
+			}, 100);
+		}
+	});
+
+	afterUpdate(() => {
+		scrollY = window.scrollY;
 	});
 
 	function handleClickCategory(category: string) {
@@ -61,7 +83,18 @@
 			}
 		}
 	}
+
+	const handleClickPost = (event: MouseEvent, postId: number) => {
+		event.preventDefault();
+		if (browser) {
+			sessionStorage.setItem('selectedCategories', JSON.stringify(selectedCategories));
+			sessionStorage.setItem('scrollY', scrollY.toString());
+		}
+		goto(`/post/${postId}`);
+	}
 </script>
+
+<svelte:window bind:scrollY />
 
 <svelte:head>
 	<title>포트폴리오 메인 페이지</title>
@@ -82,7 +115,7 @@
 			</div>
 			<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
 				{#each processedData as postRow}
-					<a href={`/post/${postRow.id}`} class="card--main group">
+					<a href={`/post/${postRow.id}`} class="card--main group" on:click={(e) => handleClickPost(e, postRow.id)}>
 						<div class="aspect-square relative overflow-hidden rounded-lg transition-transform duration-300 group-hover:scale-105 border border-gray-300">
 							<img src={postRow.images && postRow.images.length > 0 ? postRow.images[0] : handSrc} alt={postRow.title} class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
 							<div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-4">
