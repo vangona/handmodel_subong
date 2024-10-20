@@ -16,7 +16,7 @@
       class="category-filter__item {selectedCategories.includes(category) ? 'selected' : ''}"
       on:click={(event) => toggleCategory(category, event)}
     >
-      {category}
+      {category === 'all' ? '전체' : category}
     </button>
   {/each}
 </div>
