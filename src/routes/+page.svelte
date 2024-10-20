@@ -80,7 +80,7 @@
 			<div class="mb-6 md:mb-10">
 				<CategoryFilter categories={categoryArr} selectedCategories={selectedCategories} onSelect={handleClickCategory} />
 			</div>
-			<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+			<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
 				{#each processedData as postRow}
 					<a href={`/post/${postRow.id}`} class="card--main group">
 						<div class="aspect-square relative overflow-hidden rounded-lg transition-transform duration-300 group-hover:scale-105 border border-gray-300">

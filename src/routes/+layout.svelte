@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, setContext } from 'svelte';
 	import Analytics from '$lib/components/common/Analytics.svelte';
 	import TagManager from '$lib/components/common/TagManager.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
@@ -12,39 +12,44 @@
 		// { href: '/admin', label: '관리자' }
 	];
 
+	let containerRef: HTMLDivElement;
 	let isNavVisible = true;
 	let lastScrollY = 0;
 	let isMenuOpen = false;
 	let innerHeight: number;
 	let isMobile: boolean;
 
+	const handleScroll = (event: Event) => {
+		const target = event.target as HTMLElement;
+		const currentScrollY = target.scrollTop;
+		const scrollThreshold = isMobile ? target.clientHeight * 0.6 : 50;
+
+		if (currentScrollY < scrollThreshold) {
+			isNavVisible = true;
+		} else if (currentScrollY > lastScrollY) {
+			isNavVisible = false;
+		} else {
+			isNavVisible = true;
+		}
+
+		lastScrollY = currentScrollY;
+	}
+
 	onMount(() => {
 		const checkMobile = () => {
 			isMobile = window.innerWidth < 768; // md 브레이크포인트
 		};
 
-		const handleScroll = () => {
-			const currentScrollY = window.scrollY;
-			const scrollThreshold = isMobile ? innerHeight * 0.6 : 50;
-
-			if (currentScrollY < scrollThreshold) {
-				isNavVisible = true;
-			} else if (currentScrollY > lastScrollY) {
-				isNavVisible = false;
-			} else {
-				isNavVisible = true;
-			}
-
-			lastScrollY = currentScrollY;
-		}
-
 		checkMobile();
+		if (isMobile) {
+			setTimeout(() => {
+				containerRef.scrollTop === 0 && containerRef.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
+			}, 1500)
+		}
 		window.addEventListener('resize', checkMobile);
-		window.addEventListener('scroll', handleScroll);
 
 		return () => {
 			window.removeEventListener('resize', checkMobile);
-			window.removeEventListener('scroll', handleScroll);
 		};
 	});
 
@@ -58,7 +63,7 @@
 <Analytics />
 <TagManager />
 
-<div class="overflow-x-hidden h-full">
+<div bind:this={containerRef} on:scroll={handleScroll} class="overflow-x-hidden h-full">
 	<nav class="fixed top-0 left-0 right-0 bg-primary text-white shadow-md p-2 sm:p-4 z-50 transition-all duration-300 ease-in-out"
 		 class:translate-y-0={isNavVisible}
 		 class:-translate-y-full={!isNavVisible}>
@@ -104,7 +109,7 @@
 		</div>
 	{/if}
 
-	<main class="md:pt-20">
+	<main class="md:pt-[72px]">
 		<slot />
 	</main>
 </div>
