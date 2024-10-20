@@ -94,9 +94,9 @@
 <svelte:window bind:scrollY />
 
 <svelte:head>
-	<title>포트폴리오 메인 페이지</title>
-	<meta name="description" content="손모델의 포트폴리오 사이트입니다." />
-	<meta name="keywords" content="포트폴리오, 손모델, 사진" />
+	<title>손모델 심수연</title>
+	<meta name="description" content="손모델 심수연의 포트폴리오입니다." />
+	<meta name="keywords" content="손모델, 사진, 부분모델, 모델, 심수연, 뷰티, 코스메틱, 화장품, 네일, 손동작, 손연기" />
 </svelte:head>
 
 <Hero />

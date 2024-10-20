@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onDestroy, onMount, setContext } from 'svelte';
+	import { onMount } from 'svelte';
 	import Analytics from '$lib/components/common/Analytics.svelte';
 	import TagManager from '$lib/components/common/TagManager.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
@@ -7,7 +7,7 @@
 	import { slide, fade } from 'svelte/transition';
 	import { browser } from '$app/environment';
 	import { page } from '$app/stores';
-	import { beforeNavigate, afterNavigate } from '$app/navigation';
+	import { beforeNavigate } from '$app/navigation';
 
 	const items = [
 		{ href: '/', label: '홈' },
