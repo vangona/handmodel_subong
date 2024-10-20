@@ -39,7 +39,6 @@
 		}
 
 		checkMobile();
-		isMobile && (isNavVisible = false);
 		window.addEventListener('resize', checkMobile);
 		window.addEventListener('scroll', handleScroll);
 
@@ -82,27 +81,32 @@
 		</div>
 	</nav>
 
+	<!-- 모바일 메뉴 -->
 	{#if isMenuOpen}
-		<button class="fixed inset-0 bg-black bg-opacity-50 z-40" on:click={toggleMenu}></button>
-		<div class="fixed top-0 right-0 h-full w-48 sm:w-64 bg-primary text-white z-50 p-4 transform transition-transform duration-300 ease-in-out" class:translate-x-0={isMenuOpen} class:translate-x-full={!isMenuOpen}>
-			<button class="absolute top-2 right-2 sm:top-4 sm:right-4" on:click={toggleMenu}>
-				<svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-				</svg>
-			</button>
-			<ul class="mt-8 space-y-2 sm:space-y-4 font-serif">
-				{#each items as item}
-					<li>
-						<a href={item.href} class="block py-1 sm:py-2 hover:bg-gray-500 text-base sm:text-lg" on:click={toggleMenu}>{item.label}</a>
-					</li>
-				{/each}
-			</ul>
+		<button class="fixed inset-0 bg-black bg-opacity-50 z-40" on:click={toggleMenu} />
+		<div class="fixed top-0 right-0 h-full w-64 bg-primary text-white z-50 transform transition-transform duration-300 ease-in-out"
+			 class:translate-x-0={isMenuOpen}
+			 class:translate-x-full={!isMenuOpen}>
+			<div class="p-4">
+				<button class="absolute top-2 right-2" on:click={toggleMenu}>
+					<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+					</svg>
+				</button>
+				<ul class="mt-8 space-y-4">
+					{#each items as item}
+						<li>
+							<a href={item.href} class="block py-2 hover:bg-gray-700 rounded" on:click={toggleMenu}>{item.label}</a>
+						</li>
+					{/each}
+				</ul>
+			</div>
 		</div>
 	{/if}
 
-	<div class="app-container flex flex-col md:flex-row md:pt-16 h-full">
+	<main class="md:pt-20">
 		<slot />
-	</div>
+	</main>
 </div>
 
 <style lang="postcss">
