@@ -1,0 +1,1 @@
+export const DND_FLIP_DURATION = 200;

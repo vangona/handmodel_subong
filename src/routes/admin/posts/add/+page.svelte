@@ -7,6 +7,7 @@
 	import { dndzone } from 'svelte-dnd-action';
 	import type { DndEvent } from 'svelte-dnd-action';
 	import { flip } from 'svelte/animate';
+	import { DND_FLIP_DURATION } from '$lib/constants/ui';
 
 	interface DndImageItem {
 		id: string;
@@ -113,14 +114,14 @@
 			<input type="file" id="images" multiple accept="image/*" bind:files on:change={handleImageUpload} class="mt-1" />
 		</div>
 		{#if images.length > 0}
-			<div use:dndzone={{items: images}} 
+			<div use:dndzone={{items: images, type: 'images', flipDurationMs: DND_FLIP_DURATION}} 
 				on:consider={handleDndConsider} 
 				on:finalize={handleDndFinalize} 
 				class="dndlist">
 				{#each images as image (image.id)}
-					<div class="relative" animate:flip={{duration: 300}}>
+					<div class="relative" animate:flip={{duration: DND_FLIP_DURATION}}>
 						<img src={image.url} alt="업로드된 이미지" class="w-full h-auto" />
-						<button type="button" on:click={() => handleImageDelete(image)} class="absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full">X</button>
+						<button type="button" on:click={() => handleImageDelete(image)} class="absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full w-6 h-6 text-xs">X</button>
 							<span class="absolute bottom-0 left-0 bg-black bg-opacity-50 text-white p-1">{images.indexOf(image) + 1}</span>
 						</div>
 					{/each}

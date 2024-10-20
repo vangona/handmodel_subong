@@ -9,6 +9,7 @@
 	import { dndzone } from 'svelte-dnd-action';
 	import type { DndEvent } from 'svelte-dnd-action';
 	import { flip } from 'svelte/animate';
+	import { DND_FLIP_DURATION } from '$lib/constants/ui';
 
 	interface DndImageItem {
 		id: string;
@@ -107,6 +108,7 @@
 	};
 
 	const handleDndConsider = (e: CustomEvent<DndEvent<DndImageItem>>) => {
+		console.log(e)
 		images = e.detail.items;
 	};
 
@@ -139,11 +141,11 @@
 			<input type="file" id="images" multiple accept="image/*" bind:files on:change={handleImageUpload} class="mt-1" />
 		</div>
 		{#if images.length > 0}
-			<div use:dndzone={{items: images, type: 'images'}} on:consider={handleDndConsider} on:finalize={handleDndFinalize} class="dndlist">
+			<div use:dndzone={{items: images, type: 'images', flipDurationMs: DND_FLIP_DURATION}} on:consider={handleDndConsider} on:finalize={handleDndFinalize} class="dndlist">
 				{#each images as image (image.id)}
-					<div class="relative dndimage" animate:flip={{duration: 300}}>
+					<div class="relative dndimage border m-2" animate:flip={{duration: DND_FLIP_DURATION}}>
 						<img src={image.url} alt="업로드된 이미지" class="w-full h-auto" />
-						<button type="button" on:click={() => handleImageDelete(image)} class="absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full">X</button>
+						<button type="button" on:click={() => handleImageDelete(image)} class="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full w-6 h-6 text-xs">X</button>
 						<span class="absolute bottom-0 left-0 bg-black bg-opacity-50 text-white p-1">{images.indexOf(image) === 0 ? '대표 이미지' : images.indexOf(image) + 1}</span>
 					</div>
 				{/each}
@@ -163,7 +165,7 @@
 		@apply max-w-4xl mx-auto p-8 bg-white rounded-lg shadow-lg;
 	}
 	.dndlist {
-		@apply grid grid-cols-2 gap-4 mt-4;
+		@apply grid grid-cols-2 gap-1 border;
 	}
 	.dndimage {
 		@apply cursor-move;
