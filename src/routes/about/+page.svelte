@@ -4,7 +4,7 @@
 	<meta name="keywords" content="손모델, 포트폴리오, 소개, 이력" />
 </svelte:head>
 
-<div class="flex justify-center items-start pt-20 md:pt-32 min-h-screen w-full bg-offwhite bg-opacity-90">
+<div class="flex justify-center items-start pt-8 md:pt-12 min-h-screen w-full bg-offwhite bg-opacity-90 pb-24">
 	<div class="container mx-auto px-4 py-8 max-w-3xl">
 		<div class="bg-white rounded-lg shadow-xl overflow-hidden">
 			<div class="px-6 py-8">
@@ -20,8 +20,6 @@
 					<h2 class="text-2xl font-semibold text-gray-800 mb-2">이력</h2>
 					<ul class="list-disc pl-5 text-gray-600 space-y-1">
 						<li>2023년 - 유명 브랜드 광고 촬영</li>
-						<li>2022년 - 패션 잡지 화보 촬영</li>
-						<li>2021년 - 뷰티 제품 광고 모델</li>
 					</ul>
 				</div>
 				
