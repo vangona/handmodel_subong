@@ -10,6 +10,7 @@
 	import type { DndEvent } from 'svelte-dnd-action';
 	import { flip } from 'svelte/animate';
 	import { DND_FLIP_DURATION } from '$lib/constants/ui';
+	import imageCompression from 'browser-image-compression';
 
 	interface DndImageItem {
 		id: string;
@@ -82,21 +83,6 @@
 		}
 	};
 
-	const handleImageUpload = async () => {
-		for (let file of files) {
-			try {
-				const imageUrl = await apiUploadImage(file);
-				images = [...images, { id: imageUrl, url: imageUrl }];
-			} catch (error) {
-				if (error instanceof Error) {
-					errorMessage = 'Image Upload Error: ' + error.message;
-				} else {
-					errorMessage = 'Image Upload Error: 이미지 업로드 중 오류가 발생했습니다.';
-				}
-			}
-		}
-	};
-
 	const handleImageDelete = async (imageItem: DndImageItem) => {
 		try {
 			await apiDeleteImage(imageItem.url);
@@ -137,27 +123,59 @@
 		e.preventDefault();
 	};
 
+	const compressImage = async (file: File) => {
+		const options = {
+		maxSizeMB: 0.5, // 512KB
+		maxWidthOrHeight: 1920,
+		useWebWorker: true
+		};
+
+		try {
+			return await imageCompression(file, options);
+		} catch (error) {
+			console.error('Image compression failed:', error);
+			return file; // 압축 실패 시 원본 파일 반환
+		}
+	};
+
+	const handleImageUpload = async () => {
+		for (let file of files) {
+		try {
+			const compressedFile = await compressImage(file);
+			const imageUrl = await apiUploadImage(compressedFile);
+			images = [...images, { id: imageUrl, url: imageUrl }];
+		} catch (error) {
+			if (error instanceof Error) {
+			errorMessage = 'Image Upload Error: ' + error.message;
+			} else {
+			errorMessage = 'Image Upload Error: 이미지 업로드 중 오류가 발생했습니다.';
+			}
+		}
+		}
+	};
+
 	const handleDrop = async (e: DragEvent) => {
 		e.preventDefault();
 		isDragging = false;
 		dragCounter = 0;
 
 		if (e.dataTransfer && e.dataTransfer.files) {
-			const droppedFiles = e.dataTransfer.files;
-			for (let file of droppedFiles) {
-				if (file.type.startsWith('image/')) {
-					try {
-						const imageUrl = await apiUploadImage(file);
-						images = [...images, { id: imageUrl, url: imageUrl }];
-					} catch (error) {
-						if (error instanceof Error) {
-							errorMessage = error.message;
-						} else {
-							errorMessage = '이미지 업로드 중 오류가 발생했습니다.';
-						}
-					}
+		const droppedFiles = e.dataTransfer.files;
+		for (let file of droppedFiles) {
+			if (file.type.startsWith('image/')) {
+			try {
+				const compressedFile = await compressImage(file);
+				const imageUrl = await apiUploadImage(compressedFile);
+				images = [...images, { id: imageUrl, url: imageUrl }];
+			} catch (error) {
+				if (error instanceof Error) {
+				errorMessage = error.message;
+				} else {
+				errorMessage = '이미지 업로드 중 오류가 발생했습니다.';
 				}
 			}
+			}
+		}
 		}
 	};
 
