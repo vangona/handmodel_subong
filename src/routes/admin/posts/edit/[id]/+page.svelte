@@ -6,7 +6,14 @@
 	import { get } from 'svelte/store';
 	import { apiGetPostById, apiPutUpdatePost, apiUploadImage, apiDeleteImage } from '$lib/api/posts';
 	import { apiGetCategories } from '$lib/api/categories';
+	import { dndzone } from 'svelte-dnd-action';
+	import type { DndEvent } from 'svelte-dnd-action';
+	import { flip } from 'svelte/animate';
 
+	interface DndImageItem {
+		id: string;
+		url: string;
+	}
 	let postId: number;
 	let title = '';
 	let description = '';
@@ -14,7 +21,7 @@
 	let errorMessage = '';
 	let categoryArr: Array<string> = [];
 	let successMessage = '';
-	let images: string[] = [];
+	let images: DndImageItem[] = [];
 	let files: FileList;
 
 	// URL에서 postId를 가져옵니다.s
@@ -31,12 +38,10 @@
 			title = data.title;
 			description = data.description;
 			categories = data.category;
-			images = data.images || [];
+			images = (data.images || []).map(url => ({ id: url, url }));
 
 			const categoryData = await apiGetCategories();
 			categoryArr = categoryData.map(cat => cat.name);
-
-			console.log(images)
 		} catch (error) {
 			if (error instanceof Error) {
 				errorMessage = error.message;
@@ -48,7 +53,12 @@
 
 	const handleEditPost = async () => {
 		try {
-			await apiPutUpdatePost(postId, { title, description, category: categories, images });
+			await apiPutUpdatePost(postId, { 
+				title, 
+				description, 
+				category: categories, 
+				images: images.map(item => item.url) 
+			});
 			successMessage = '포스트 수정 완료!';
 			goto('/admin/posts');
 		} catch (error) {
@@ -72,7 +82,7 @@
 		for (let file of files) {
 			try {
 				const imageUrl = await apiUploadImage(file);
-				images = [...images, imageUrl];
+				images = [...images, { id: imageUrl, url: imageUrl }];
 			} catch (error) {
 				if (error instanceof Error) {
 					errorMessage = 'Image Upload Error: ' + error.message;
@@ -83,10 +93,10 @@
 		}
 	};
 
-	const handleImageDelete = async (imageUrl: string) => {
+	const handleImageDelete = async (imageItem: DndImageItem) => {
 		try {
-			await apiDeleteImage(imageUrl);
-			images = images.filter(img => img !== imageUrl);
+			await apiDeleteImage(imageItem.url);
+			images = images.filter(img => img.id !== imageItem.id);
 		} catch (error) {
 			if (error instanceof Error) {
 				errorMessage = 'Image Delete Error: ' + error.message;
@@ -94,6 +104,14 @@
 				errorMessage = 'Image Delete Error: 이미지 삭제 중 오류가 발생했습니다.';
 			}
 		}
+	};
+
+	const handleDndConsider = (e: CustomEvent<DndEvent<DndImageItem>>) => {
+		images = e.detail.items;
+	};
+
+	const handleDndFinalize = (e: CustomEvent<DndEvent<DndImageItem>>) => {
+		images = e.detail.items;
 	};
 
 	onMount(() => {
@@ -121,11 +139,12 @@
 			<input type="file" id="images" multiple accept="image/*" bind:files on:change={handleImageUpload} class="mt-1" />
 		</div>
 		{#if images.length > 0}
-			<div class="grid grid-cols-2 gap-4 mt-4">
-				{#each images as image}
-					<div class="relative">
-						<img src={image} alt="업로드된 이미지" class="w-full h-auto" />
+			<div use:dndzone={{items: images, type: 'images'}} on:consider={handleDndConsider} on:finalize={handleDndFinalize} class="dndlist">
+				{#each images as image (image.id)}
+					<div class="relative dndimage" animate:flip={{duration: 300}}>
+						<img src={image.url} alt="업로드된 이미지" class="w-full h-auto" />
 						<button type="button" on:click={() => handleImageDelete(image)} class="absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full">X</button>
+						<span class="absolute bottom-0 left-0 bg-black bg-opacity-50 text-white p-1">{images.indexOf(image) === 0 ? '대표 이미지' : images.indexOf(image) + 1}</span>
 					</div>
 				{/each}
 			</div>
@@ -142,5 +161,11 @@
 <style lang="postcss">
 	.edit-container {
 		@apply max-w-4xl mx-auto p-8 bg-white rounded-lg shadow-lg;
+	}
+	.dndlist {
+		@apply grid grid-cols-2 gap-4 mt-4;
+	}
+	.dndimage {
+		@apply cursor-move;
 	}
 </style>

@@ -164,7 +164,7 @@
 	}
 	.pagination button {
 		@apply px-4 py-2 mx-1 border border-gray-300 rounded;
-	}
+	} 
 	.pagination button.active {
 		@apply bg-blue-500 text-white;
 	}

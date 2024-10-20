@@ -133,8 +133,5 @@
 		&:active {
 			@apply transform scale-95;
 		}
-		&.selected {
-			@apply bg-primary text-white;
-		}
 	}
 </style>

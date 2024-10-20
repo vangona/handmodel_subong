@@ -48,7 +48,7 @@
 					},
 					loop: true,
 					on: {
-						slideChange: function () {
+						slideChange: function (this: Swiper) {
 							currentSlide = (this.realIndex % totalSlides) + 1;
 						}
 					}
