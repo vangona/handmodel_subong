@@ -15,9 +15,9 @@
 			totalUsers = data.totalUsers;
 		} catch (error) {
 			if (error instanceof Error) {
-				errorMessage = error.message;
+				errorMessage = 'Dashboard Error: ' + error.message;
 			} else {
-				errorMessage = '알 수 없는 오류가 발생했습니다.';
+				errorMessage = 'Dashboard Error: 알 수 없는 오류가 발생했습니다.';
 			}
 		}
 	};

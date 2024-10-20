@@ -30,7 +30,7 @@
 <div class="dashboard-container max-w-4xl mx-auto p-8 bg-white rounded-lg shadow-lg">
 	<h1 class="text-2xl font-bold mb-4">관리자 대시보드</h1>
 	{#if errorMessage}
-		<p class="text-red-500">{errorMessage}</p>
+		<p class="error">{errorMessage}</p>
 	{:else}
 		<div class="stats flex justify-around mt-8">
 			<div class="stat bg-gray-100 p-4 rounded-lg text-center w-1/3">
@@ -49,7 +49,7 @@
 	{/if}
 </div>
 
-<style>
+<style lang="postcss">
 	.error {
 		@apply text-red-500 mt-4;
 	}

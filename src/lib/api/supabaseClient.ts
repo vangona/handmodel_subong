@@ -1,10 +1,11 @@
+import type { SupabaseTable } from '$lib/constants/supabase';
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 export interface SupabaseTables {
-	posts: {
+	[SupabaseTable.Posts]: {
 		Row: {
 			id: number;
 			created_at: string;
@@ -34,6 +35,6 @@ export interface SupabaseDatabase {
 	};
 }
 
-export type PostTable = SupabaseTables['posts']['Row'];
+export type PostTable = SupabaseTables[SupabaseTable.Posts]['Row'];
 
 export const supabase = createClient<SupabaseDatabase>(supabaseUrl, supabaseAnonKey);

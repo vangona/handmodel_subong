@@ -4,7 +4,7 @@
 	import CategoryFilter from '$lib/components/ui/CategoryFilter.svelte';
 	import { page } from '$app/stores';
 	import { get } from 'svelte/store';
-	import { apiGetPostById, apiPutUpdatePost } from '$lib/api/posts';
+	import { apiGetPostById, apiPutUpdatePost, apiUploadImage, apiDeleteImage } from '$lib/api/posts';
 	import { apiGetCategories } from '$lib/api/categories';
 
 	let postId: number;
@@ -14,8 +14,10 @@
 	let errorMessage = '';
 	let categoryArr: Array<string> = [];
 	let successMessage = '';
+	let images: string[] = [];
+	let files: FileList;
 
-	// URL에서 postId를 가져옵니다.
+	// URL에서 postId를 가져옵니다.s
 	postId = Number(get(page).params.id);
 
 	const fetchPost = async () => {
@@ -29,28 +31,31 @@
 			title = data.title;
 			description = data.description;
 			categories = data.category;
+			images = data.images || [];
 
 			const categoryData = await apiGetCategories();
 			categoryArr = categoryData.map(cat => cat.name);
+
+			console.log(images)
 		} catch (error) {
 			if (error instanceof Error) {
 				errorMessage = error.message;
 			} else {
-				errorMessage = '알 수 없는 오류가 발생했습니다.';
+				errorMessage = 'Fetch Post Error: 알 수 없는 오류가 발생했습니다.';
 			}
 		}
 	};
 
 	const handleEditPost = async () => {
 		try {
-			await apiPutUpdatePost(postId, { title, description, category: categories });
+			await apiPutUpdatePost(postId, { title, description, category: categories, images });
 			successMessage = '포스트 수정 완료!';
 			goto('/admin/posts');
 		} catch (error) {
 			if (error instanceof Error) {
-				errorMessage = error.message;
+				errorMessage = 'Edit Post Error: ' + error.message;
 			} else {
-				errorMessage = '알 수 없는 오류가 발생했습니다.';
+				errorMessage = 'Edit Post Error: 알 수 없는 오류가 발생했습니다.';
 			}
 		}
 	};
@@ -60,6 +65,34 @@
 			categories = [...categories, category];
 		} else {
 			categories = categories.filter(cat => cat !== category);
+		}
+	};
+
+	const handleImageUpload = async () => {
+		for (let file of files) {
+			try {
+				const imageUrl = await apiUploadImage(file);
+				images = [...images, imageUrl];
+			} catch (error) {
+				if (error instanceof Error) {
+					errorMessage = 'Image Upload Error: ' + error.message;
+				} else {
+					errorMessage = 'Image Upload Error: 이미지 업로드 중 오류가 발생했습니다.';
+				}
+			}
+		}
+	};
+
+	const handleImageDelete = async (imageUrl: string) => {
+		try {
+			await apiDeleteImage(imageUrl);
+			images = images.filter(img => img !== imageUrl);
+		} catch (error) {
+			if (error instanceof Error) {
+				errorMessage = 'Image Delete Error: ' + error.message;
+			} else {
+				errorMessage = 'Image Delete Error: 이미지 삭제 중 오류가 발생했습니다.';
+			}
 		}
 	};
 
@@ -83,10 +116,24 @@
 			<label for="categories" class="block text-sm font-medium text-gray-700">카테고리</label>
 			<CategoryFilter categories={categoryArr} selectedCategories={categories} onSelect={handleCategorySelect} />
 		</div>
+		<div>
+			<label for="images" class="block text-sm font-medium text-gray-700">이미지 추가</label>
+			<input type="file" id="images" multiple accept="image/*" bind:files on:change={handleImageUpload} class="mt-1" />
+		</div>
+		{#if images.length > 0}
+			<div class="grid grid-cols-2 gap-4 mt-4">
+				{#each images as image}
+					<div class="relative">
+						<img src={image} alt="업로드된 이미지" class="w-full h-auto" />
+						<button type="button" on:click={() => handleImageDelete(image)} class="absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full">X</button>
+					</div>
+				{/each}
+			</div>
+		{/if}
 		<button type="submit" class="btn btn-primary w-full">수정</button>
 		{#if errorMessage}
 			<p class="text-red-500 mt-2">{errorMessage}</p>
-		{:else if successMessage}
+			{:else if successMessage}
 			<p class="text-green-500 mt-2">{successMessage}</p>
 		{/if}
 	</form>
