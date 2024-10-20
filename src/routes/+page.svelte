@@ -85,7 +85,7 @@
 				{#each processedData as postRow}
 					<a href={`/post/${postRow.id}`} class="card--main group">
 						<div class="aspect-square relative overflow-hidden rounded-lg shadow-md transition-transform duration-300 group-hover:scale-105">
-							<img src={handSrc} alt="hands" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
+							<img src={postRow.images && postRow.images.length > 0 ? postRow.images[0] : handSrc} alt={postRow.title} class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
 							<div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-4">
 								<h3 class="text-white text-xl font-bold mb-2 text-center">{postRow.title}</h3>
 								<div class="flex flex-wrap justify-center gap-2 mb-2">
