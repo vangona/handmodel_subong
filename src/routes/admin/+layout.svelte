@@ -117,7 +117,7 @@
 				대시보드
 			</a>
 			<a href="/admin/posts" class="text-center p-2 {$page.url.pathname === '/admin/posts' ? 'text-blue-600' : 'text-gray-600'}">
-포스트
+				포스트
 			</a>
 			<a href="/admin/categories" class="text-center p-2 {$page.url.pathname === '/admin/categories' ? 'text-blue-600' : 'text-gray-600'}">
 				카테고리
