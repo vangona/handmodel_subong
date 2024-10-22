@@ -24,8 +24,8 @@
 				</div>
 				
 				<div class="flex flex-col sm:flex-row gap-4">
-					<a href="https://www.instagram.com/yourprofile" target="_blank" class="btn btn-secondary flex-1 text-center">인스타그램</a>
-					<a href="https://open.kakao.com/o/yourchat" target="_blank" class="btn btn-warning flex-1 text-center">카카오톡 오픈 채팅</a>
+					<a href="https://www.instagram.com/handmodel_subong/" target="_blank" class="btn btn-secondary flex-1 text-center">인스타그램</a>
+					<a href="https://open.kakao.com/o/sBSr9QCc" target="_blank" class="btn btn-warning flex-1 text-center">카카오톡 오픈 채팅</a>
 				</div>
 			</div>
 		</div>
