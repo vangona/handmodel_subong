@@ -22,7 +22,7 @@
 			if (storedCategories) {
 				selectedCategories = JSON.parse(storedCategories);
 				processedData = fetchedData.filter(post => 
-					post.category.some(cat => selectedCategories.includes(cat))
+					post.category.some(cat => selectedCategories[0] === 'all'  || selectedCategories.includes(cat))
 				);
 			}
 	}
@@ -96,7 +96,7 @@
 <svelte:head>
 	<title>손모델 심수연</title>
 	<meta name="description" content="손모델 심수연의 포트폴리오입니다." />
-	<meta name="keywords" content="손모델, 사진, 부분모델, 모델, 심수연, 뷰티, 코스메틱, 화장품, 네일, 손동작, 손연기" />
+	<meta name="keywords" content="손모델, 사진, 부분모델, 모델, 심수연, 뷰티, 코스메틱, 화장품, 네일, 손동작, 손연기, 광고모델, 지면모델, 지면광고, 광고" />
 </svelte:head>
 
 <Hero />
@@ -105,15 +105,15 @@
 		<p class="error px-2 sm:px-4">{errorMessage}</p>
 	{/if}
 	{#if processedData.length > 0}
-		<div class="card-container py-4 sm:py-6 md:py-8 lg:py-12 px-1 mb-20 md:mb-0">
+		<div class="card-container py-4 sm:py-6 md:py-8 lg:py-12 mb-20 md:mb-0">
 			<h2 class="text-3xl font-bold text-center my-8 font-serif text-gray-900">촬영기록</h2>
 			<div class="mb-6 md:mb-10">
 				<CategoryFilter categories={categoryArr} selectedCategories={selectedCategories} onSelect={handleClickCategory} />
 			</div>
-			<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
+			<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
 				{#each processedData as postRow}
 					<a href={`/post/${postRow.id}`} class="card--main group relative" on:click={(e) => handleClickPost(e, postRow.id)}>
-						<div class="aspect-square relative overflow-hidden rounded-lg transition-all duration-300 group-hover:scale-105 group-hover:z-10 border border-gray-300">
+						<div class="aspect-square relative overflow-hidden transition-all duration-300 group-hover:scale-105 group-hover:z-10 border border-gray-300">
 							<img src={postRow.images && postRow.images.length > 0 ? postRow.images[0] : handSrc} alt={postRow.title} class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
 							<div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-4">
 								<h3 class="text-white text-xl font-bold mb-2 text-center">{postRow.title}</h3>
