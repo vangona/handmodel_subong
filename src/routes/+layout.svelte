@@ -12,7 +12,7 @@
 	const items = [
 		{ href: '/', label: '홈' },
 		{ href: '/about', label: '소개' },
-		{ href: '/contact', label: '연락처' },
+		{ href: '/contact', label: '함께 하기' },
 		// { href: '/admin', label: '관리자' }
 	];
 
@@ -26,14 +26,15 @@
 	let menuTransitionDuration = 300; // 밀리초 단위
 	let showScrollTopButton = false;
 	let scrollY = 0;
-	let isNavigating = false;
 	
 	const handleClickBanner = () => {
 		isMobile && containerRef.scrollTop === 0 && containerRef.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
 	}
 
 	const handleScroll = (event: Event) => {
-		const target = event.target as HTMLElement;
+		const target = event.target as HTMLElement | null;
+		if (!target) return;  // target이 null이면 함수 종료
+
 		const currentScrollY = target.scrollTop;
 		const scrollThreshold = isMobile ? target.clientHeight * 0.6 : 50;
 
