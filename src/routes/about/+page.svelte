@@ -26,19 +26,19 @@
 					</div>
 					<div class="p-8">
 						<div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold" in:fly={{ y: 20, duration: 500, delay: 300 }}>손모델</div>
-						<h1 class="block mt-1 text-3xl leading-tight font-bold text-gray-900" in:fly={{ y: 20, duration: 500, delay: 400 }}>심수연</h1>
+						<h1 class="block mt-1 text-3xl leading-tight font-bold text-gray-900 font-serif" in:fly={{ y: 20, duration: 500, delay: 400 }}>심수연</h1>
 						<p class="mt-2 text-gray-600" in:fly={{ y: 20, duration: 500, delay: 500 }}>다양한 광고와 촬영에서 활동하는 전문 손모델입니다.</p>
 					</div>
 				</div>
 				
 				<div class="px-8 py-6">
-					<h2 class="text-2xl font-semibold text-gray-800 mb-4" in:fly={{ y: 20, duration: 500, delay: 600 }}>소개</h2>
+					<h2 class="text-2xl font-semibold text-gray-800 mb-4 font-serif" in:fly={{ y: 20, duration: 500, delay: 600 }}>소개</h2>
 					<p class="text-gray-600 mb-6" in:fly={{ y: 20, duration: 500, delay: 700 }}>
 						안녕하세요, 손모델 심수연입니다. 저는 섬세한 손동작과 아름다운 손 라인으로 다양한 제품과 브랜드의 매력을 전달하는 일을 하고 있습니다. 
 						화장품, 주얼리, 전자기기 등 다양한 분야에서 활동하며, 각 제품의 특성을 살리는 최적의 손 표현을 위해 노력하고 있습니다.
 					</p>
 					
-					<h2 class="text-2xl font-semibold text-gray-800 mb-4" in:fly={{ y: 20, duration: 500, delay: 800 }}>주요 활동</h2>
+					<h2 class="text-2xl font-semibold text-gray-800 mb-4 font-serif" in:fly={{ y: 20, duration: 500, delay: 800 }}>주요 활동</h2>
 					<ul class="list-disc pl-5 text-gray-600 space-y-2 mb-6" in:fly={{ y: 20, duration: 500, delay: 900 }}>
 						<li>다수의 화장품 브랜드 광고 촬영</li>
 						<li>주얼리 브랜드 카탈로그 및 화보 촬영</li>
@@ -47,7 +47,7 @@
 						<li>패션 액세서리 브랜드 SNS 콘텐츠 제작</li>
 					</ul>
 					
-					<h2 class="text-2xl font-semibold text-gray-800 mb-4" in:fly={{ y: 20, duration: 500, delay: 1000 }}>특기</h2>
+					<h2 class="text-2xl font-semibold text-gray-800 mb-4 font-serif" in:fly={{ y: 20, duration: 500, delay: 1000 }}>특기</h2>
 					<ul class="list-disc pl-5 text-gray-600 space-y-2 mb-6" in:fly={{ y: 20, duration: 500, delay: 1100 }}>
 						<li>섬세한 손동작 연출</li>
 						<li>다양한 제품 특성에 맞는 포즈 구현</li>
@@ -57,7 +57,7 @@
 				</div>
 				
 				<div class="px-8 py-6 bg-gray-50">
-					<h2 class="text-2xl font-semibold text-gray-800 mb-4" in:fly={{ y: 20, duration: 500, delay: 1200 }}>연락처</h2>
+					<h2 class="text-2xl font-semibold text-gray-800 mb-4 font-serif" in:fly={{ y: 20, duration: 500, delay: 1200 }}>연락처</h2>
 					<div class="flex flex-col sm:flex-row gap-4" in:fly={{ y: 20, duration: 500, delay: 1300 }}>
 						<a href="https://www.instagram.com/handmodel_subong/" target="_blank" rel="noopener noreferrer" class="btn btn-primary flex items-center justify-center">
 							<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -80,7 +80,7 @@
 
 <style lang="postcss">
 	.btn {
-		@apply py-2 px-4 rounded-lg text-sm font-semibold transition-colors duration-300;
+		@apply py-1 px-4 rounded-lg text-sm font-semibold transition-colors duration-300;
 	}
 	.btn-primary {
 		@apply bg-purple-600 text-white hover:bg-purple-700;

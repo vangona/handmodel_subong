@@ -104,7 +104,7 @@
 				</div>
 			{/if}
 			<div class="p-6">
-				<h1 class="text-3xl font-bold mb-4 text-gray-800">{post.title}</h1>
+				<h1 class="text-3xl font-bold mb-4 text-gray-800 font-serif">{post.title}</h1>
 				<div class="mb-4 flex flex-wrap">
 					{#each post.category as category}
 						<span class="badge mr-2 mb-2">{category}</span>

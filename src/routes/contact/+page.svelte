@@ -26,13 +26,13 @@
 					</div>
 					<div class="p-8">
 						<div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold" in:fly={{ y: 20, duration: 500, delay: 300 }}>연락처</div>
-						<h1 class="block mt-1 text-3xl leading-tight font-bold text-gray-900" in:fly={{ y: 20, duration: 500, delay: 400 }}>손모델 심수연</h1>
+						<h1 class="block mt-1 text-3xl leading-tight font-bold text-gray-900 font-serif" in:fly={{ y: 20, duration: 500, delay: 400 }}>손모델 심수연</h1>
 						<p class="mt-2 text-gray-600" in:fly={{ y: 20, duration: 500, delay: 500 }}>다양한 광고와 촬영 문의를 환영합니다.</p>
 					</div>
 				</div>
 				
 				<div class="px-8 py-6">
-					<h2 class="text-2xl font-semibold text-gray-800 mb-4" in:fly={{ y: 20, duration: 500, delay: 600 }}>소셜 미디어</h2>
+					<h2 class="text-2xl font-semibold text-gray-800 mb-4 font-serif" in:fly={{ y: 20, duration: 500, delay: 600 }}>소셜 미디어</h2>
 					<div class="flex flex-col md:flex-row gap-4 mb-8" in:fly={{ y: 20, duration: 500, delay: 700 }}>
 						<a href="https://www.instagram.com/handmodel_subong/" target="_blank" rel="noopener noreferrer" class="btn btn-primary flex-1 flex items-center justify-center">
 							<svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -48,7 +48,7 @@
 						</a>
 					</div>
 					
-					<h2 class="text-2xl font-semibold text-gray-800 mb-4" in:fly={{ y: 20, duration: 500, delay: 800 }}>문의 안내</h2>
+					<h2 class="text-2xl font-semibold text-gray-800 mb-4 font-serif" in:fly={{ y: 20, duration: 500, delay: 800 }}>문의 안내</h2>
 					<div class="space-y-4" in:fly={{ y: 20, duration: 500, delay: 900 }}>
 						<p class="text-gray-600">
 							인스타그램 DM이나 카카오톡 오픈 채팅을 통해 문의해 주시면 빠른 시일 내에 답변 드리겠습니다.
@@ -62,7 +62,7 @@
 				</div>
 				
 				<div class="px-8 py-6 bg-gray-50" in:fly={{ y: 20, duration: 500, delay: 1000 }}>
-					<h2 class="text-2xl font-semibold text-gray-800 mb-4">함께 멋진 작품을 만들어요!</h2>
+					<h2 class="text-2xl font-semibold text-gray-800 mb-4 font-serif">제품의 가치를 높여드립니다</h2>
 					<p class="text-gray-600">
 						손의 섬세한 표현으로 당신의 제품과 브랜드를 빛나게 해드리겠습니다. 
 						지금 바로 연락주세요!
@@ -75,7 +75,7 @@
 
 <style lang="postcss">
 	.btn {
-		@apply py-3 px-6 rounded-lg text-lg font-semibold transition-colors duration-300;
+		@apply py-1 px-6 rounded-lg text-lg font-semibold transition-colors duration-300;
 	}
 	.btn-primary {
 		@apply bg-purple-600 text-white hover:bg-purple-700;

@@ -1,4 +1,5 @@
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+@import url('https://fonts.googleapis.com/earlyaccess/jejumyeongjo.css');
 
 @tailwind base;
 @tailwind components;
@@ -7,6 +8,10 @@
 @layer base {
   html {
     font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
+  }
+  
+  .font-serif {
+    font-family: 'Jeju Myeongjo', Georgia, Cambria, 'Times New Roman', Times, serif;
   }
 }
 

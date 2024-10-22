@@ -125,7 +125,7 @@
 						<div class="aspect-square relative overflow-hidden transition-all duration-300 group-hover:scale-105 group-hover:z-10 border border-gray-300 rounded-lg shadow-md">
 							<img src={postRow.images && postRow.images.length > 0 ? postRow.images[0] : handSrc} alt={postRow.title} class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
 							<div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-4">
-								<h3 class="text-white text-xl font-bold mb-2 text-center">{postRow.title}</h3>
+								<h3 class="text-white text-xl font-bold mb-2 text-center font-serif">{postRow.title}</h3>
 								<div class="flex flex-wrap justify-center gap-2 mb-2">
 									{#each postRow.category as categoryData}
 										<span class="badge">{categoryData}</span>
