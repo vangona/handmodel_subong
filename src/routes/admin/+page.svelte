@@ -4,7 +4,6 @@
 
 	let totalPosts = 0;
 	let totalCategories = 0;
-	let totalUsers = 0;
 	let errorMessage = '';
 
 	const loadDashboardData = async () => {
@@ -12,7 +11,6 @@
 			const data = await apiGetDashboardData();
 			totalPosts = data.totalPosts;
 			totalCategories = data.totalCategories;
-			totalUsers = data.totalUsers;
 		} catch (error) {
 			if (error instanceof Error) {
 				errorMessage = 'Dashboard Error: ' + error.message;

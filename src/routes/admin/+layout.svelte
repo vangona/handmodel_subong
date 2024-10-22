@@ -2,7 +2,7 @@
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { apiPostLogout, apiGetUser } from '$lib/api/auth';
-	import { onMount, onDestroy } from 'svelte';
+	import { onMount } from 'svelte';
 	import type { User } from '@supabase/supabase-js';
 	import { writable } from 'svelte/store';
 	import { supabase } from '$lib/api/supabaseClient';
@@ -10,7 +10,6 @@
 
 	const user = writable<User | null>(null);
 	let loading = true;
-	let authListener: any;
 
 	const logout = async () => {
 		try {
@@ -40,7 +39,7 @@
 		await checkUser();
 
 		// Supabase 실시간 구독 설정
-		authListener = supabase.auth.onAuthStateChange((event, session) => {
+		supabase.auth.onAuthStateChange((event, session) => {
 			if (event === 'SIGNED_IN') {
 				user.set(session?.user ?? null);
 				if ($page.url.pathname === '/admin/login') {
@@ -53,13 +52,6 @@
 				}
 			}
 		});
-	});
-
-	onDestroy(() => {
-		// 컴포넌트가 파괴될 때 리스너 제거
-		if (authListener) {
-			authListener.unsubscribe();
-		}
 	});
 
 	// 사용자 상태가 변경될 때마다 실행
