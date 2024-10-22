@@ -10,14 +10,17 @@
 
 	const user = writable<User | null>(null);
 	let loading = true;
+	let isMobile = false;
 
 	const logout = async () => {
-		try {
-			await apiPostLogout();
-			user.set(null);
-			goto('/admin/login');
-		} catch (error) {
-			console.error(error);
+		if (confirm('정말 로그아웃 하시겠습니까?')) {
+			try {
+				await apiPostLogout();
+				user.set(null);
+				goto('/admin/login');
+			} catch (error) {
+				console.error(error);
+			}
 		}
 	};
 
@@ -37,7 +40,7 @@
 
 	onMount(async () => {
 		await checkUser();
-
+		isMobile = window.innerWidth < 768;
 		// Supabase 실시간 구독 설정
 		supabase.auth.onAuthStateChange((event, session) => {
 			if (event === 'SIGNED_IN') {
@@ -72,7 +75,7 @@
 	<div class="flex justify-center items-center h-screen w-screen">
 		<div class="loader"></div>
 	</div>
-{:else if $user}
+{:else if $user && !isMobile}
 	<div class="flex h-screen bg-gray-100 overflow-hidden w-screen">
 		<!-- 사이드바 -->
 		<aside class="w-64 bg-white shadow-md overflow-y-auto">
@@ -100,6 +103,29 @@
 				<slot />
 			</div>
 		</main>
+	</div>
+{:else if $user && isMobile}
+	<div class="flex flex-col h-screen bg-gray-100 overflow-hidden w-screen">
+		<!-- 메인 콘텐츠 -->
+		<main class="flex-1 overflow-y-auto p-4 mt-12">
+			<slot />
+		</main>
+
+		<!-- 하단 탭 바 -->
+		<nav class="bg-white shadow-md p-2 flex justify-around items-center font-serif">
+			<a href="/admin/dashboard" class="text-center p-2 {$page.url.pathname === '/admin/dashboard' ? 'text-blue-600' : 'text-gray-600'}">
+				대시보드
+			</a>
+			<a href="/admin/posts" class="text-center p-2 {$page.url.pathname === '/admin/posts' ? 'text-blue-600' : 'text-gray-600'}">
+포스트
+			</a>
+			<a href="/admin/categories" class="text-center p-2 {$page.url.pathname === '/admin/categories' ? 'text-blue-600' : 'text-gray-600'}">
+				카테고리
+			</a>
+			<button on:click={logout} class="text-center p-2 text-gray-600 hover:text-red-600">
+				로그아웃
+			</button>
+		</nav>
 	</div>
 {:else}
 	<slot />

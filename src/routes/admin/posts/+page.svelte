@@ -15,6 +15,7 @@
 	let postsPerPage = 10;
 	let searchQuery = '';
 	let loading = true;
+	let isMobile = false;
 
 	$: sortedPosts = filteredPosts.sort((a, b) => a.id - b.id);
 	$: currentPosts = sortedPosts.slice(
@@ -98,6 +99,7 @@
 
 	onMount(() => {
 		loadPosts();
+		isMobile = window.innerWidth < 768;
 	});
 </script>
 
@@ -121,7 +123,9 @@
 					<th>ID</th>
 					<th>제목</th>
 					<th>카테고리</th>
-					<th>설명</th>
+					{#if !isMobile}
+						<th>설명</th>
+					{/if}
 					<th class="w-24">액션</th>
 				</tr>
 			</thead>
@@ -137,7 +141,9 @@
 								{/each}
 							</div>
 						</td>
-						<td class="max-w-xs overflow-hidden text-ellipsis whitespace-nowrap">{post.description}</td>
+						{#if !isMobile}
+							<td class="max-w-xs overflow-hidden text-ellipsis whitespace-nowrap">{post.description}</td>
+						{/if}
 						<td class="w-24">
 							<button class="btn btn-error btn-sm w-full" on:click|stopPropagation={() => handleDeletePost(post.id)}>
 								<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
