@@ -11,9 +11,14 @@
 </script>
 
 <svelte:head>
-	<title>손모델 심수연 | 소개</title>
-	<meta name="description" content="손모델 심수연의 소개 페이지입니다. 다양한 광고와 촬영에서 활동한 이력을 확인하세요." />
-	<meta name="keywords" content="손모델, 포트폴리오, 소개, 이력, 심수연" />
+	<title>소개 | 손모델 심수연</title>
+	<meta name="description" content="손모델 심수연의 소개 페이지입니다. 경력, 특기, 주요 활동 등을 확인하세요." />
+	<meta name="keywords" content="손모델, 심수연, 소개, 경력, 특기, 주요 활동" />
+	<meta property="og:title" content="손모델 심수연 | 소개" />
+	<meta property="og:description" content="손모델 심수연의 소개 페이지입니다. 경력, 특기, 주요 활동 등을 확인하세요." />
+	<meta property="og:image" content="/og-image-about.jpg" />
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="https://subong.vercel.app/about" />
 </svelte:head>
 
 <div class="flex justify-center items-start pt-8 md:pt-12 min-h-screen w-full bg-offwhite bg-opacity-90 pb-24">

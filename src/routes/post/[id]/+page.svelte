@@ -69,6 +69,12 @@
 <svelte:head>
 	<title>{post ? `${post.title} | 손모델 심수연` : '손모델 심수연'}</title>
 	<meta name="description" content={post ? post.description : '손모델 심수연의 포트폴리오 상세 페이지입니다.'} />
+	<meta name="keywords" content={post ? `손모델, 심수연, ${post.category.join(', ')}` : '손모델, 심수연, 포트폴리오'} />
+	<meta property="og:title" content={post ? `${post.title} | 손모델 심수연` : '손모델 심수연'} />
+	<meta property="og:description" content={post ? post.description : '손모델 심수연의 포트폴리오 상세 페이지입니다.'} />
+	<meta property="og:image" content={post && post.images && post.images.length > 0 ? post.images[0] : '/og-image-default.jpg'} />
+	<meta property="og:type" content="article" />
+	<meta property="og:url" content={`https://subong.vercel.app/post/${$page.params.id}`} />
 </svelte:head>
 
 <div class="container mx-auto px-4 py-12 max-w-3xl">

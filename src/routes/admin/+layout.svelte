@@ -71,6 +71,11 @@
 	}
 </script>
 
+<svelte:head>
+	<title>관리자 페이지 | 손모델 심수연</title>
+	<meta name="robots" content="noindex, nofollow" />
+</svelte:head>
+
 {#if loading}
 	<div class="flex justify-center items-center h-screen w-screen">
 		<div class="loader"></div>

@@ -11,9 +11,14 @@
 </script>
 
 <svelte:head>
-	<title>손모델 심수연 | 함께 하기</title>
-	<meta name="description" content="손모델 심수연과 연락할 수 있는 페이지입니다. 인스타그램과 카카오톡 오픈 채팅을 통해 문의하세요." />
-	<meta name="keywords" content="손모델, 포트폴리오, 연락처, 인스타그램, 카카오톡" />
+	<title>함께 하기 | 손모델 심수연</title>
+	<meta name="description" content="손모델 심수연과 연락하고 함께 작업할 수 있는 방법을 안내합니다. 인스타그램과 카카오톡으로 문의하세요." />
+	<meta name="keywords" content="손모델, 심수연, 연락처, 문의, 인스타그램, 카카오톡" />
+	<meta property="og:title" content="손모델 심수연 | 함께 하기" />
+	<meta property="og:description" content="손모델 심수연과 연락하고 함께 작업할 수 있는 방법을 안내합니다. 인스타그램과 카카오톡으로 문의하세요." />
+	<meta property="og:image" content="/og-image-contact.jpg" />
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="https://subong.vercel.app/contact" />
 </svelte:head>
 
 <div class="flex justify-center items-start pt-8 md:pt-12 min-h-screen w-full bg-offwhite bg-opacity-90">

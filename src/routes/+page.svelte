@@ -94,9 +94,14 @@
 </script>
 
 <svelte:head>
-	<title>손모델 심수연</title>
+	<title>손모델 심수연 | 포트폴리오</title>
 	<meta name="description" content="손모델 심수연의 포트폴리오 사이트입니다. 다양한 광고와 촬영 작품을 확인하세요." />
-	<meta name="keywords" content="손모델, 포트폴리오, 광고, 촬영, 심수연" />
+	<meta name="keywords" content="손모델, 심수연, 포트폴리오, 광고, 촬영, 핸드모델" />
+	<meta property="og:title" content="손모델 심수연 | 포트폴리오" />
+	<meta property="og:description" content="손모델 심수연의 포트폴리오 사이트입니다. 다양한 광고와 촬영 작품을 확인하세요." />
+	<meta property="og:image" content="/og-image.jpg" />
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="https://subong.vercel.app" />
 </svelte:head>
 
 <Hero />
