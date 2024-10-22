@@ -9,6 +9,7 @@
 	import 'swiper/css/navigation';
 	import 'swiper/css/pagination';
 	import 'swiper/css/thumbs';
+	import { fade, fly } from 'svelte/transition';
 
 	let post: PostTable | null = null;
 	let errorMessage = '';
@@ -24,7 +25,7 @@
 			post = await apiGetPostById(postId);
 			loading = false;
 			totalSlides = post.images?.length || 0;
-			// Swiper 초기화는 post 데이터가 로드된 후에 수행합니다.
+			
 			setTimeout(() => {
 				thumbsSwiper = new Swiper('.thumbs-swiper', {
 					spaceBetween: 10,
@@ -65,20 +66,25 @@
 	});
 </script>
 
+<svelte:head>
+	<title>{post ? `${post.title} | 손모델 심수연` : '손모델 심수연'}</title>
+	<meta name="description" content={post ? post.description : '손모델 심수연의 포트폴리오 상세 페이지입니다.'} />
+</svelte:head>
+
 <div class="container mx-auto px-4 py-12 max-w-3xl">
 	{#if loading}
-		<div class="flex justify-center items-center h-64">
+		<div class="flex justify-center items-center h-64" in:fade>
 			<div class="loader"></div>
 		</div>
 	{:else if errorMessage}
-		<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+		<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert" in:fade>
 			<strong class="font-bold">오류:</strong>
 			<span class="block sm:inline">{errorMessage}</span>
 		</div>
 	{:else if post}
-		<article class="bg-white shadow-lg rounded-lg overflow-hidden">
+		<article class="bg-white shadow-lg rounded-lg overflow-hidden" in:fade={{ duration: 300 }}>
 			{#if post.images && post.images.length > 0}
-				<div class="swiper-container h-64 sm:h-96 relative">
+				<div class="swiper-container h-64 sm:h-96 relative" in:fly={{ y: 20, duration: 300, delay: 150 }}>
 					<div class="swiper-wrapper">
 						{#each post.images as image}
 							<div class="swiper-slide">
@@ -93,7 +99,7 @@
 						{currentSlide} / {totalSlides}
 					</div>
 				</div>
-				<div class="thumbs-swiper mt-4">
+				<div class="thumbs-swiper mt-4" in:fly={{ y: 20, duration: 300, delay: 300 }}>
 					<div class="swiper-wrapper">
 						{#each post.images as image}
 							<div class="swiper-slide">
@@ -103,14 +109,14 @@
 					</div>
 				</div>
 			{/if}
-			<div class="p-6">
+			<div class="p-6" in:fly={{ y: 20, duration: 300, delay: 300 }}>
 				<h1 class="text-3xl font-bold mb-4 text-gray-800 font-serif">{post.title}</h1>
 				<div class="mb-4 flex flex-wrap">
 					{#each post.category as category}
 						<span class="badge mr-2 mb-2">{category}</span>
 					{/each}
 				</div>
-					<p class="text-gray-700 leading-relaxed mb-6 whitespace-pre-wrap">{post.description}</p>
+				<p class="text-gray-700 leading-relaxed mb-6 whitespace-pre-wrap">{post.description}</p>
 			</div>
 		</article>
 	{/if}
