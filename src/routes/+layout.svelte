@@ -165,10 +165,32 @@
 		</div>
 	{/if}
 
+	<a
+		href="https://open.kakao.com/o/sBSr9QCc"
+		target="_blank"
+		rel="noopener noreferrer"
+		class="fixed bottom-8 right-8 bg-primary text-white p-2 rounded-full shadow-lg z-40 hover:bg-primary-dark transition-colors duration-300"
+		transition:fade
+	>
+		<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 p-0.5" viewBox="0 0 208 191" fill="currentColor">
+			<path fill-rule="evenodd" clip-rule="evenodd" d="M104 0C46.56 0 0 36.71 0 82C0 111.14 18.86 136.78 47.35 152.51L35.26 190.39C34.34 193.38 37.51 195.97 40.17 194.45L87.12 164.41C92.65 165.46 98.31 166 104 166C161.44 166 208 129.29 208 84C208 38.71 161.44 0 104 0Z"/>
+		</svg>
+	</a>
 	{#if showScrollTopButton}
+		<a
+			href="https://open.kakao.com/o/sBSr9QCc"
+			target="_blank"
+			rel="noopener noreferrer"
+			class="fixed bottom-20 right-8 bg-primary text-white p-2 rounded-full shadow-lg z-40 hover:bg-primary-dark transition-colors duration-300"
+			transition:fade
+		>
+			<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 p-0.5" viewBox="0 0 208 191" fill="currentColor">
+				<path fill-rule="evenodd" clip-rule="evenodd" d="M104 0C46.56 0 0 36.71 0 82C0 111.14 18.86 136.78 47.35 152.51L35.26 190.39C34.34 193.38 37.51 195.97 40.17 194.45L87.12 164.41C92.65 165.46 98.31 166 104 166C161.44 166 208 129.29 208 84C208 38.71 161.44 0 104 0Z"/>
+			</svg>
+		</a>
 		<button
 			on:click={scrollToTop}
-			class="fixed bottom-4 right-4 bg-primary text-white p-2 rounded-full shadow-lg z-40 hover:bg-primary-dark transition-colors duration-300"
+			class="fixed bottom-8 right-8 bg-primary text-white p-2 rounded-full shadow-lg z-40 hover:bg-primary-dark transition-colors duration-300"
 			transition:fade
 		>
 			<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
