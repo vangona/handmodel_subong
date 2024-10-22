@@ -11,7 +11,7 @@
 </script>
 
 <svelte:head>
-	<title>손모델 심수연</title>
+	<title>손모델 심수연 | 소개</title>
 	<meta name="description" content="손모델 심수연의 소개 페이지입니다. 다양한 광고와 촬영에서 활동한 이력을 확인하세요." />
 	<meta name="keywords" content="손모델, 포트폴리오, 소개, 이력, 심수연" />
 </svelte:head>

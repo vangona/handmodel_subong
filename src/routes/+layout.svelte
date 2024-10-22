@@ -28,6 +28,7 @@
 	let scrollY = 0;
 	
 	const handleClickBanner = () => {
+		if ($page.url.pathname !== '/') return;
 		isMobile && containerRef.scrollTop === 0 && containerRef.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
 	}
 
@@ -53,8 +54,9 @@
 	}
 
 	function restoreScrollPosition() {
+		if ($page.url.pathname !== '/') return;
 		const storedScrollY = sessionStorage.getItem('scrollY');
-		if (storedScrollY) {
+		if (storedScrollY) { 
 			setTimeout(() => {
 				containerRef.scrollTo({ top: parseInt(storedScrollY), behavior: 'smooth' });
 			}, 100);
@@ -148,7 +150,7 @@
 				<ul class="mt-8 space-y-4">
 					{#each items as item}
 						<li>
-							<a href={item.href} class="block py-2 hover:bg-gray-700 rounded" on:click={toggleMenu}>{item.label}</a>
+							<a href={item.href} class="block py-2 hover:bg-gray-700 rounded font-serif" on:click={toggleMenu}>{item.label}</a>
 						</li>
 					{/each}
 				</ul>
