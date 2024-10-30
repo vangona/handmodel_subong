@@ -3,6 +3,7 @@
 	import { fade } from 'svelte/transition';
 	import { apiGetMainImage, apiUploadMainImage, apiDeleteMainImage } from '$lib/api/mainImages';
 	import type { MainImage } from '$lib/api/supabaseClient';
+	import imageCompression from 'browser-image-compression';
 
 	let files: FileList | undefined;
 	let loading = false;
@@ -25,6 +26,21 @@
 		}
 	}
 
+	const compressImage = async (file: File) => {
+		const options = {
+			maxSizeMB: 1,
+			maxWidthOrHeight: 1920,
+			useWebWorker: true
+		};
+
+		try {
+			return await imageCompression(file, options);
+		} catch (error) {
+			console.error('Image compression failed:', error);
+			return file; // 압축 실패 시 원본 파일 반환
+		}
+	};
+
 	async function handleImageUpload() {
 		if (!files || files.length === 0) return;
 
@@ -34,7 +50,8 @@
 
 		try {
 			for (const file of files) {
-				await apiUploadMainImage(file);
+				const compressedFile = await compressImage(file);
+				await apiUploadMainImage(compressedFile);
 			}
 
 			successMessage = '이미지가 성공적으로 업로드되었습니다.';
