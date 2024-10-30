@@ -31,13 +31,19 @@ export interface SupabaseTables {
 		Row: {
 			id: number;
 			url: string;
+			position_x: number;
+			position_y: number;
 			created_at: string;
 		};
 		Insert: {
 			url: string;
+			position_x?: number;
+			position_y?: number;
 		};
 		Update: {
 			url?: string;
+			position_x?: number;
+			position_y?: number;
 		};
 	};
 }

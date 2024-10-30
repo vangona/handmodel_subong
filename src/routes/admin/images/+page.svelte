@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import { apiGetMainImage, apiUploadMainImage, apiDeleteMainImage } from '$lib/api/mainImages';
+	import { apiGetMainImage, apiUploadMainImage, apiUpdateImagePosition } from '$lib/api/mainImages';
+	import ImagePositioner from '$lib/components/ui/ImagePositioner.svelte';
 	import type { MainImage } from '$lib/api/supabaseClient';
 	import imageCompression from 'browser-image-compression';
 
@@ -11,6 +12,8 @@
 	let successMessage = '';
 	let mainImages: MainImage[] = [];
 	let isDragging = false;
+	let showPositioner = false;
+	let currentImage: MainImage | null = null;
 
 	onMount(async () => {
 		await loadMainImages();
@@ -37,7 +40,7 @@
 			return await imageCompression(file, options);
 		} catch (error) {
 			console.error('Image compression failed:', error);
-			return file; // 압축 실패 시 원본 파일 반환
+			return file;
 		}
 	};
 
@@ -49,11 +52,8 @@
 		successMessage = '';
 
 		try {
-			for (const file of files) {
-				const compressedFile = await compressImage(file);
-				await apiUploadMainImage(compressedFile);
-			}
-
+			const compressedFile = await compressImage(files[0]);
+			await apiUploadMainImage(compressedFile, 50, 50);
 			successMessage = '이미지가 성공적으로 업로드되었습니다.';
 			await loadMainImages();
 		} catch (error) {
@@ -65,22 +65,6 @@
 		} finally {
 			loading = false;
 			files = undefined;
-		}
-	}
-
-	async function handleImageDelete(imageId: string, imageUrl: string) {
-		if (!confirm('이미지를 삭제하시겠습니까?')) return;
-
-		try {
-			await apiDeleteMainImage(imageId, imageUrl);
-			successMessage = '이미지가 성공적으로 삭제되었습니다.';
-			await loadMainImages();
-		} catch (error) {
-			if (error instanceof Error) {
-				errorMessage = error.message;
-			} else {
-				errorMessage = '이미지 삭제 중 오류가 발생했습니다.';
-			}
 		}
 	}
 
@@ -101,6 +85,33 @@
 			files = e.dataTransfer.files;
 			handleImageUpload();
 		}
+	}
+
+	async function handlePositionSave(event: CustomEvent<{ positionX: number; positionY: number }>) {
+		const { positionX, positionY } = event.detail;
+		if (!currentImage) return;
+
+		try {
+			await apiUpdateImagePosition(currentImage.id.toString(), positionX, positionY);
+			await loadMainImages();
+			showPositioner = false;
+			currentImage = null;
+			successMessage = '이미지 위치가 업데이트되었습니다.';
+		} catch (error) {
+			if (error instanceof Error) {
+				errorMessage = error.message;
+			}
+		}
+	}
+
+	function handlePositionCancel() {
+		showPositioner = false;
+		currentImage = null;
+	}
+
+	function openPositioner(image: MainImage) {
+		currentImage = image;
+		showPositioner = true;
 	}
 </script>
 
@@ -151,16 +162,17 @@
 				<img 
 					src={image.url} 
 					alt="메인 이미지" 
-					class="w-full object-cover rounded-lg shadow-md"
+					class="w-full h-full object-cover rounded-lg shadow-md"
+					style="object-position: {image.position_x ?? 50}% {image.position_y ?? 50}%"
 				/>
-				<div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-lg flex items-center justify-center">
+				<div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-lg flex items-center justify-center gap-2">
 					<button 
 						type="button" 
-						on:click={() => handleImageDelete(image.id.toString(), image.url)}
-						class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center"
+						on:click={() => openPositioner(image)}
+						class="btn btn-ghost text-white"
 					>
-						<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-							<path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+						<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+							<path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
 						</svg>
 					</button>
 				</div>
@@ -168,6 +180,16 @@
 		{/each}
 	</div>
 </div>
+
+{#if showPositioner && currentImage}
+	<ImagePositioner
+		imageUrl={currentImage.url}
+		positionX={currentImage.position_x ?? 50}
+		positionY={currentImage.position_y ?? 50}
+		on:save={handlePositionSave}
+		on:cancel={handlePositionCancel}
+	/>
+{/if}
 
 <style lang="postcss">
 	.upload-zone {
