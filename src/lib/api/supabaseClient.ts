@@ -27,6 +27,19 @@ export interface SupabaseTables {
 			images?: Array<string>;
 		};
 	};
+	[SupabaseTable.MainImages]: {
+		Row: {
+			id: number;
+			url: string;
+			created_at: string;
+		};
+		Insert: {
+			url: string;
+		};
+		Update: {
+			url?: string;
+		};
+	};
 }
 
 export interface SupabaseDatabase {
@@ -36,5 +49,5 @@ export interface SupabaseDatabase {
 }
 
 export type PostTable = SupabaseTables[SupabaseTable.Posts]['Row'];
-
+export type MainImage = SupabaseTables[SupabaseTable.MainImages]['Row'];
 export const supabase = createClient<SupabaseDatabase>(supabaseUrl, supabaseAnonKey);

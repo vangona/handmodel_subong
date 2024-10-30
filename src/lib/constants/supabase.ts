@@ -18,8 +18,10 @@ export enum SupabaseInfo {
 
 export enum SupabaseStorage {
 	PostImages = 'post-images',
+	MainImages = 'main-images',
 }
 
 export enum SupabaseTable {
 	Posts = 'posts',
+	MainImages = 'main_images',
 }
