@@ -24,4 +24,5 @@ export enum SupabaseStorage {
 export enum SupabaseTable {
 	Posts = 'posts',
 	MainImages = 'main_images',
+	Categories = 'categories',
 }
