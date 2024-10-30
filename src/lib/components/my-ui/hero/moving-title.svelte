@@ -2,12 +2,14 @@
 	import { onMount } from 'svelte';
 	import handSrc from '$lib/assets/images/hero-hand.png';
 	import { apiGetMainImage } from '$lib/api/mainImages';
+	import type { MainImage } from '$lib/api/supabaseClient';
 
 	let isMobile = false;
-	let mainImage: string = '';
+	let mainImage: MainImage | null = null;
 
 	onMount(async () => {
-		mainImage = (await apiGetMainImage())[0].url;
+		const images = await apiGetMainImage();
+		mainImage = images[0];
 		isMobile = window.innerWidth < 768;
 	});
 </script>
@@ -16,7 +18,12 @@
 	<div class="relative flex-grow flex flex-col justify-center items-center overflow-hidden">
 		<div class="w-full h-full flex items-center justify-center">
 			{#if mainImage}
-				<img src={mainImage} alt="손모델 심수연의 손" class="w-full h-full object-cover" />
+				<img 
+					src={mainImage.url} 
+					alt="손모델 심수연의 손" 
+					class="w-full h-full object-cover"
+					style="object-position: {mainImage.position_x ?? 50}% {mainImage.position_y ?? 50}%"
+				/>
 			{:else}
 				<img src={handSrc} alt="손모델 심수연의 손" class="max-w-full max-h-full object-contain" />
 			{/if}
