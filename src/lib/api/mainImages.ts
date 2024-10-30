@@ -69,10 +69,10 @@ export async function apiUploadMainImage(file: File, positionX: number = 50, pos
 
 export async function apiUpdateImagePosition(imageId: string, positionX: number, positionY: number) {
     const { error } = await supabase
-        .from('main_images')
+        .from(SupabaseTable.MainImages)
         .update({ 
-            position_x: positionX,
-            position_y: positionY 
+            position_x: Math.round(positionX),
+            position_y: Math.round(positionY) 
         })
         .eq('id', imageId);
 
