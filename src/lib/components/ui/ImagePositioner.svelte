@@ -68,7 +68,7 @@
         <button 
             bind:this={container}
             aria-label="이미지 위치 조정"
-            class="relative w-full h-96 overflow-hidden cursor-move"
+            class="relative w-[480px] h-[720px] overflow-hidden cursor-move"
             on:mousedown={() => isDragging = true}
             on:mousemove={handleMouseMove}
             on:mouseup={handleMouseUp}
