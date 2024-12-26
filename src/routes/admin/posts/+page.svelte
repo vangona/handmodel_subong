@@ -3,7 +3,8 @@
 	import { goto } from '$app/navigation';
 	import type { PostTable } from '$lib/api/supabaseClient';
 	import CategoryFilter from '$lib/components/ui/CategoryFilter.svelte';
-	import { apiGetPosts, apiDeletePost } from '$lib/api/posts';
+	import { apiGetPosts, apiDeletePost, apiUpdatePostThumbnail } from '$lib/api/posts';
+	import ImagePositioner from '$lib/components/ui/ImagePositioner.svelte';
 
 	let posts: Array<PostTable> = [];
 	let filteredPosts: Array<PostTable> = [];
@@ -16,6 +17,9 @@
 	let searchQuery = '';
 	let loading = true;
 	let isMobile = false;
+	let showPositioner = false;
+	let currentPost: PostTable | null = null;
+	let successMessage = '';
 
 	$: sortedPosts = filteredPosts.sort((a, b) => a.id - b.id);
 	$: currentPosts = sortedPosts.slice(
@@ -97,6 +101,37 @@
 		goto(`/admin/posts/edit/${postId}`);
 	}
 
+	function openPositioner(post: PostTable) {
+		currentPost = post;
+		showPositioner = true;
+	}
+
+	function handlePositionCancel() {
+		showPositioner = false;
+		currentPost = null;
+	}
+
+	async function handlePositionSave(event: CustomEvent<{ positionX: number; positionY: number; scale: number }>) {
+		const { positionX, positionY, scale } = event.detail;
+		if (!currentPost) return;
+
+		try {
+			loading = true;
+			errorMessage = '';
+			await apiUpdatePostThumbnail(currentPost.id.toString(), positionX, positionY, scale);
+			await loadPosts();
+			showPositioner = false;
+			currentPost = null;
+			successMessage = '섬네일 위치가 성공적으로 업데이트되었습니다.';
+		} catch (error) {
+			if (error instanceof Error) {
+				errorMessage = error.message;
+			}
+		} finally {
+			loading = false;
+		}
+	}
+
 	onMount(() => {
 		loadPosts();
 		isMobile = window.innerWidth < 768;
@@ -121,6 +156,7 @@
 			<thead>
 				<tr>
 					<th>ID</th>
+					<th>섬네일</th>
 					<th>제목</th>
 					<th>카테고리</th>
 					{#if !isMobile}
@@ -133,7 +169,30 @@
 				{#each currentPosts as post}
 					<tr class="cursor-pointer hover:bg-gray-100" on:click={() => handleRowClick(post.id)}>
 						<td>{post.id}</td>
-						<td>{post.title}</td>
+						<td class="relative w-24">
+							{#if post.images && post.images.length > 0}
+								<div class="relative group aspect-square w-24">
+									<img 
+										src={post.images[0]} 
+										alt={post.title}
+										class="w-full h-full object-cover rounded-lg"
+										style="object-position: {post.thumbnail_position_x ?? 50}% {post.thumbnail_position_y ?? 50}%; transform: scale({post.thumbnail_scale ?? 1})"
+									/>
+									<div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center rounded-lg">
+										<button 
+											type="button" 
+											class="btn btn-ghost btn-sm text-white"
+											on:click|stopPropagation={() => openPositioner(post)}
+											>
+											<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+												<path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+											</svg>
+										</button>
+									</div>
+								</div>
+							{/if}
+						</td>
+						<td on:click={() => handleRowClick(post.id)}>{post.title}</td>
 						<td>
 							<div class="flex flex-wrap gap-1">
 								{#each post.category as cat}
@@ -165,6 +224,18 @@
 		</div>
 	{/if}
 </div>
+
+{#if showPositioner && currentPost}
+	<ImagePositioner
+		imageUrl={currentPost.images[0]}
+		positionX={currentPost.thumbnail_position_x ?? 50}
+		positionY={currentPost.thumbnail_position_y ?? 50}
+		scale={currentPost.thumbnail_scale ?? 1}
+		aspectRatio="1:1"
+		on:save={handlePositionSave}
+		on:cancel={handlePositionCancel}
+	/>
+{/if}
 
 <style lang="postcss">
 	.admin-container {

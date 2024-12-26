@@ -87,14 +87,14 @@
 		}
 	}
 
-	async function handlePositionSave(event: CustomEvent<{ positionX: number; positionY: number }>) {
-		const { positionX, positionY } = event.detail;
+	async function handlePositionSave(event: CustomEvent<{ positionX: number; positionY: number; scale: number }>) {
+		const { positionX, positionY, scale } = event.detail;
 		if (!currentImage) return;
 
 		try {
 			loading = true;
 			errorMessage = '';
-			await apiUpdateImagePosition(currentImage.id.toString(), positionX, positionY);
+			await apiUpdateImagePosition(currentImage.id.toString(), positionX, positionY, scale);
 			await loadMainImages();
 			showPositioner = false;
 			currentImage = null;
@@ -167,7 +167,7 @@
 					src={image.url} 
 					alt="메인 이미지" 
 					class="w-full h-full object-cover rounded-lg shadow-md"
-					style="object-position: {image.position_x ?? 50}% {image.position_y ?? 50}%"
+					style="object-position: {image.position_x}% {image.position_y}%; transform: scale({image.scale})"
 				/>
 				<div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-lg flex items-center justify-center gap-2">
 					<button 
@@ -190,6 +190,8 @@
 		imageUrl={currentImage.url}
 		positionX={currentImage.position_x ?? 50}
 		positionY={currentImage.position_y ?? 50}
+		scale={currentImage.scale ?? 1}
+		aspectRatio="2:3"
 		on:save={handlePositionSave}
 		on:cancel={handlePositionCancel}
 	/>

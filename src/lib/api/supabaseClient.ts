@@ -13,6 +13,9 @@ export interface SupabaseTables {
 			category: Array<string>;
 			description: string;
 			images: Array<string>;
+			thumbnail_position_x: number;
+			thumbnail_position_y: number;
+			thumbnail_scale: number;
 		};
 		Insert: {
 			title: string;
@@ -33,6 +36,7 @@ export interface SupabaseTables {
 			url: string;
 			position_x: number;
 			position_y: number;
+			scale: number;
 			created_at: string;
 		};
 		Insert: {

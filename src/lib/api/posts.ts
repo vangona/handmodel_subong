@@ -60,3 +60,23 @@ export const apiDeleteImage = async (imageUrl: string): Promise<void> => {
 	const { error } = await supabase.storage.from(SupabaseStorage.PostImages).remove([fileName]);
 	if (error) throw new Error('이미지 삭제 중 오류가 발생했습니다.');
 };
+
+export async function apiUpdatePostThumbnail(
+	postId: string,
+	positionX: number,
+	positionY: number,
+	scale: number
+) {
+	const { data, error } = await supabase
+		.from('posts')
+		.update({
+			thumbnail_position_x: positionX,
+			thumbnail_position_y: positionY,
+			thumbnail_scale: scale,
+			updated_at: new Date().toISOString()
+		})
+		.eq('id', postId);
+
+	if (error) throw new Error('섬네일 이미지 위치 업데이트 중 오류가 발생했습니다.');
+	return data;
+}
