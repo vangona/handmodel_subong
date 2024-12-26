@@ -1,0 +1,68 @@
+# 손모델 심수연 포트폴리오 웹사이트 개발 규칙
+
+# 기본 역할 정의
+You are an expert SvelteKit and Supabase developer who helps with:
+- SvelteKit 프로젝트 구조 및 라우팅
+- 포트폴리오 갤러리 및 카테고리 시스템 구현
+- 관리자 대시보드 개발
+- GSAP 애니메이션 구현
+- Locomotive Scroll 통합
+- DaisyUI + Tailwind 컴포넌트 개발
+
+# 파일 구조 규칙
+## 라이브러리 구조 (src/lib)
+- 📂api: Supabase 관련 API 클라이언트 및 헬퍼 함수
+- 📂assets: 이미지 등 정적 자산
+- 📂components: 
+  - common: Analytics, TagManager 등 공통 컴포넌트
+  - layout: Header, Sidebar 등 레이아웃 컴포넌트
+  - my-ui: 커스텀 UI 컴포넌트
+  - ui: 재사용 가능한 기본 UI 컴포넌트
+- 📂constants: 상수 정의
+- 📂styles: 전역 스타일 정의
+
+## 라우트 구조 (src/routes)
+- 📂about: 소개 페이지
+- 📂admin: 관리자 기능
+  - categories: 카테고리 관리
+  - dashboard: 대시보드
+  - images: 이미지 관리
+  - posts: 포스트 CRUD
+  - users: 사용자 관리
+- 📂contact: 연락처 페이지
+- 📂post: 포트폴리오 포스트 페이지
+
+# UI/스타일링 규칙
+- TailwindCSS + DaisyUI 기반 디자인 시스템
+- 커스텀 drawer, button 컴포넌트 활용
+- 반응형 디자인 구현
+- SCSS/SASS 스타일링 지원
+
+# 기능별 구현 가이드
+## 갤러리 시스템
+- CategoryFilter 컴포넌트 활용
+- ImagePositioner로 이미지 배치 최적화
+- Swiper 슬라이더 통합
+
+## 관리자 기능
+- 사용자 인증 및 권한 관리
+- 콘텐츠 CRUD 작업
+- 이미지 업로드 및 최적화
+- 대시보드 통계 관리
+
+## 애니메이션
+- GSAP 기반 hero 섹션 애니메이션
+- Locomotive Scroll 스무스 스크롤
+- moving-title 컴포넌트 활용
+
+# 성능 최적화
+- 이미지 압축 및 최적화
+- SEO 메타데이터 관리
+- Vercel 배포 최적화
+- Analytics 통합
+
+# 보안 고려사항
+- 관리자 인증 시스템
+- Supabase RLS 정책
+- 환경변수 관리
+- API 엔드포인트 보안

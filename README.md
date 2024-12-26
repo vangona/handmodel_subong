@@ -17,10 +17,93 @@
 
 ## 프로젝트 구조
 
-- `src/routes`: 페이지 및 레이아웃 컴포넌트
-- `src/lib`: 재사용 가능한 컴포넌트 및 유틸리티 함수
-- `src/lib/api`: Supabase API 호출 함수
-- `static`: 정적 파일 (이미지, 폰트 등)
+📦src
+ ┣ 📂lib
+ ┃ ┣ 📂api
+ ┃ ┃ ┣ 📜auth.ts
+ ┃ ┃ ┣ 📜categories.ts
+ ┃ ┃ ┣ 📜dashboard.ts
+ ┃ ┃ ┣ 📜mainImages.ts
+ ┃ ┃ ┣ 📜posts.ts
+ ┃ ┃ ┣ 📜supabaseClient.ts
+ ┃ ┃ ┗ 📜users.ts
+ ┃ ┣ 📂assets
+ ┃ ┃ ┣ 📂images
+ ┃ ┃ ┃ ┣ 📜.DS_Store
+ ┃ ┃ ┃ ┗ 📜hero-hand.png
+ ┃ ┃ ┗ 📜.DS_Store
+ ┃ ┣ 📂components
+ ┃ ┃ ┣ 📂common
+ ┃ ┃ ┃ ┣ 📜Analytics.svelte
+ ┃ ┃ ┃ ┗ 📜TagManager.svelte
+ ┃ ┃ ┣ 📂layout
+ ┃ ┃ ┃ ┣ 📜Header.svelte
+ ┃ ┃ ┃ ┗ 📜Sidebar.svelte
+ ┃ ┃ ┣ 📂my-ui
+ ┃ ┃ ┃ ┣ 📂drawer
+ ┃ ┃ ┃ ┃ ┗ 📜drawer.svelte
+ ┃ ┃ ┃ ┗ 📂hero
+ ┃ ┃ ┃ ┃ ┣ 📜hero.svelte
+ ┃ ┃ ┃ ┃ ┗ 📜moving-title.svelte
+ ┃ ┃ ┗ 📂ui
+ ┃ ┃ ┃ ┣ 📂button
+ ┃ ┃ ┃ ┃ ┣ 📜button.svelte
+ ┃ ┃ ┃ ┃ ┗ 📜index.ts
+ ┃ ┃ ┃ ┣ 📂drawer
+ ┃ ┃ ┃ ┃ ┣ 📜drawer-content.svelte
+ ┃ ┃ ┃ ┃ ┣ 📜drawer-description.svelte
+ ┃ ┃ ┃ ┃ ┣ 📜drawer-footer.svelte
+ ┃ ┃ ┃ ┃ ┣ 📜drawer-header.svelte
+ ┃ ┃ ┃ ┃ ┣ 📜drawer-nested.svelte
+ ┃ ┃ ┃ ┃ ┣ 📜drawer-overlay.svelte
+ ┃ ┃ ┃ ┃ ┣ 📜drawer-title.svelte
+ ┃ ┃ ┃ ┃ ┣ 📜drawer.svelte
+ ┃ ┃ ┃ ┃ ┗ 📜index.ts
+ ┃ ┃ ┃ ┣ 📜CategoryFilter.svelte
+ ┃ ┃ ┃ ┗ 📜ImagePositioner.svelte
+ ┃ ┣ 📂constants
+ ┃ ┃ ┣ 📜supabase.ts
+ ┃ ┃ ┗ 📜ui.ts
+ ┃ ┣ 📂styles
+ ┃ ┃ ┗ 📜global.css
+ ┃ ┣ 📜.DS_Store
+ ┃ ┣ 📜index.ts
+ ┃ ┗ 📜utils.ts
+ ┣ 📂routes
+ ┃ ┣ 📂about
+ ┃ ┃ ┗ 📜+page.svelte
+ ┃ ┣ 📂admin
+ ┃ ┃ ┣ 📂categories
+ ┃ ┃ ┃ ┗ 📜+page.svelte
+ ┃ ┃ ┣ 📂dashboard
+ ┃ ┃ ┃ ┗ 📜+page.svelte
+ ┃ ┃ ┣ 📂images
+ ┃ ┃ ┃ ┗ 📜+page.svelte
+ ┃ ┃ ┣ 📂login
+ ┃ ┃ ┃ ┗ 📜+page.svelte
+ ┃ ┃ ┣ 📂posts
+ ┃ ┃ ┃ ┣ 📂add
+ ┃ ┃ ┃ ┃ ┗ 📜+page.svelte
+ ┃ ┃ ┃ ┣ 📂edit
+ ┃ ┃ ┃ ┃ ┗ 📂[id]
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜+page.svelte
+ ┃ ┃ ┃ ┗ 📜+page.svelte
+ ┃ ┃ ┣ 📂users
+ ┃ ┃ ┃ ┗ 📜+page.svelte
+ ┃ ┃ ┣ 📜+layout.svelte
+ ┃ ┃ ┗ 📜+page.svelte
+ ┃ ┣ 📂contact
+ ┃ ┃ ┗ 📜+page.svelte
+ ┃ ┣ 📂post
+ ┃ ┃ ┣ 📂[id]
+ ┃ ┃ ┃ ┗ 📜+page.svelte
+ ┃ ┃ ┗ 📜+page.svelte
+ ┃ ┣ 📜+layout.svelte
+ ┃ ┗ 📜+page.svelte
+ ┣ 📜.DS_Store
+ ┣ 📜app.css
+ ┣ 📜app.d.ts
+ ┗ 📜app.html
 
 ## 라이선스
 
