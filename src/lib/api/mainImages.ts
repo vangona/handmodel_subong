@@ -67,14 +67,20 @@ export async function apiUploadMainImage(file: File, positionX: number = 50, pos
     return data.publicUrl;
 }
 
-export async function apiUpdateImagePosition(imageId: string, positionX: number, positionY: number) {
-    const { error } = await supabase
-        .from(SupabaseTable.MainImages)
+export async function apiUpdateImagePosition(
+    imageId: string, 
+    positionX: number, 
+    positionY: number
+) {
+    const { data, error } = await supabase
+        .from('main_images')
         .update({ 
-            position_x: Math.round(positionX),
-            position_y: Math.round(positionY) 
+            position_x: positionX,
+            position_y: positionY,
+            updated_at: new Date().toISOString()
         })
         .eq('id', imageId);
 
-    if (error) throw error;
+    if (error) throw new Error('이미지 위치 업데이트 중 오류가 발생했습니다.');
+    return data;
 } 

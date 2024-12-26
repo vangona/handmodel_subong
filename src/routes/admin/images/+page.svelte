@@ -92,15 +92,19 @@
 		if (!currentImage) return;
 
 		try {
+			loading = true;
+			errorMessage = '';
 			await apiUpdateImagePosition(currentImage.id.toString(), positionX, positionY);
 			await loadMainImages();
 			showPositioner = false;
 			currentImage = null;
-			successMessage = '이미지 위치가 업데이트되었습니다.';
+			successMessage = '이미지 위치가 성공적으로 업데이트되었습니다.';
 		} catch (error) {
 			if (error instanceof Error) {
 				errorMessage = error.message;
 			}
+		} finally {
+			loading = false;
 		}
 	}
 
@@ -133,7 +137,7 @@
 					<svg class="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
 					</svg>
-					<p class="mb-2 text-sm text-gray-500"><span class="font-semibold">클릭하여 업로드</span> 또는 드래그 앤 드롭</p>
+					<p class="mb-2 text-sm text-gray-500"><span class="font-semibold">클릭하��� 업로드</span> 또는 드래그 앤 드롭</p>
 					<p class="text-xs text-gray-500">PNG, JPG (최대 10MB)</p>
 				</div>
 				<input 
