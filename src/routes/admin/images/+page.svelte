@@ -89,6 +89,7 @@
 
 	async function handlePositionSave(event: CustomEvent<{ positionX: number; positionY: number; scale: number }>) {
 		const { positionX, positionY, scale } = event.detail;
+		console.log(positionX, positionY, scale, currentImage?.id.toString());
 		if (!currentImage) return;
 
 		try {

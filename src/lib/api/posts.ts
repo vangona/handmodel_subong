@@ -72,8 +72,7 @@ export async function apiUpdatePostThumbnail(
 		.update({
 			thumbnail_position_x: positionX,
 			thumbnail_position_y: positionY,
-			thumbnail_scale: scale,
-			updated_at: new Date().toISOString()
+			thumbnail_scale: scale
 		})
 		.eq('id', postId);
 
