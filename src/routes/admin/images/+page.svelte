@@ -183,8 +183,8 @@
 	<div class="space-y-8">
 		{#each mainImages as image (image.id)}
 			<div class="relative group w-full max-w-4xl mx-auto" in:fade>
-				<div class="flex flex-col md:flex-row gap-8">
-					<div class="relative flex-none w-full md:w-[360px]">
+				<div class="flex flex-row gap-8">
+					<div class="relative flex-none w-[360px]">
 						<h3 class="text-sm font-medium text-gray-500 mb-2">PC 버전</h3>
 						<div class="relative">
 							<ImagePreview
@@ -209,7 +209,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="relative flex-none w-full md:w-[360px]">
+					<div class="relative flex-none w-[360px]">
 						<h3 class="text-sm font-medium text-gray-500 mb-2">모바일 버전</h3>
 						<div class="relative">
 							<ImagePreview
@@ -242,13 +242,13 @@
 
 {#if showPositioner && currentImage}
 	<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-		<div class="bg-white rounded-lg w-full max-w-5xl h-[90vh] flex flex-col overflow-hidden">
+		<div class="bg-white rounded-lg w-full max-w-7xl h-[90vh] flex flex-col overflow-hidden">
 			<div class="p-4 border-b">
 				<h2 class="text-lg font-semibold">이미지 위치 및 크기 조정</h2>
 			</div>
 			
 			<div class="flex-1 flex gap-8 p-4 min-h-0 overflow-y-auto">
-				<div class="flex-1">
+				<div class="flex-2">
 					<ImagePositioner
 						imageUrl={currentImage.url}
 						positionX={currentImage.position_x ?? 50}
@@ -260,7 +260,7 @@
 						on:preview={handlePositionPreview}
 					/>
 				</div>
-				<div class="w-[360px] flex flex-col gap-4">
+				<div class="flex-3 flex gap-4">
 					<div>
 						<h3 class="text-sm font-medium text-gray-500 mb-2">PC 프리뷰</h3>
 						<div class="bg-gray-50 rounded-lg p-4">
