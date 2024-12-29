@@ -136,6 +136,8 @@
 									positionY={postRow.thumbnail_position_y ?? 50}
 									scale={postRow.thumbnail_scale ?? 1}
 									aspectRatio="1:1"
+									mode="display"
+									width="100%"
 								/>
 							{:else}
 								<img src={handSrc} alt={postRow.title} class="w-full h-full object-cover" />

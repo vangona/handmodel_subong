@@ -8,7 +8,7 @@
     export let positionX: number = 50;
     export let positionY: number = 50;
     export let scale: number = 1;
-    export let aspectRatio: '1:1' | '2:3' = '2:3';
+    export let aspectRatio: '1:1' | '2:3' | 'hero' = '2:3';
 
     const dispatch = createEventDispatcher<{
         save: { positionX: number; positionY: number; scale: number };
@@ -28,7 +28,9 @@
 
     $: containerClass = aspectRatio === '1:1' 
         ? 'w-[480px] h-[480px]'  // 1:1 비율
-        : 'w-[480px] h-[720px]';  // 2:3 비율
+        : aspectRatio === '2:3'
+            ? 'w-[480px] h-[720px]'  // 2:3 비율
+            : 'w-[360px] h-[80vh]';  // hero 비율 (화면 높이의 80%에 맞춤)
 
     function handleGlobalMouseMove(e: MouseEvent) {
         if (!isDragging || !container) return;

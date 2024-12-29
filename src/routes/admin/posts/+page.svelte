@@ -179,6 +179,8 @@
 										positionY={post.thumbnail_position_y ?? 50}
 										scale={post.thumbnail_scale ?? 1}
 										aspectRatio="1:1"
+										mode="preview"
+										width={96}
 									/>
 									<div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center rounded-lg">
 										<button 
