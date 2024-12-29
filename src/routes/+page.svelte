@@ -7,7 +7,9 @@
 	import CategoryFilter from '$lib/components/ui/CategoryFilter.svelte';
 	import ImagePreview from '$lib/components/ui/ImagePreview.svelte';
 	import { goto } from '$app/navigation';
-	import { fade, fly } from 'svelte/transition';
+	import { fade, fly, blur } from 'svelte/transition';
+	import { page } from '$app/stores';
+	import PostDetail from '$lib/components/my-ui/post/PostDetail.svelte';
 
 	let selectedCategories = ['all'];
 	let categorySet: Set<string> = new Set();
@@ -18,15 +20,39 @@
 	let scrollY = 0;
 	let loading = true;
 
-	const restoreCategories = () => {
+	// 선택된 게시글 상태 관리
+	$: selectedPostId = $page.url.searchParams.get('post');
+	$: selectedPost = selectedPostId 
+		? processedData.find(post => post.id.toString() === selectedPostId)
+		: null;
+
+	// 뒤로가기 시 상태 복원
+	function restoreState() {
 		// 카테고리 필터 복원
 		const storedCategories = sessionStorage.getItem('selectedCategories');
 		if (storedCategories) {
 			selectedCategories = JSON.parse(storedCategories);
 			processedData = fetchedData.filter(post => 
-				post.category.some(cat => selectedCategories[0] === 'all'  || selectedCategories.includes(cat))
+				post.category.some(cat => selectedCategories[0] === 'all' || selectedCategories.includes(cat))
 			);
 		}
+
+		// 스크롤 위치 복원
+		const storedScrollY = sessionStorage.getItem('scrollY');
+		if (storedScrollY) {
+			window.scrollTo(0, parseInt(storedScrollY));
+		}
+	}
+
+	function handleClickPost(event: MouseEvent, postId: number) {
+		event.preventDefault();
+		// 현재 스크롤 위치와 카테고리 상태 저장
+		sessionStorage.setItem('scrollY', scrollY.toString());
+		sessionStorage.setItem('selectedCategories', JSON.stringify(selectedCategories));
+		// URL 파라미터 업데이트
+		const url = new URL(window.location.href);
+		url.searchParams.set('post', postId.toString());
+		goto(url.toString(), { replaceState: false });
 	}
 
 	async function mountPostFetchData() {
@@ -43,7 +69,7 @@
 			fetchedData = data ?? [];
 			processedData = fetchedData;
 
-			restoreCategories();
+			restoreState();
 			loading = false;
 		} catch (error) {
 			if (error instanceof Error) {
@@ -86,27 +112,66 @@
 		);
 	}
 
-	function handleClickPost(event: MouseEvent, postId: number) {
-		event.preventDefault();
-		sessionStorage.setItem('scrollY', scrollY.toString());
-		sessionStorage.setItem('selectedCategories', JSON.stringify(selectedCategories));
-		goto(`/post/${postId}`);
+	// ESC 키로 상세보기 닫기
+	function handleKeydown(event: KeyboardEvent) {
+		if (event.key === 'Escape' && selectedPostId) {
+			const url = new URL(window.location.href);
+			url.searchParams.delete('post');
+			goto(url.toString(), { replaceState: true });
+		}
 	}
+
+	function handleClosePost() {
+		const url = new URL(window.location.href);
+		url.searchParams.delete('post');
+		goto(url.toString(), { replaceState: true });
+	}
+
+	// 그리드 투명도 상태 관리
+	$: isDetailView = !!selectedPost;
+
+	// SEO 메타 데이터
+	$: metaTitle = selectedPost 
+		? `${selectedPost.title} | 손모델 심수연 포트폴리오` 
+		: '손모델 심수연 | 포트폴리오';
+	$: metaDescription = selectedPost
+		? selectedPost.description.slice(0, 150) + (selectedPost.description.length > 150 ? '...' : '')
+		: '손모델 심수연의 포트폴리오 사이트입니다. 다양한 광고와 촬영 작품을 확인하세요.';
+	$: metaImage = selectedPost?.images?.[0] ?? '/og-image.jpg';
 </script>
 
 <svelte:head>
-	<title>손모델 심수연 | 포트폴리오</title>
-	<meta name="description" content="손모델 심수연의 포트폴리오 사이트입니다. 다양한 광고와 촬영 작품을 확인하세요." />
+	<title>{metaTitle}</title>
+	<meta name="description" content={metaDescription} />
 	<meta name="keywords" content="손모델, 심수연, 포트폴리오, 광고, 촬영, 핸드모델" />
-	<meta property="og:title" content="손모델 심수연 | 포트폴리오" />
-	<meta property="og:description" content="손모델 심수연의 포트폴리오 사이트입니다. 다양한 광고와 촬영 작품을 확인하세요." />
-	<meta property="og:image" content="/og-image.jpg" />
+	<meta property="og:title" content={metaTitle} />
+	<meta property="og:description" content={metaDescription} />
+	<meta property="og:image" content={metaImage} />
 	<meta property="og:type" content="website" />
-	<meta property="og:url" content="https://subong.vercel.app" />
+	<meta property="og:url" content={$page.url.href} />
+	{#if selectedPost}
+		<link rel="canonical" href={$page.url.href} />
+	{/if}
 </svelte:head>
 
+<svelte:window on:keydown={handleKeydown} />
+
 <Hero />
-<div class="min-h-screen relative z-20 bg-offwhite bg-opacity-90 w-full md:ml-[360px] md:w-[calc(100%-360px)] overflow-x-hidden md:px-3 px-2">
+
+{#if selectedPost}
+	<PostDetail 
+		post={selectedPost} 
+		posts={processedData}
+		onClose={handleClosePost} 
+	/>
+{/if}
+
+<div 
+	class="min-h-screen relative z-20 bg-offwhite w-full md:ml-[360px] md:w-[calc(100%-360px)] overflow-x-hidden md:px-3 px-2"
+	class:opacity-30={isDetailView}
+	class:pointer-events-none={isDetailView}
+	transition:blur={{ duration: 200 }}
+>
 	{#if errorMessage}
 		<p class="error px-2 sm:px-4 text-red-600 text-center mt-8" in:fade>{errorMessage}</p>
 	{/if}
@@ -117,14 +182,20 @@
 	{:else if processedData.length > 0}
 		<div class="card-container py-4 sm:py-6 md:py-8 lg:py-12 mb-20 md:mb-0" in:fade={{ duration: 300, delay: 200 }}>
 			<h2 class="text-3xl font-bold text-center my-8 font-serif text-gray-900">촬영기록</h2>
-			<div class="mb-6 md:mb-10">
+			<div class="mb-6 md:mb-10" class:opacity-50={isDetailView}>
 				<CategoryFilter categories={categoryArr} selectedCategories={selectedCategories} onSelect={handleClickCategory} />
 			</div>
-			<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 md:gap-4 gap-2">
+			<div 
+				class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 md:gap-4 gap-2"
+				class:opacity-50={isDetailView}
+				transition:blur={{ duration: 200 }}
+			>
 				{#each processedData as postRow, index}
 					<a 
 						href={`/post/${postRow.id}`} 
 						class="card--main group relative" 
+						class:opacity-100={selectedPostId === postRow.id.toString()}
+						class:scale-105={selectedPostId === postRow.id.toString()}
 						on:click={(e) => handleClickPost(e, postRow.id)}
 						in:fly={{ y: 20, duration: 300, delay: 100 * index }}
 					>
