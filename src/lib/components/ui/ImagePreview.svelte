@@ -50,7 +50,7 @@
             src={imageUrl} 
             alt="이미지 프리뷰" 
             class="w-full h-full object-cover"
-            style="object-position: {positionX}% {positionY}%; transform: scale({scale})"
+            style="transform: translate(-50%, -50%) scale({scale}); position: absolute; top: {positionY}%; left: {positionX}%;"
         />
     </div>
 </div> 

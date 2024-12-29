@@ -17,10 +17,10 @@
     }>();
 
     let isDragging = false;
-    let container: HTMLButtonElement;
+    let container: HTMLDivElement;
     const MIN_SCALE = 0.5;
-    const MAX_SCALE = 2.0;
-    const SCALE_STEP = 0.1;
+    const MAX_SCALE = 3.0;
+    const SCALE_STEP = 0.01;
 
     let startX: number;
     let startY: number;
@@ -33,277 +33,185 @@
             ? 'w-[360px] h-[540px]'  // 2:3 비율
             : 'w-[360px] h-[70vh]';  // hero 비율 (화면 높이의 70%에 맞춤)
 
-    function handleGlobalMouseMove(e: MouseEvent) {
-        if (!isDragging || !container) return;
-        e.preventDefault();
-        
+    function handleMouseDown(event: MouseEvent) {
+        event.preventDefault();
+        isDragging = true;
+        startX = event.clientX;
+        startY = event.clientY;
+        startPositionX = positionX;
+        startPositionY = positionY;
+    }
+
+    function handleMouseMove(event: MouseEvent) {
+        if (!isDragging) return;
+        event.preventDefault();
+
+        const deltaX = event.clientX - startX;
+        const deltaY = event.clientY - startY;
         const rect = container.getBoundingClientRect();
-        const deltaX = ((e.clientX - startX) / rect.width) * 100;
-        const deltaY = ((e.clientY - startY) / rect.height) * 100;
-        
-        positionX = Math.max(0, Math.min(100, startPositionX + deltaX));
-        positionY = Math.max(0, Math.min(100, startPositionY + deltaY));
+
+        // 이동 거리를 퍼센트로 변환 (반대 방향으로 이동)
+        const percentX = -(deltaX / rect.width) * 100;
+        const percentY = -(deltaY / rect.height) * 100;
+
+        // 위치 업데이트
+        positionX = Math.max(0, Math.min(100, startPositionX - percentX));
+        positionY = Math.max(0, Math.min(100, startPositionY - percentY));
+
+        // 미리보기 이벤트 발생
         dispatch('preview', { positionX, positionY, scale });
     }
 
-    function handleGlobalMouseUp() {
-        isDragging = false;
+    function handleMouseUp(event: MouseEvent) {
+        if (isDragging) {
+            event.preventDefault();
+            isDragging = false;
+        }
     }
 
-    function handleScaleChange(value: number) {
-        scale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, value));
+    function handleKeyDown(event: KeyboardEvent) {
+        const STEP = 1;
+        const SCALE_KEY_STEP = 0.01;
+        let updated = false;
+
+        switch (event.key) {
+            case 'ArrowLeft':
+                positionX = Math.max(0, positionX - STEP);
+                updated = true;
+                break;
+            case 'ArrowRight':
+                positionX = Math.min(100, positionX + STEP);
+                updated = true;
+                break;
+            case 'ArrowUp':
+                if (event.shiftKey) {
+                    scale = Math.min(MAX_SCALE, Math.round((scale + SCALE_KEY_STEP) * 100) / 100);
+                    updated = true;
+                } else {
+                    positionY = Math.max(0, positionY - STEP);
+                    updated = true;
+                }
+                break;
+            case 'ArrowDown':
+                if (event.shiftKey) {
+                    scale = Math.max(MIN_SCALE, Math.round((scale - SCALE_KEY_STEP) * 100) / 100);
+                    updated = true;
+                } else {
+                    positionY = Math.min(100, positionY + STEP);
+                    updated = true;
+                }
+                break;
+        }
+
+        if (updated) {
+            event.preventDefault();
+            dispatch('preview', { positionX, positionY, scale });
+        }
+    }
+
+    function handleScaleChange(value: number[]) {
+        scale = Math.round(value[0] * 100) / 100;
         dispatch('preview', { positionX, positionY, scale });
     }
 
-    function resetToDefault() {
+    function handleSave() {
+        dispatch('save', { positionX, positionY, scale });
+    }
+
+    function handleCancel() {
+        dispatch('cancel');
+    }
+
+    function handleReset() {
         positionX = 50;
         positionY = 50;
         scale = 1;
         dispatch('preview', { positionX, positionY, scale });
     }
 
-    function handleMouseDown(e: MouseEvent) {
-        e.preventDefault();
-        isDragging = true;
-        
-        startX = e.clientX;
-        startY = e.clientY;
-        startPositionX = positionX;
-        startPositionY = positionY;
-    }
-
-    function handleWheel(e: WheelEvent) {
-        e.preventDefault();
-        
-        const delta = -e.deltaY * 0.01;
-        const newScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, scale + delta));
-        
-        scale = newScale;
-        dispatch('preview', { positionX, positionY, scale });
-    }
-
-    function handleTouchStart(e: TouchEvent) {
-        e.preventDefault();
-        if (e.touches.length === 1) {
-            isDragging = true;
-            startX = e.touches[0].clientX;
-            startY = e.touches[0].clientY;
-            startPositionX = positionX;
-            startPositionY = positionY;
-        }
-    }
-
-    function handleTouchMove(e: TouchEvent) {
-        if (!isDragging || !container || e.touches.length !== 1) return;
-        e.preventDefault();
-        
-        const rect = container.getBoundingClientRect();
-        const deltaX = ((e.touches[0].clientX - startX) / rect.width) * 100;
-        const deltaY = ((e.touches[0].clientY - startY) / rect.height) * 100;
-        
-        positionX = Math.max(0, Math.min(100, startPositionX + deltaX));
-        positionY = Math.max(0, Math.min(100, startPositionY + deltaY));
-    }
-
-    function handleTouchEnd() {
-        isDragging = false;
-    }
-
-    let initialDistance: number | null = null;
-    let initialScale: number;
-
-    function handleGestureStart(e: TouchEvent) {
-        if (e.touches.length === 2) {
-            e.preventDefault();
-            const touch1 = e.touches[0];
-            const touch2 = e.touches[1];
-            initialDistance = Math.hypot(
-                touch2.clientX - touch1.clientX,
-                touch2.clientY - touch1.clientY
-            );
-            initialScale = scale;
-        }
-    }
-
-    function handleGestureMove(e: TouchEvent) {
-        if (e.touches.length === 2 && initialDistance !== null) {
-            e.preventDefault();
-            const touch1 = e.touches[0];
-            const touch2 = e.touches[1];
-            const currentDistance = Math.hypot(
-                touch2.clientX - touch1.clientX,
-                touch2.clientY - touch1.clientY
-            );
-            
-            const newScale = initialScale * (currentDistance / initialDistance);
-            scale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, newScale));
-        }
-    }
-
-    function handleGestureEnd() {
-        initialDistance = null;
-    }
-
-    let imageLoaded = false;
-    async function handleImageLoad() {
-        imageLoaded = true;
-        await tick();
-    }
-
-    // 키보드 조작을 위한 스텝 크기
-    const POSITION_STEP = 1;
-    const SCALE_STEP_KEYBOARD = 0.05;
-
-    function handleKeyDown(e: KeyboardEvent) {
-        let updated = false;
-        switch(e.key) {
-            case 'ArrowLeft':
-                positionX = Math.max(0, positionX - POSITION_STEP);
-                updated = true;
-                break;
-            case 'ArrowRight':
-                positionX = Math.min(100, positionX + POSITION_STEP);
-                updated = true;
-                break;
-            case 'ArrowUp':
-                positionY = Math.max(0, positionY - POSITION_STEP);
-                updated = true;
-                break;
-            case 'ArrowDown':
-                positionY = Math.min(100, positionY + POSITION_STEP);
-                updated = true;
-                break;
-            case '+':
-            case '=':
-                if (e.ctrlKey || e.metaKey) {
-                    scale = Math.min(MAX_SCALE, scale + SCALE_STEP_KEYBOARD);
-                    updated = true;
-                }
-                break;
-            case '-':
-                if (e.ctrlKey || e.metaKey) {
-                    scale = Math.max(MIN_SCALE, scale - SCALE_STEP_KEYBOARD);
-                    updated = true;
-                }
-                break;
-            case 'r':
-                if (e.ctrlKey || e.metaKey) {
-                    resetToDefault();
-                    updated = true;
-                }
-                break;
-            case 'Escape':
-                dispatch('cancel');
-                break;
-            case 'Enter':
-                if (e.ctrlKey || e.metaKey) {
-                    dispatch('save', { positionX, positionY, scale });
-                }
-                break;
-        }
-        if (updated) {
-            dispatch('preview', { positionX, positionY, scale });
-        }
-    }
-
     onMount(() => {
-        window.addEventListener('mousemove', handleGlobalMouseMove);
-        window.addEventListener('mouseup', handleGlobalMouseUp);
-        container.addEventListener('wheel', handleWheel, { passive: false });
-        container.addEventListener('touchstart', handleTouchStart, { passive: false });
-        container.addEventListener('touchmove', handleTouchMove, { passive: false });
-        container.addEventListener('touchend', handleTouchEnd);
-        container.addEventListener('gesturestart', handleGestureStart as any, { passive: false });
-        container.addEventListener('gesturechange', handleGestureMove as any, { passive: false });
-        container.addEventListener('gestureend', handleGestureEnd as any);
+        if (container) {
+            container.addEventListener('mousedown', handleMouseDown);
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('mouseup', handleMouseUp);
+        }
     });
 
     onDestroy(() => {
-        window.removeEventListener('mousemove', handleGlobalMouseMove);
-        window.removeEventListener('mouseup', handleGlobalMouseUp);
-        container?.removeEventListener('wheel', handleWheel);
-        container?.removeEventListener('touchstart', handleTouchStart);
-        container?.removeEventListener('touchmove', handleTouchMove);
-        container?.removeEventListener('touchend', handleTouchEnd);
-        container?.removeEventListener('gesturestart', handleGestureStart as any);
-        container?.removeEventListener('gesturechange', handleGestureMove as any);
-        container?.removeEventListener('gestureend', handleGestureEnd as any);
+        if (container) {
+            container.removeEventListener('mousedown', handleMouseDown);
+            document.removeEventListener('mousemove', handleMouseMove);
+            document.removeEventListener('mouseup', handleMouseUp);
+        }
     });
 </script>
 
 <div class="flex flex-col gap-4">
     <div class="sr-only">
         <p>방향키로 이미지 위치를 조정할 수 있습니다.</p>
-        <p>Ctrl + '+' 또는 '-'로 크기를 조정할 수 있습니다.</p>
-        <p>Ctrl + R로 초기화할 수 있습니다.</p>
-        <p>Ctrl + Enter로 저장, ESC로 취소할 수 있습니다.</p>
+        <p>크기는 슬라이더를 사용하여 조정할 수 있습니다.</p>
     </div>
 
-    <button 
-        bind:this={container}
-        type="button"
-        aria-label="이미지 위치 조정 영역"
-        class="relative overflow-hidden cursor-move select-none {containerClass}"
-        class:opacity-50={!imageLoaded}
-        on:mousedown={handleMouseDown}
-        on:keydown={handleKeyDown}
-    >
-        <img 
-            src={imageUrl} 
-            alt="이미지 위치 조정"
-            class="w-full h-full object-cover transition-transform"
-            style="object-position: {positionX}% {positionY}%; transform: scale({scale})"
-            on:load={handleImageLoad}
-            aria-hidden="true"
-        />
-        {#if imageLoaded}
-            <div 
-                class="absolute w-6 h-6 bg-blue-500 rounded-full transform -translate-x-1/2 -translate-y-1/2 border-2 border-white cursor-move"
-                style="left: {positionX}%; top: {positionY}%"
-                aria-hidden="true"
-            />
-        {/if}
-    </button>
-
-    <div class="space-y-4">
-        <div class="flex items-center gap-4">
-            <label for="scale-slider" class="text-sm font-medium">크기 조정:</label>
-            <Slider
-                id="scale-slider"
-                class="w-[60%]"
-                value={[scale]}
-                min={MIN_SCALE}
-                max={MAX_SCALE}
-                step={SCALE_STEP}
-                onValueChange={([value]) => handleScaleChange(value)}
-                aria-valuemin={MIN_SCALE}
-                aria-valuemax={MAX_SCALE}
-                aria-valuenow={scale}
-            />
-            <span class="text-sm" aria-live="polite">{(scale * 100).toFixed(0)}%</span>
+    <div class="relative {containerClass} bg-gray-100 rounded-lg overflow-hidden">
+        <div
+            bind:this={container}
+            class="absolute inset-0 cursor-move"
+            role="button"
+            tabindex="0"
+            aria-label="이미지 위치 조정. 마우스로 드래그하거나 방향키로 조정하세요."
+            on:keydown={handleKeyDown}
+        >
+            <div class="absolute inset-0 overflow-hidden">
+                <img 
+                    src={imageUrl} 
+                    alt="이미지 위치 조정" 
+                    class="w-full h-full object-cover select-none"
+                    style="transform: translate(-50%, -50%) scale({scale}); position: absolute; top: {positionY}%; left: {positionX}%;"
+                    draggable="false"
+                    aria-hidden="true"
+                />
+            </div>
         </div>
     </div>
-    
-    <div class="flex justify-between">
+
+    <div class="flex flex-col gap-2">
+        <label for="scale-slider" class="text-sm font-medium text-gray-700">크기 조정</label>
+        <Slider
+            id="scale-slider"
+            value={[scale]}
+            min={MIN_SCALE}
+            max={MAX_SCALE}
+            step={SCALE_STEP}
+            onValueChange={handleScaleChange}
+            aria-label="이미지 크기 조정"
+            aria-valuemin={MIN_SCALE}
+            aria-valuemax={MAX_SCALE}
+            aria-valuenow={scale}
+        />
+        <div class="text-sm text-gray-500 text-center" aria-live="polite">
+            {Math.round(scale * 100)}%
+        </div>
+    </div>
+
+    <div class="flex justify-between gap-2">
         <Button 
             variant="outline" 
-            on:click={resetToDefault}
-            aria-label="초기화"
+            on:click={handleReset}
+            aria-label="이미지 위치와 크기를 기본값으로 초기화"
         >
             초기화
         </Button>
         <div class="flex gap-2">
             <Button 
-                variant="ghost" 
-                on:click={() => dispatch('cancel')}
-                aria-label="취소"
+                variant="outline" 
+                on:click={handleCancel}
+                aria-label="변경 사항 취소"
             >
                 취소
             </Button>
             <Button 
-                variant="default" 
-                on:click={() => dispatch('save', { positionX, positionY, scale })}
-                aria-label="저장"
+                on:click={handleSave}
+                aria-label="변경된 이미지 위치와 크기 저장"
             >
                 저장
             </Button>

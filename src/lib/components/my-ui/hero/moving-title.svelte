@@ -22,7 +22,7 @@
 					src={mainImage.url} 
 					alt="손모델 심수연의 손" 
 					class="w-full h-full object-cover"
-					style="object-position: {mainImage.position_x ?? 50}% {mainImage.position_y ?? 50}%; transform: scale({mainImage.scale ?? 1})"
+					style="transform: translate(-50%, -50%) scale({mainImage.scale ?? 1}); position: absolute; top: {mainImage.position_y ?? 50}%; left: {mainImage.position_x ?? 50}%;"
 				/>
 			{:else}
 				<img src={handSrc} alt="손모델 심수연의 손" class="max-w-full max-h-full object-contain" />

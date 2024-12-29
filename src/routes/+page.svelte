@@ -130,15 +130,16 @@
 					>
 						<div class="aspect-square relative overflow-hidden transition-all duration-300 group-hover:scale-105 group-hover:z-10 border border-gray-300 rounded-lg shadow-md">
 							{#if postRow.images && postRow.images.length > 0}
-								<ImagePreview
-									imageUrl={postRow.images[0]}
-									positionX={postRow.thumbnail_position_x ?? 50}
-									positionY={postRow.thumbnail_position_y ?? 50}
-									scale={postRow.thumbnail_scale ?? 1}
-									aspectRatio="1:1"
-									mode="display"
-									width="100%"
-								/>
+								<div class="w-full h-full">
+									<ImagePreview
+										imageUrl={postRow.images[0]}
+										positionX={postRow.thumbnail_position_x ?? 50}
+										positionY={postRow.thumbnail_position_y ?? 50}
+										scale={postRow.thumbnail_scale ?? 1}
+										aspectRatio="1:1"
+										mode="display"
+									/>
+								</div>
 							{:else}
 								<img src={handSrc} alt={postRow.title} class="w-full h-full object-cover" />
 							{/if}
