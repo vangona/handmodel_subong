@@ -5,6 +5,7 @@
 	import CategoryFilter from '$lib/components/ui/CategoryFilter.svelte';
 	import { apiGetPosts, apiDeletePost, apiUpdatePostThumbnail } from '$lib/api/posts';
 	import ImagePositioner from '$lib/components/ui/ImagePositioner.svelte';
+	import ImagePreview from '$lib/components/ui/ImagePreview.svelte';
 
 	let posts: Array<PostTable> = [];
 	let filteredPosts: Array<PostTable> = [];
@@ -172,18 +173,19 @@
 						<td class="relative w-24">
 							{#if post.images && post.images.length > 0}
 								<div class="relative group aspect-square w-24">
-									<img 
-										src={post.images[0]} 
-										alt={post.title}
-										class="w-full h-full object-cover rounded-lg"
-										style="object-position: {post.thumbnail_position_x ?? 50}% {post.thumbnail_position_y ?? 50}%; transform: scale({post.thumbnail_scale ?? 1})"
+									<ImagePreview
+										imageUrl={post.images[0]}
+										positionX={post.thumbnail_position_x ?? 50}
+										positionY={post.thumbnail_position_y ?? 50}
+										scale={post.thumbnail_scale ?? 1}
+										aspectRatio="1:1"
 									/>
 									<div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center rounded-lg">
 										<button 
 											type="button" 
 											class="btn btn-ghost btn-sm text-white"
 											on:click|stopPropagation={() => openPositioner(post)}
-											>
+										>
 											<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
 												<path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
 											</svg>

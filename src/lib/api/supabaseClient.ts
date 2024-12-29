@@ -28,6 +28,9 @@ export interface SupabaseTables {
 			description?: string;
 			category?: Array<string>;
 			images?: Array<string>;
+			thumbnail_position_x?: number;
+			thumbnail_position_y?: number;
+			thumbnail_scale?: number;
 		};
 	};
 	[SupabaseTable.MainImages]: {
@@ -36,7 +39,7 @@ export interface SupabaseTables {
 			url: string;
 			position_x: number;
 			position_y: number;
-			scale: number;
+				scale: number;
 			created_at: string;
 		};
 		Insert: {

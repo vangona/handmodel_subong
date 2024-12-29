@@ -5,6 +5,7 @@
 	import type { PostTable } from '$lib/api/supabaseClient';
 	import { onMount, afterUpdate } from 'svelte';
 	import CategoryFilter from '$lib/components/ui/CategoryFilter.svelte';
+	import ImagePreview from '$lib/components/ui/ImagePreview.svelte';
 	import { goto } from '$app/navigation';
 	import { fade, fly } from 'svelte/transition';
 
@@ -128,7 +129,17 @@
 						in:fly={{ y: 20, duration: 300, delay: 100 * index }}
 					>
 						<div class="aspect-square relative overflow-hidden transition-all duration-300 group-hover:scale-105 group-hover:z-10 border border-gray-300 rounded-lg shadow-md">
-							<img src={postRow.images && postRow.images.length > 0 ? postRow.images[0] : handSrc} alt={postRow.title} class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
+							{#if postRow.images && postRow.images.length > 0}
+								<ImagePreview
+									imageUrl={postRow.images[0]}
+									positionX={postRow.thumbnail_position_x ?? 50}
+									positionY={postRow.thumbnail_position_y ?? 50}
+									scale={postRow.thumbnail_scale ?? 1}
+									aspectRatio="1:1"
+								/>
+							{:else}
+								<img src={handSrc} alt={postRow.title} class="w-full h-full object-cover" />
+							{/if}
 							<div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-4">
 								<h3 class="text-white text-xl font-bold mb-2 text-center font-serif">{postRow.title}</h3>
 								<div class="flex flex-wrap justify-center gap-2 mb-2">

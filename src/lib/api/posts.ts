@@ -67,15 +67,35 @@ export async function apiUpdatePostThumbnail(
 	positionY: number,
 	scale: number
 ) {
-	const { data, error } = await supabase
-		.from('posts')
-		.update({
-			thumbnail_position_x: positionX,
-			thumbnail_position_y: positionY,
-			thumbnail_scale: scale
-		})
-		.eq('id', postId);
+	try {
+		const numericId = parseInt(postId, 10);
+		if (isNaN(numericId)) {
+			throw new Error('잘못된 포스트 ID입니다.');
+		}
 
-	if (error) throw new Error('섬네일 이미지 위치 업데이트 중 오류가 발생했습니다.');
-	return data;
+		// 업데이트 실행
+		const { data: updatedPost, error } = await supabase
+			.from(SupabaseTable.Posts)
+			.update({
+				thumbnail_position_x: positionX,
+				thumbnail_position_y: positionY,
+				thumbnail_scale: scale
+			})
+			.eq('id', numericId)
+			.select()
+			.single();
+
+		if (error) {
+			throw error;
+		}
+
+		if (!updatedPost) {
+			throw new Error('업데이트할 포스트를 찾을 수 없습니다.');
+		}
+
+		return updatedPost;
+	} catch (error) {
+		console.error('Thumbnail update error:', error);
+		throw error;
+	}
 }

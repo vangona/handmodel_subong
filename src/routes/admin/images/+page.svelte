@@ -3,6 +3,7 @@
 	import { fade } from 'svelte/transition';
 	import { apiGetMainImage, apiUploadMainImage, apiUpdateImagePosition } from '$lib/api/mainImages';
 	import ImagePositioner from '$lib/components/ui/ImagePositioner.svelte';
+	import ImagePreview from '$lib/components/ui/ImagePreview.svelte';
 	import type { MainImage } from '$lib/api/supabaseClient';
 	import imageCompression from 'browser-image-compression';
 
@@ -164,11 +165,12 @@
 	<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 		{#each mainImages as image (image.id)}
 			<div class="relative group" in:fade>
-				<img 
-					src={image.url} 
-					alt="메인 이미지" 
-					class="w-full h-full object-cover rounded-lg shadow-md"
-					style="object-position: {image.position_x}% {image.position_y}%; transform: scale({image.scale})"
+				<ImagePreview
+					imageUrl={image.url}
+					positionX={image.position_x}
+					positionY={image.position_y}
+					scale={image.scale}
+					aspectRatio="2:3"
 				/>
 				<div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-lg flex items-center justify-center gap-2">
 					<button 
