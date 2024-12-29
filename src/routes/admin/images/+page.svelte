@@ -15,6 +15,9 @@
 	let isDragging = false;
 	let showPositioner = false;
 	let currentImage: MainImage | null = null;
+	let previewPositionX = 50;
+	let previewPositionY = 50;
+	let previewScale = 1;
 
 	onMount(async () => {
 		await loadMainImages();
@@ -90,7 +93,6 @@
 
 	async function handlePositionSave(event: CustomEvent<{ positionX: number; positionY: number; scale: number }>) {
 		const { positionX, positionY, scale } = event.detail;
-		console.log(positionX, positionY, scale, currentImage?.id.toString());
 		if (!currentImage) return;
 
 		try {
@@ -100,6 +102,9 @@
 			await loadMainImages();
 			showPositioner = false;
 			currentImage = null;
+			previewPositionX = 50;
+			previewPositionY = 50;
+			previewScale = 1;
 			successMessage = '이미지 위치가 성공적으로 업데이트되었습니다.';
 		} catch (error) {
 			if (error instanceof Error) {
@@ -113,10 +118,23 @@
 	function handlePositionCancel() {
 		showPositioner = false;
 		currentImage = null;
+		previewPositionX = 50;
+		previewPositionY = 50;
+		previewScale = 1;
+	}
+
+	function handlePositionPreview(event: CustomEvent<{ positionX: number; positionY: number; scale: number }>) {
+		const { positionX, positionY, scale } = event.detail;
+		previewPositionX = positionX;
+		previewPositionY = positionY;
+		previewScale = scale;
 	}
 
 	function openPositioner(image: MainImage) {
 		currentImage = image;
+		previewPositionX = image.position_x;
+		previewPositionY = image.position_y;
+		previewScale = image.scale;
 		showPositioner = true;
 	}
 </script>
@@ -223,15 +241,58 @@
 </div>
 
 {#if showPositioner && currentImage}
-	<ImagePositioner
-		imageUrl={currentImage.url}
-		positionX={currentImage.position_x ?? 50}
-		positionY={currentImage.position_y ?? 50}
-		scale={currentImage.scale ?? 1}
-		aspectRatio="hero"
-		on:save={handlePositionSave}
-		on:cancel={handlePositionCancel}
-	/>
+	<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+		<div class="bg-white rounded-lg w-full max-w-5xl h-[90vh] flex flex-col overflow-hidden">
+			<div class="p-4 border-b">
+				<h2 class="text-lg font-semibold">이미지 위치 및 크기 조정</h2>
+			</div>
+			
+			<div class="flex-1 flex gap-8 p-4 min-h-0 overflow-y-auto">
+				<div class="flex-1">
+					<ImagePositioner
+						imageUrl={currentImage.url}
+						positionX={currentImage.position_x ?? 50}
+						positionY={currentImage.position_y ?? 50}
+						scale={currentImage.scale ?? 1}
+						aspectRatio="hero"
+						on:save={handlePositionSave}
+						on:cancel={handlePositionCancel}
+						on:preview={handlePositionPreview}
+					/>
+				</div>
+				<div class="w-[360px] flex flex-col gap-4">
+					<div>
+						<h3 class="text-sm font-medium text-gray-500 mb-2">PC 프리뷰</h3>
+						<div class="bg-gray-50 rounded-lg p-4">
+							<ImagePreview
+								imageUrl={currentImage.url}
+								positionX={previewPositionX}
+								positionY={previewPositionY}
+								scale={previewScale}
+								aspectRatio="hero"
+								mode="preview"
+								width={328}
+							/>
+						</div>
+					</div>
+					<div>
+						<h3 class="text-sm font-medium text-gray-500 mb-2">모바일 프리뷰</h3>
+						<div class="bg-gray-50 rounded-lg p-4">
+							<ImagePreview
+								imageUrl={currentImage.url}
+								positionX={previewPositionX}
+								positionY={previewPositionY}
+								scale={previewScale}
+								aspectRatio="hero-mobile"
+								mode="preview"
+								width={328}
+							/>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 {/if}
 
 <style lang="postcss">

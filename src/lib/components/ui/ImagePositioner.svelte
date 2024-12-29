@@ -13,6 +13,7 @@
     const dispatch = createEventDispatcher<{
         save: { positionX: number; positionY: number; scale: number };
         cancel: void;
+        preview: { positionX: number; positionY: number; scale: number };
     }>();
 
     let isDragging = false;
@@ -27,10 +28,10 @@
     let startPositionY: number;
 
     $: containerClass = aspectRatio === '1:1' 
-        ? 'w-[480px] h-[480px]'  // 1:1 비율
+        ? 'w-[360px] h-[360px]'  // 1:1 비율
         : aspectRatio === '2:3'
-            ? 'w-[480px] h-[720px]'  // 2:3 비율
-            : 'w-[360px] h-[80vh]';  // hero 비율 (화면 높이의 80%에 맞춤)
+            ? 'w-[360px] h-[540px]'  // 2:3 비율
+            : 'w-[360px] h-[70vh]';  // hero 비율 (화면 높이의 70%에 맞춤)
 
     function handleGlobalMouseMove(e: MouseEvent) {
         if (!isDragging || !container) return;
@@ -42,6 +43,7 @@
         
         positionX = Math.max(0, Math.min(100, startPositionX + deltaX));
         positionY = Math.max(0, Math.min(100, startPositionY + deltaY));
+        dispatch('preview', { positionX, positionY, scale });
     }
 
     function handleGlobalMouseUp() {
@@ -50,12 +52,14 @@
 
     function handleScaleChange(value: number) {
         scale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, value));
+        dispatch('preview', { positionX, positionY, scale });
     }
 
     function resetToDefault() {
         positionX = 50;
         positionY = 50;
         scale = 1;
+        dispatch('preview', { positionX, positionY, scale });
     }
 
     function handleMouseDown(e: MouseEvent) {
@@ -75,6 +79,7 @@
         const newScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, scale + delta));
         
         scale = newScale;
+        dispatch('preview', { positionX, positionY, scale });
     }
 
     function handleTouchStart(e: TouchEvent) {
@@ -150,33 +155,41 @@
     const SCALE_STEP_KEYBOARD = 0.05;
 
     function handleKeyDown(e: KeyboardEvent) {
+        let updated = false;
         switch(e.key) {
             case 'ArrowLeft':
                 positionX = Math.max(0, positionX - POSITION_STEP);
+                updated = true;
                 break;
             case 'ArrowRight':
                 positionX = Math.min(100, positionX + POSITION_STEP);
+                updated = true;
                 break;
             case 'ArrowUp':
                 positionY = Math.max(0, positionY - POSITION_STEP);
+                updated = true;
                 break;
             case 'ArrowDown':
                 positionY = Math.min(100, positionY + POSITION_STEP);
+                updated = true;
                 break;
             case '+':
             case '=':
                 if (e.ctrlKey || e.metaKey) {
                     scale = Math.min(MAX_SCALE, scale + SCALE_STEP_KEYBOARD);
+                    updated = true;
                 }
                 break;
             case '-':
                 if (e.ctrlKey || e.metaKey) {
                     scale = Math.max(MIN_SCALE, scale - SCALE_STEP_KEYBOARD);
+                    updated = true;
                 }
                 break;
             case 'r':
                 if (e.ctrlKey || e.metaKey) {
                     resetToDefault();
+                    updated = true;
                 }
                 break;
             case 'Escape':
@@ -187,6 +200,9 @@
                     dispatch('save', { positionX, positionY, scale });
                 }
                 break;
+        }
+        if (updated) {
+            dispatch('preview', { positionX, positionY, scale });
         }
     }
 
@@ -215,89 +231,82 @@
     });
 </script>
 
-<div 
-    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-    role="dialog"
-    aria-label="이미지 위치 및 크기 조정"
-    aria-modal="true"
->
-    <div class="bg-white p-4 rounded-lg max-w-2xl w-full">
-        <div class="sr-only">
-            <p>방향키로 이미지 위치를 조정할 수 있습니다.</p>
-            <p>Ctrl + '+' 또는 '-'로 크기를 조정할 수 있습니다.</p>
-            <p>Ctrl + R로 초기화할 수 있습니다.</p>
-            <p>Ctrl + Enter로 저장, ESC로 취소할 수 있습니다.</p>
-        </div>
+<div class="flex flex-col gap-4">
+    <div class="sr-only">
+        <p>방향키로 이미지 위치를 조정할 수 있습니다.</p>
+        <p>Ctrl + '+' 또는 '-'로 크기를 조정할 수 있습니다.</p>
+        <p>Ctrl + R로 초기화할 수 있습니다.</p>
+        <p>Ctrl + Enter로 저장, ESC로 취소할 수 있습니다.</p>
+    </div>
 
-        <button 
-            bind:this={container}
-            type="button"
-            aria-label="이미지 위치 조정 영역"
-            class="relative overflow-hidden cursor-move select-none {containerClass}"
-            class:opacity-50={!imageLoaded}
-            on:mousedown={handleMouseDown}
-            on:keydown={handleKeyDown}
-        >
-            <img 
-                src={imageUrl} 
-                alt="이미지 위치 조정"
-                class="w-full h-full object-cover transition-transform"
-                style="object-position: {positionX}% {positionY}%; transform: scale({scale})"
-                on:load={handleImageLoad}
+    <button 
+        bind:this={container}
+        type="button"
+        aria-label="이미지 위치 조정 영역"
+        class="relative overflow-hidden cursor-move select-none {containerClass}"
+        class:opacity-50={!imageLoaded}
+        on:mousedown={handleMouseDown}
+        on:keydown={handleKeyDown}
+    >
+        <img 
+            src={imageUrl} 
+            alt="이미지 위치 조정"
+            class="w-full h-full object-cover transition-transform"
+            style="object-position: {positionX}% {positionY}%; transform: scale({scale})"
+            on:load={handleImageLoad}
+            aria-hidden="true"
+        />
+        {#if imageLoaded}
+            <div 
+                class="absolute w-6 h-6 bg-blue-500 rounded-full transform -translate-x-1/2 -translate-y-1/2 border-2 border-white cursor-move"
+                style="left: {positionX}%; top: {positionY}%"
                 aria-hidden="true"
             />
-            {#if imageLoaded}
-                <div 
-                    class="absolute w-6 h-6 bg-blue-500 rounded-full transform -translate-x-1/2 -translate-y-1/2 border-2 border-white cursor-move"
-                    style="left: {positionX}%; top: {positionY}%"
-                    aria-hidden="true"
-                />
-            {/if}
-        </button>
+        {/if}
+    </button>
 
-        <div class="mt-4 space-y-4">
-            <div class="flex items-center gap-4">
-                <label for="scale-slider" class="text-sm font-medium">크기 조정:</label>
-                <Slider
-                    id="scale-slider"
-                    class="w-[60%]"
-                    value={[scale]}
-                    min={MIN_SCALE}
-                    max={MAX_SCALE}
-                    step={SCALE_STEP}
-                    onValueChange={([value]) => handleScaleChange(value)}
-                    aria-valuemin={MIN_SCALE}
-                    aria-valuemax={MAX_SCALE}
-                    aria-valuenow={scale}
-                />
-                <span class="text-sm" aria-live="polite">{(scale * 100).toFixed(0)}%</span>
-            </div>
+    <div class="space-y-4">
+        <div class="flex items-center gap-4">
+            <label for="scale-slider" class="text-sm font-medium">크기 조정:</label>
+            <Slider
+                id="scale-slider"
+                class="w-[60%]"
+                value={[scale]}
+                min={MIN_SCALE}
+                max={MAX_SCALE}
+                step={SCALE_STEP}
+                onValueChange={([value]) => handleScaleChange(value)}
+                aria-valuemin={MIN_SCALE}
+                aria-valuemax={MAX_SCALE}
+                aria-valuenow={scale}
+            />
+            <span class="text-sm" aria-live="polite">{(scale * 100).toFixed(0)}%</span>
         </div>
-        
-        <div class="flex justify-between mt-4">
+    </div>
+    
+    <div class="flex justify-between">
+        <Button 
+            variant="outline" 
+            on:click={resetToDefault}
+            aria-label="초기화"
+        >
+            초기화
+        </Button>
+        <div class="flex gap-2">
             <Button 
-                variant="outline" 
-                on:click={resetToDefault}
-                aria-label="초기화"
+                variant="ghost" 
+                on:click={() => dispatch('cancel')}
+                aria-label="취소"
             >
-                초기화
+                취소
             </Button>
-            <div class="flex gap-2">
-                <Button 
-                    variant="ghost" 
-                    on:click={() => dispatch('cancel')}
-                    aria-label="취소"
-                >
-                    취소
-                </Button>
-                <Button 
-                    variant="default" 
-                    on:click={() => dispatch('save', { positionX, positionY, scale })}
-                    aria-label="저장"
-                >
-                    저장
-                </Button>
-            </div>
+            <Button 
+                variant="default" 
+                on:click={() => dispatch('save', { positionX, positionY, scale })}
+                aria-label="저장"
+            >
+                저장
+            </Button>
         </div>
     </div>
 </div> 

@@ -20,6 +20,9 @@
 	let isMobile = false;
 	let showPositioner = false;
 	let currentPost: PostTable | null = null;
+	let previewPositionX = 50;
+	let previewPositionY = 50;
+	let previewScale = 1;
 	let successMessage = '';
 
 	$: sortedPosts = filteredPosts.sort((a, b) => a.id - b.id);
@@ -104,12 +107,25 @@
 
 	function openPositioner(post: PostTable) {
 		currentPost = post;
+		previewPositionX = post.thumbnail_position_x ?? 50;
+		previewPositionY = post.thumbnail_position_y ?? 50;
+		previewScale = post.thumbnail_scale ?? 1;
 		showPositioner = true;
 	}
 
 	function handlePositionCancel() {
 		showPositioner = false;
 		currentPost = null;
+		previewPositionX = 50;
+		previewPositionY = 50;
+		previewScale = 1;
+	}
+
+	function handlePositionPreview(event: CustomEvent<{ positionX: number; positionY: number; scale: number }>) {
+		const { positionX, positionY, scale } = event.detail;
+		previewPositionX = positionX;
+		previewPositionY = positionY;
+		previewScale = scale;
 	}
 
 	async function handlePositionSave(event: CustomEvent<{ positionX: number; positionY: number; scale: number }>) {
@@ -123,6 +139,9 @@
 			await loadPosts();
 			showPositioner = false;
 			currentPost = null;
+			previewPositionX = 50;
+			previewPositionY = 50;
+			previewScale = 1;
 			successMessage = '섬네일 위치가 성공적으로 업데이트되었습니다.';
 		} catch (error) {
 			if (error instanceof Error) {
@@ -230,15 +249,44 @@
 </div>
 
 {#if showPositioner && currentPost}
-	<ImagePositioner
-		imageUrl={currentPost.images[0]}
-		positionX={currentPost.thumbnail_position_x ?? 50}
-		positionY={currentPost.thumbnail_position_y ?? 50}
-		scale={currentPost.thumbnail_scale ?? 1}
-		aspectRatio="1:1"
-		on:save={handlePositionSave}
-		on:cancel={handlePositionCancel}
-	/>
+	<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+		<div class="bg-white rounded-lg w-full max-w-5xl h-[90vh] flex flex-col overflow-hidden">
+			<div class="p-4 border-b">
+				<h2 class="text-lg font-semibold">썸네일 이미지 위치 및 크기 조정</h2>
+			</div>
+			
+			<div class="flex-1 flex gap-8 p-4 min-h-0 overflow-y-auto">
+				<div class="flex-1">
+					<ImagePositioner
+						imageUrl={currentPost.images[0]}
+						positionX={currentPost.thumbnail_position_x ?? 50}
+						positionY={currentPost.thumbnail_position_y ?? 50}
+						scale={currentPost.thumbnail_scale ?? 1}
+						aspectRatio="1:1"
+						on:save={handlePositionSave}
+						on:cancel={handlePositionCancel}
+						on:preview={handlePositionPreview}
+					/>
+				</div>
+				<div class="w-[360px] flex flex-col gap-4">
+					<div>
+						<h3 class="text-sm font-medium text-gray-500 mb-2">썸네일 프리뷰</h3>
+						<div class="bg-gray-50 rounded-lg p-4">
+							<ImagePreview
+								imageUrl={currentPost.images[0]}
+								positionX={previewPositionX}
+								positionY={previewPositionY}
+								scale={previewScale}
+								aspectRatio="1:1"
+								mode="preview"
+								width={328}
+							/>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 {/if}
 
 <style lang="postcss">
@@ -251,11 +299,16 @@
 	.post-table th {
 		@apply bg-gray-100;
 	}
-	.pagination button {
-		@apply px-4 py-2 mx-1 border border-gray-300 rounded;
-	}
-	.pagination button.active {
-		@apply bg-blue-500 text-white;
+	.pagination {
+		button {
+			@apply px-3 py-1 mx-1 rounded;
+			&.active {
+				@apply bg-primary text-white;
+			}
+			&:hover:not(.active) {
+				@apply bg-gray-100;
+			}
+		}
 	}
 	.btn-error {
 		@apply bg-red-500 hover:bg-red-600 text-white transition-colors duration-200;
