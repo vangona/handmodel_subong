@@ -182,56 +182,52 @@
 
 	<div class="space-y-8">
 		{#each mainImages as image (image.id)}
-			<div class="relative group w-full max-w-4xl mx-auto" in:fade>
-				<div class="flex flex-row gap-8">
-					<div class="relative flex-none w-[360px]">
-						<h3 class="text-sm font-medium text-gray-500 mb-2">PC 버전</h3>
-						<div class="relative">
-							<ImagePreview
-								imageUrl={image.url}
-								positionX={image.position_x}
-								positionY={image.position_y}
-								scale={image.scale}
-								aspectRatio="hero"
-								mode="preview"
-								width={360}
-							/>
-							<div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-lg flex items-center justify-center">
-								<button 
-									type="button" 
-									on:click={() => openPositioner(image)}
-									class="btn btn-ghost text-white"
-								>
-									<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-										<path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-									</svg>
-								</button>
-							</div>
+			<div class="relative group w-full max-w-4xl mx-auto flex gap-4" in:fade>
+				<div class="relative flex-none w-[360px]">
+					<h3 class="text-sm font-medium text-gray-500 mb-2">PC 버전</h3>
+					<div class="h-[calc(100vh-2rem)] relative">
+						<ImagePreview
+							imageUrl={image.url}
+							positionX={image.position_x}
+							positionY={image.position_y}
+							scale={image.scale}
+							aspectRatio="hero"
+							mode="preview"
+						/>
+						<div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-lg flex items-center justify-center">
+							<button 
+								type="button" 
+								on:click={() => openPositioner(image)}
+								class="btn btn-ghost text-white"
+							>
+								<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+									<path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+								</svg>
+							</button>
 						</div>
 					</div>
-					<div class="relative flex-none w-[360px]">
-						<h3 class="text-sm font-medium text-gray-500 mb-2">모바일 버전</h3>
-						<div class="relative">
-							<ImagePreview
-								imageUrl={image.url}
-								positionX={image.position_x}
-								positionY={image.position_y}
-								scale={image.scale}
-								aspectRatio="hero-mobile"
-								mode="preview"
-								width={360}
-							/>
-							<div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-lg flex items-center justify-center">
-								<button 
-									type="button" 
-									on:click={() => openPositioner(image)}
-									class="btn btn-ghost text-white"
-								>
-									<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-										<path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-									</svg>
-								</button>
-							</div>
+				</div>
+				<div class="relative flex-none w-[360px]">
+					<h3 class="text-sm font-medium text-gray-500 mb-2">모바일 버전</h3>
+					<div class="aspect-[9/16] relative">
+						<ImagePreview
+							imageUrl={image.url}
+							positionX={image.position_x}
+							positionY={image.position_y}
+							scale={image.scale}
+							aspectRatio="hero-mobile"
+							mode="preview"
+						/>
+						<div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-lg flex items-center justify-center">
+							<button 
+								type="button" 
+								on:click={() => openPositioner(image)}
+								class="btn btn-ghost text-white"
+							>
+								<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+									<path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+								</svg>
+							</button>
 						</div>
 					</div>
 				</div>
@@ -264,15 +260,17 @@
 					<div>
 						<h3 class="text-sm font-medium text-gray-500 mb-2">PC 프리뷰</h3>
 						<div class="bg-gray-50 rounded-lg p-4">
-							<ImagePreview
-								imageUrl={currentImage.url}
-								positionX={previewPositionX}
-								positionY={previewPositionY}
-								scale={previewScale}
-								aspectRatio="hero"
-								mode="preview"
-								width={328}
-							/>
+							<div class="h-[calc(100vh-2rem)] relative">
+								<ImagePreview
+									imageUrl={currentImage.url}
+									positionX={previewPositionX}
+									positionY={previewPositionY}
+									scale={previewScale}
+									aspectRatio="hero"
+									mode="preview"
+									width={328}
+								/>
+							</div>
 						</div>
 					</div>
 					<div>

@@ -31,7 +31,7 @@
         ? 'w-[360px] h-[360px]'  // 1:1 비율
         : aspectRatio === '2:3'
             ? 'w-[360px] h-[540px]'  // 2:3 비율
-            : 'w-[360px] h-[70vh]';  // hero 비율 (화면 높이의 70%에 맞춤)
+            : 'w-[360px] h-[calc(100vh-2rem)]';  // hero 비율 (화면 높이에 맞춤)
 
     function handleMouseDown(event: MouseEvent) {
         event.preventDefault();

@@ -1,23 +1,36 @@
 import type { PageLoad } from './$types';
-import { apiGetPosts } from '$lib/api/posts';
+import { postStore } from '$lib/stores/postStore';
+import { get } from 'svelte/store';
+import { supabase } from '$lib/api/supabaseClient';
 
-export const load: PageLoad = async ({ url }) => {
-    const postId = url.searchParams.get('post');
-    const posts = await apiGetPosts();
-    const selectedPost = postId ? posts?.find(post => post.id.toString() === postId) : null;
+export const load: PageLoad = async () => {
+    const store = get(postStore);
+    
+    // 캐시가 유효하면 캐시된 데이터 사용
+    if (postStore.isCacheValid()) {
+        return {
+            posts: store.posts
+        };
+    }
+
+    // 캐시가 없거나 만료되었으면 새로 로드
+    const { data: posts, error } = await supabase
+        .from('posts')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .range(0, store.pageSize - 1);
+
+    if (error) {
+        console.error('게시글 로딩 실패:', error);
+        return {
+            posts: []
+        };
+    }
+
+    // 스토어 업데이트
+    postStore.setPosts(posts);
 
     return {
-        posts,
-        selectedPost,
-        meta: {
-            title: selectedPost 
-                ? `${selectedPost.title} | 손모델 심수연 포트폴리오` 
-                : '손모델 심수연 | 포트폴리오',
-            description: selectedPost
-                ? selectedPost.description.slice(0, 150) + (selectedPost.description.length > 150 ? '...' : '')
-                : '손모델 심수연의 포트폴리오 사이트입니다. 다양한 광고와 촬영 작품을 확인하세요.',
-            image: selectedPost?.images?.[0] ?? '/og-image.jpg',
-            url: url.href
-        }
+        posts
     };
 }; 

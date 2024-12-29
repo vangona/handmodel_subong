@@ -2,6 +2,7 @@
     import type { PostTable } from '$lib/api/supabaseClient';
     import { fade, fly, blur, slide } from 'svelte/transition';
     import ImagePreview from '$lib/components/ui/ImagePreview.svelte';
+    import BottomSheet from '$lib/components/ui/BottomSheet.svelte';
     import { goto } from '$app/navigation';
     import { spring } from 'svelte/motion';
 
@@ -19,9 +20,11 @@
     let showPrevPreview = false;
     let showNextPreview = false;
     let dragAmount = spring(0, {
-        stiffness: 0.1,
-        damping: 0.4
+        stiffness: 0.15,
+        damping: 0.8
     });
+    let showBottomSheet = false;
+    let isImageZoomed = false;
 
     // 현재 게시글의 인덱스 찾기
     $: currentIndex = posts.findIndex(p => p.id === post.id);
@@ -62,6 +65,7 @@
     }
 
     function handleTouchStart(event: TouchEvent) {
+        if (isImageZoomed) return;
         touchStartY = event.touches[0].clientY;
         touchStartX = event.touches[0].clientX;
         dragStartX = touchStartX;
@@ -69,7 +73,7 @@
     }
 
     function handleTouchMove(event: TouchEvent) {
-        if (!isDragging) return;
+        if (!isDragging || isImageZoomed) return;
 
         const currentX = event.touches[0].clientX;
         const currentY = event.touches[0].clientY;
@@ -84,8 +88,18 @@
             }
         } 
         else {
-            dragAmount.set(deltaX);
+            if (deltaX > 0 && !prevPost) {
+                dragAmount.set(deltaX * 0.2);
+            } else if (deltaX < 0 && !nextPost) {
+                dragAmount.set(deltaX * 0.2);
+            } else {
+                dragAmount.set(deltaX);
+            }
         }
+    }
+
+    function getSwipeThreshold() {
+        return window.innerWidth < 768 ? 100 : 200;
     }
 
     function handleTouchEnd(event: TouchEvent) {
@@ -93,18 +107,21 @@
         isDragging = false;
 
         const deltaX = event.changedTouches[0].clientX - dragStartX;
-        dragAmount.set(0);
+        const threshold = getSwipeThreshold();
 
-        if (Math.abs(deltaX) > 200) {
+        if (Math.abs(deltaX) > threshold) {
             if (deltaX > 0 && prevPost) {
                 navigateToPost(prevPost.id);
             } else if (deltaX < 0 && nextPost) {
                 navigateToPost(nextPost.id);
             }
         }
+        
+        dragAmount.set(0, { hard: false });
     }
 
     function handleMouseDown(event: MouseEvent) {
+        if (isImageZoomed) return;
         dragStartX = event.clientX;
         touchStartX = event.clientX;
         touchStartY = event.clientY;
@@ -112,14 +129,13 @@
     }
 
     function handleMouseMove(event: MouseEvent) {
-        if (!isDragging) return;
+        if (!isDragging || isImageZoomed) return;
 
         const currentX = event.clientX;
         const currentY = event.clientY;
         const deltaX = currentX - touchStartX;
         const deltaY = currentY - touchStartY;
         
-        // 수직 스와이프가 더 크면 정보 표시/숨김
         if (Math.abs(deltaY) > Math.abs(deltaX)) {
             if (deltaY > 50) {
                 showInfo = false;
@@ -127,9 +143,14 @@
                 showInfo = true;
             }
         } 
-        // 수평 스와이프
         else {
-            dragAmount.set(deltaX);
+            if (deltaX > 0 && !prevPost) {
+                dragAmount.set(deltaX * 0.2);
+            } else if (deltaX < 0 && !nextPost) {
+                dragAmount.set(deltaX * 0.2);
+            } else {
+                dragAmount.set(deltaX);
+            }
         }
     }
 
@@ -138,15 +159,17 @@
         isDragging = false;
 
         const deltaX = event.clientX - dragStartX;
-        dragAmount.set(0);
+        const threshold = getSwipeThreshold();
 
-        if (Math.abs(deltaX) > 200) {
+        if (Math.abs(deltaX) > threshold) {
             if (deltaX > 0 && prevPost) {
                 navigateToPost(prevPost.id);
             } else if (deltaX < 0 && nextPost) {
                 navigateToPost(nextPost.id);
             }
         }
+        
+        dragAmount.set(0, { hard: false });
     }
 </script>
 
@@ -254,7 +277,7 @@
         {/if}
 
         {#if post.images && post.images.length > 0}
-            <div class="relative w-full h-full flex items-center justify-center p-4 md:p-8"
+            <div class="relative w-full h-full flex items-start justify-center p-4 md:p-8"
                 role="presentation"
                 on:touchstart|preventDefault={handleTouchStart}
                 on:touchmove|preventDefault={handleTouchMove}
@@ -263,10 +286,11 @@
                 on:mousemove|preventDefault={handleMouseMove}
                 on:mouseup|preventDefault={handleMouseUp}
                 on:mouseleave|preventDefault={handleMouseUp}
+                on:click={() => showBottomSheet = true}
             >
                 <div 
-                    class="relative w-full h-full flex items-center justify-center" 
-                    style="max-width: min(90vw, calc(90vh * 1.5)); max-height: min(90vh, calc(90vw / 1.5));"
+                    class="relative w-full h-full flex items-start md:items-center" 
+                    style="max-width: min(90vw, calc(90vh * 1.5));"
                 >
                     <div class="absolute inset-0 image-container select-none">
                         {#key currentImageIndex}
@@ -283,6 +307,7 @@
                                     scale={currentImageIndex === 0 ? (post.thumbnail_scale ?? 1) : 1}
                                     aspectRatio="hero"
                                     mode="display"
+                                    bind:isZoomed={isImageZoomed}
                                 />
                             </div>
                         {/key}
@@ -384,6 +409,73 @@
         </div>
     </div>
 </div>
+
+<BottomSheet 
+    bind:isOpen={showBottomSheet} 
+    onClose={() => showBottomSheet = false}
+>
+    <div class="px-6">
+        <h2 class="text-2xl font-bold mb-4 font-serif text-gray-900">{post.title}</h2>
+        <div class="flex flex-wrap gap-2 mb-4">
+            {#each post.category as category}
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
+                    {category}
+                </span>
+            {/each}
+        </div>
+        <p class="text-gray-600 whitespace-pre-line">{post.description}</p>
+
+        {#if hasMultipleImages}
+            <div class="mt-6 mb-4">
+                <div class="flex gap-3 items-center overflow-x-auto py-2">
+                    {#each post.images as _, i}
+                        <button
+                            class="group relative flex-none"
+                            on:click={() => selectImage(i)}
+                            aria-label={`이미지 ${i + 1}`}
+                        >
+                            <div 
+                                class={`w-16 h-16 rounded-lg overflow-hidden border-2 transition-all duration-200 hover:opacity-100 ${
+                                    i === currentImageIndex ? 'border-gray-900' : 'border-gray-200 opacity-40'
+                                }`}
+                            >
+                                <ImagePreview
+                                    imageUrl={post.images[i]}
+                                    positionX={i === 0 ? (post.thumbnail_position_x ?? 50) : 50}
+                                    positionY={i === 0 ? (post.thumbnail_position_y ?? 50) : 50}
+                                    scale={i === 0 ? (post.thumbnail_scale ?? 1) : 1}
+                                    aspectRatio="1:1"
+                                    mode="display"
+                                />
+                            </div>
+                        </button>
+                    {/each}
+                </div>
+                <div class="flex items-center justify-center gap-2 text-gray-500 text-sm mt-2">
+                    <button
+                        class="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                        on:click={() => navigateImage(-1)}
+                        aria-label="이전 이미지"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <span>{currentImageIndex + 1} / {post.images.length}</span>
+                    <button
+                        class="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                        on:click={() => navigateImage(1)}
+                        aria-label="다음 이미지"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        {/if}
+    </div>
+</BottomSheet>
 
 <style lang="postcss">
     .badge {

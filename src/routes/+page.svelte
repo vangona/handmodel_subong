@@ -10,6 +10,11 @@
 	import { fade, fly, blur } from 'svelte/transition';
 	import { page } from '$app/stores';
 	import PostDetail from '$lib/components/my-ui/post/PostDetail.svelte';
+	import { postStore, filteredPosts } from '$lib/stores/postStore';
+	import { supabase } from '$lib/api/supabaseClient';
+	import type { PageData } from './$types';
+
+	export let data: PageData;
 
 	let selectedCategories = ['all'];
 	let categorySet: Set<string> = new Set();
@@ -19,6 +24,9 @@
 	let errorMessage = '';
 	let scrollY = 0;
 	let loading = true;
+	let isLoading = false;
+	let observer: IntersectionObserver;
+	let loadMoreTrigger: HTMLDivElement;
 
 	// 선택된 게시글 상태 관리
 	$: selectedPostId = $page.url.searchParams.get('post');
@@ -138,6 +146,56 @@
 		? selectedPost.description.slice(0, 150) + (selectedPost.description.length > 150 ? '...' : '')
 		: '손모델 심수연의 포트폴리오 사이트입니다. 다양한 광고와 촬영 작품을 확인하세요.';
 	$: metaImage = selectedPost?.images?.[0] ?? '/og-image.jpg';
+
+	// 초기 데이터 설정
+	$: {
+		if (data.posts) {
+			postStore.setPosts(data.posts);
+		}
+	}
+
+	async function loadMorePosts() {
+		if (isLoading || !$postStore.hasMore) return;
+		isLoading = true;
+
+		const { data: posts, error } = await supabase
+			.from('posts')
+			.select('*')
+			.order('created_at', { ascending: false })
+			.range(
+				$postStore.currentPage * $postStore.pageSize,
+				($postStore.currentPage + 1) * $postStore.pageSize - 1
+			);
+
+		if (error) {
+			console.error('추가 게시글 로딩 실패:', error);
+		} else {
+			postStore.addPosts(posts);
+		}
+
+		isLoading = false;
+	}
+
+	onMount(() => {
+		observer = new IntersectionObserver(
+			(entries) => {
+				if (entries[0].isIntersecting) {
+					loadMorePosts();
+				}
+			},
+			{ rootMargin: '100px' }
+		);
+
+		if (loadMoreTrigger) {
+			observer.observe(loadMoreTrigger);
+		}
+
+		return () => {
+			if (observer) {
+				observer.disconnect();
+			}
+		};
+	});
 </script>
 
 <svelte:head>
@@ -261,3 +319,20 @@
 		}
 	}
 </style>
+
+{#if $postStore.hasMore}
+	<div 
+		class="w-full h-32 flex items-center justify-center"
+		bind:this={loadMoreTrigger}
+	>
+		{#if isLoading}
+			<div class="flex items-center gap-2 text-gray-500">
+				<svg class="w-5 h-5 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+					<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+					<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+				</svg>
+				<span>게시글 불러오는 중...</span>
+			</div>
+		{/if}
+	</div>
+{/if}
