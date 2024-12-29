@@ -31,16 +31,16 @@
 
     function handleKeydown(event: KeyboardEvent) {
         if (event.key === 'ArrowLeft') {
-            if (event.shiftKey && prevPost) {
-                navigateToPost(prevPost.id);
-            } else if (hasMultipleImages) {
+            if (event.shiftKey && hasMultipleImages) {
                 navigateImage(-1);
+            } else if (prevPost) {
+                navigateToPost(prevPost.id);
             }
         } else if (event.key === 'ArrowRight') {
-            if (event.shiftKey && nextPost) {
-                navigateToPost(nextPost.id);
-            } else if (hasMultipleImages) {
+            if (event.shiftKey && hasMultipleImages) {
                 navigateImage(1);
+            } else if (nextPost) {
+                navigateToPost(nextPost.id);
             }
         }
     }
@@ -76,7 +76,6 @@
         const deltaX = currentX - touchStartX;
         const deltaY = currentY - touchStartY;
         
-        // 수직 스와이프가 더 크면 정보 표시/숨김
         if (Math.abs(deltaY) > Math.abs(deltaX)) {
             if (deltaY > 50) {
                 showInfo = false;
@@ -84,8 +83,7 @@
                 showInfo = true;
             }
         } 
-        // 수평 스와이프가 더 크면 이미지 전환
-        else if (hasMultipleImages) {
+        else {
             dragAmount.set(deltaX);
         }
     }
@@ -97,8 +95,57 @@
         const deltaX = event.changedTouches[0].clientX - dragStartX;
         dragAmount.set(0);
 
-        if (Math.abs(deltaX) > 100) {
-            navigateImage(deltaX > 0 ? -1 : 1);
+        if (Math.abs(deltaX) > 200) {
+            if (deltaX > 0 && prevPost) {
+                navigateToPost(prevPost.id);
+            } else if (deltaX < 0 && nextPost) {
+                navigateToPost(nextPost.id);
+            }
+        }
+    }
+
+    function handleMouseDown(event: MouseEvent) {
+        dragStartX = event.clientX;
+        touchStartX = event.clientX;
+        touchStartY = event.clientY;
+        isDragging = true;
+    }
+
+    function handleMouseMove(event: MouseEvent) {
+        if (!isDragging) return;
+
+        const currentX = event.clientX;
+        const currentY = event.clientY;
+        const deltaX = currentX - touchStartX;
+        const deltaY = currentY - touchStartY;
+        
+        // 수직 스와이프가 더 크면 정보 표시/숨김
+        if (Math.abs(deltaY) > Math.abs(deltaX)) {
+            if (deltaY > 50) {
+                showInfo = false;
+            } else if (deltaY < -50) {
+                showInfo = true;
+            }
+        } 
+        // 수평 스와이프
+        else {
+            dragAmount.set(deltaX);
+        }
+    }
+
+    function handleMouseUp(event: MouseEvent) {
+        if (!isDragging) return;
+        isDragging = false;
+
+        const deltaX = event.clientX - dragStartX;
+        dragAmount.set(0);
+
+        if (Math.abs(deltaX) > 200) {
+            if (deltaX > 0 && prevPost) {
+                navigateToPost(prevPost.id);
+            } else if (deltaX < 0 && nextPost) {
+                navigateToPost(nextPost.id);
+            }
         }
     }
 </script>
@@ -207,16 +254,27 @@
         {/if}
 
         {#if post.images && post.images.length > 0}
-            <div class="relative w-full h-full flex items-center justify-center p-4 md:p-8">
+            <div class="relative w-full h-full flex items-center justify-center p-4 md:p-8"
+                role="presentation"
+                on:touchstart|preventDefault={handleTouchStart}
+                on:touchmove|preventDefault={handleTouchMove}
+                on:touchend|preventDefault={handleTouchEnd}
+                on:mousedown|preventDefault={handleMouseDown}
+                on:mousemove|preventDefault={handleMouseMove}
+                on:mouseup|preventDefault={handleMouseUp}
+                on:mouseleave|preventDefault={handleMouseUp}
+            >
                 <div 
                     class="relative w-full h-full flex items-center justify-center" 
                     style="max-width: min(90vw, calc(90vh * 1.5)); max-height: min(90vh, calc(90vw / 1.5));"
                 >
-                    <div class="absolute inset-0 image-container">
+                    <div class="absolute inset-0 image-container select-none">
                         {#key currentImageIndex}
                             <div 
                                 class="relative w-full h-full"
                                 style="transform: translateX({$dragAmount}px);"
+                                in:fade={{ duration: 150 }}
+                                out:fade={{ duration: 150 }}
                             >
                                 <ImagePreview
                                     imageUrl={post.images[currentImageIndex]}
@@ -228,6 +286,28 @@
                                 />
                             </div>
                         {/key}
+                        {#if isDragging}
+                            <div 
+                                class="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-black/20 to-transparent"
+                                style="opacity: {Math.max(0, -$dragAmount / 100)}"
+                            >
+                                {#if prevPost}
+                                    <div class="absolute inset-0 flex items-center justify-center text-white/60 font-medium">
+                                        이전 게시글
+                                    </div>
+                                {/if}
+                            </div>
+                            <div 
+                                class="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-black/20 to-transparent"
+                                style="opacity: {Math.max(0, $dragAmount / 100)}"
+                            >
+                                {#if nextPost}
+                                    <div class="absolute inset-0 flex items-center justify-center text-white/60 font-medium">
+                                        다음 게시글
+                                    </div>
+                                {/if}
+                            </div>
+                        {/if}
                     </div>
                 </div>
             </div>
@@ -242,17 +322,8 @@
         >
             {#if hasMultipleImages}
                 <div class="max-w-4xl mx-auto mb-6">
-                    <div class="flex justify-center items-center gap-4">
-                        <button
-                            class="p-2 rounded-full bg-black/50 text-white hover:bg-black/75 transition-all backdrop-blur-sm"
-                            on:click={() => navigateImage(-1)}
-                            aria-label="이전 이미지"
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                            </svg>
-                        </button>
-                        <div class="flex gap-2 items-center">
+                    <div class="flex flex-col items-center gap-4">
+                        <div class="flex gap-3 items-center">
                             {#each post.images as _, i}
                                 <button
                                     class="group relative"
@@ -260,10 +331,9 @@
                                     aria-label={`이미지 ${i + 1}`}
                                 >
                                     <div 
-                                        class="w-12 h-12 rounded-lg overflow-hidden border-2 transition-all duration-200"
-                                        class:border-white={i === currentImageIndex}
-                                        class:border-transparent={i !== currentImageIndex}
-                                        class:opacity-50={i !== currentImageIndex}
+                                        class={`w-16 h-16 rounded-lg overflow-hidden border-2 transition-all duration-200 hover:opacity-100 ${
+                                            i === currentImageIndex ? 'border-white' : 'border-white/20 opacity-40'
+                                        }`}
                                     >
                                         <ImagePreview
                                             imageUrl={post.images[i]}
@@ -277,15 +347,27 @@
                                 </button>
                             {/each}
                         </div>
-                        <button
-                            class="p-2 rounded-full bg-black/50 text-white hover:bg-black/75 transition-all backdrop-blur-sm"
-                            on:click={() => navigateImage(1)}
-                            aria-label="다음 이미지"
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                            </svg>
-                        </button>
+                        <div class="flex items-center gap-2 text-white/60 text-sm">
+                            <button
+                                class="p-2 rounded-full hover:bg-white/10 transition-colors"
+                                on:click={() => navigateImage(-1)}
+                                aria-label="이전 이미지 (Shift + ←)"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                                </svg>
+                            </button>
+                            <span>{currentImageIndex + 1} / {post.images.length}</span>
+                            <button
+                                class="p-2 rounded-full hover:bg-white/10 transition-colors"
+                                on:click={() => navigateImage(1)}
+                                aria-label="다음 이미지 (Shift + →)"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                 </div>
             {/if}
@@ -309,6 +391,10 @@
     }
 
     .image-container :global(img) {
-        @apply w-full h-full object-contain;
+        @apply w-full h-full object-contain select-none;
+        -webkit-user-drag: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
     }
 </style> 
