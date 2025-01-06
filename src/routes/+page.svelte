@@ -320,7 +320,7 @@
 	}
 </style>
 
-{#if $postStore.hasMore}
+{#if $postStore.hasMore && isLoading}
 	<div 
 		class="w-full h-32 flex items-center justify-center"
 		bind:this={loadMoreTrigger}
