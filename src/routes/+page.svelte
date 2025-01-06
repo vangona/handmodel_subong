@@ -244,7 +244,7 @@
 				<CategoryFilter categories={categoryArr} selectedCategories={selectedCategories} onSelect={handleClickCategory} />
 			</div>
 			<div 
-				class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 md:gap-4 gap-2"
+				class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2"
 				class:opacity-50={isDetailView}
 				transition:blur={{ duration: 200 }}
 			>
@@ -273,7 +273,7 @@
 								<img src={handSrc} alt={postRow.title} class="w-full h-full object-cover" />
 							{/if}
 							<div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-4">
-								<h3 class="text-white text-xl font-bold mb-2 text-center font-serif">{postRow.title}</h3>
+								<h3 class="text-white text-xl font-bold mb-2 text-center font-serif tracking-widest">{postRow.title}</h3>
 								<div class="flex flex-wrap justify-center gap-2 mb-2">
 									{#each postRow.category as categoryData}
 										<span class="badge">{categoryData}</span>
