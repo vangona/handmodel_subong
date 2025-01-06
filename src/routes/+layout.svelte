@@ -12,7 +12,7 @@
 	const items = [
 		{ href: '/', label: '홈' },
 		{ href: '/about', label: '소개' },
-		{ href: '/contact', label: '함께 하기' },
+		{ href: '/contact', label: '협업' },
 		// { href: '/admin', label: '관리자' }
 	];
 
