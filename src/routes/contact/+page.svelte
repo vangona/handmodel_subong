@@ -5,32 +5,82 @@
 	import { Input } from "$lib/components/ui/input";
 	import { Label } from "$lib/components/ui/label";
 	import { Button } from "$lib/components/ui/button";
+	import { submitContactForm } from "$lib/api/contact";
+	import type { ContactForm } from "$lib/api/contact";
 
 	let visible = false;
-	let isSubmitting = false;
-	let formData = {
+	let submitting = false;
+	let error = '';
+	let form: ContactForm = {
 		name: '',
 		company: '',
 		phone: '',
-		projectType: '',
+		project_type: '',
 		message: ''
 	};
 
-	function handleSubmit() {
-		isSubmitting = true;
-		// TODO: 폼 제출 로직 구현
-		setTimeout(() => {
-			isSubmitting = false;
+	// 필드별 에러 메시지
+	let fieldErrors = {
+		name: '',
+		phone: '',
+		message: ''
+	};
+
+	// 필드 유효성 검사
+	function validateField(field: string, value: string) {
+		switch (field) {
+			case 'name':
+				fieldErrors.name = !value.trim() ? '성함을 입력해주세요.' : '';
+				break;
+			case 'phone':
+				fieldErrors.phone = !value.trim() ? '연락처를 입력해주세요.' : '';
+				break;
+			case 'message':
+				fieldErrors.message = !value.trim() ? '문의 내용을 입력해주세요.' : '';
+				break;
+		}
+	}
+
+	// 폼 전체 유효성 검사
+	function validateForm() {
+		validateField('name', form.name);
+		validateField('phone', form.phone);
+		validateField('message', form.message);
+
+		return !fieldErrors.name && !fieldErrors.phone && !fieldErrors.message;
+	}
+
+	async function handleSubmit() {
+		if (!validateForm()) {
+			error = '필수 항목을 모두 입력해주세요.';
+			return;
+		}
+
+		submitting = true;
+		error = '';
+		
+		try {
+			await submitContactForm(form);
+			alert('문의가 성공적으로 접수되었습니다.\n삐른 시간 내에 연락드리겠습니다.\n평균 답장 시간: 2-3시간 이내');
 			// 폼 초기화
-			formData = {
+			form = {
 				name: '',
 				company: '',
 				phone: '',
-				projectType: '',
+				project_type: '',
 				message: ''
 			};
-			alert('문의가 접수되었습니다. 빠른 시일 내에 연락드리겠습니다.');
-		}, 1000);
+			// 에러 메시지 초기화
+			fieldErrors = {
+				name: '',
+				phone: '',
+				message: ''
+			};
+		} catch (e) {
+			error = e instanceof Error ? e.message : '문의 접수 중 오류가 발생했습니다.';
+		} finally {
+			submitting = false;
+		}
 	}
 
 	onMount(() => {
@@ -62,53 +112,79 @@
 						<p class="mt-2 text-gray-600" in:fly={{ y: 20, duration: 500, delay: 400 }}>다양한 광고와 촬영 문의를 환영합니다.</p>
 					</div>
 				</div>
-				
+
 				<div class="px-8 py-6">					
 					<div class="grid md:grid-cols-2 gap-8">
 						<div>
 							<h2 class="text-2xl font-semibold text-gray-800 mb-6 font-serif" in:fly={{ y: 20, duration: 500, delay: 500 }}>문의하기</h2>
-							<div class="flex flex-col gap-4" in:fly={{ y: 20, duration: 500, delay: 600 }}>
+							<form on:submit|preventDefault={handleSubmit} class="flex flex-col gap-4" in:fly={{ y: 20, duration: 500, delay: 600 }}>
 								<div class="grid gap-2">
-									<Label for="name">성함</Label>
-									<Input type="text" id="name" bind:value={formData.name} placeholder="담당자 성함을 입력해주세요" />
+									<Label for="name">성함 <span class="text-red-500">*</span></Label>
+									<Input 
+										type="text" 
+										id="name" 
+										bind:value={form.name} 
+										on:blur={() => validateField('name', form.name)}
+										class={fieldErrors.name ? 'border-red-500' : ''}
+										placeholder="담당자 성함을 입력해주세요" 
+									/>
+									{#if fieldErrors.name}
+										<p class="text-red-500 text-sm">{fieldErrors.name}</p>
+									{/if}
 								</div>
 								<div class="grid gap-2">
 									<Label for="company">소속</Label>
-									<Input type="text" id="company" bind:value={formData.company} placeholder="회사명/브랜드명을 입력해주세요" />
+									<Input type="text" id="company" bind:value={form.company} placeholder="회사명/브랜드명을 입력해주세요" />
 								</div>
 								<div class="grid gap-2">
-									<Label for="phone">연락처</Label>
-									<Input type="tel" id="phone" bind:value={formData.phone} placeholder="연락받으실 전화번호를 입력해주세요" />
+									<Label for="phone">연락처 <span class="text-red-500">*</span></Label>
+									<Input 
+										type="tel" 
+										id="phone" 
+										bind:value={form.phone} 
+										on:blur={() => validateField('phone', form.phone)}
+										class={fieldErrors.phone ? 'border-red-500' : ''}
+										placeholder="연락받으실 전화번호를 입력해주세요" 
+									/>
+									{#if fieldErrors.phone}
+										<p class="text-red-500 text-sm">{fieldErrors.phone}</p>
+									{/if}
 								</div>
 								<div class="grid gap-2">
-									<Label for="projectType">촬영 종류</Label>
-									<Input type="text" id="projectType" bind:value={formData.projectType} placeholder="예) 광고 촬영, 화보 촬영, 제품 촬영 등" />
+									<Label for="project_type">촬영 종류</Label>
+									<Input type="text" id="project_type" bind:value={form.project_type} placeholder="예) 광고 촬영, 화보 촬영, 제품 촬영 등" />
 								</div>
 								<div class="grid gap-2">
-									<Label for="message">문의 내용</Label>
-									<textarea 
-										id="message" 
-										bind:value={formData.message} 
+									<Label for="message">문의 내용 <span class="text-red-500">*</span></Label>
+									<textarea
+										id="message"
+										bind:value={form.message} 
+										on:blur={() => validateField('message', form.message)}
+										class={`flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${fieldErrors.message ? 'border-red-500' : ''}`}
 										placeholder="촬영 일정, 페이 문의, 컨셉 등 프로젝트에 대해 자유롭게 작성해주세요" 
 										rows="4"
-										class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
 									></textarea>
+									{#if fieldErrors.message}
+										<p class="text-red-500 text-sm">{fieldErrors.message}</p>
+									{/if}
 								</div>
+
+								{#if error}
+									<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+										{error}
+									</div>
+								{/if}
+
 								<div class="flex justify-end mt-4">
 									<Button 
 										type="submit" 
 										class="w-full" 
-										disabled={isSubmitting}
-										on:click={handleSubmit}
+										disabled={submitting}
 									>
-										{#if isSubmitting}
-											문의 접수 중...
-										{:else}
-											문의하기
-										{/if}
+										{submitting ? '문의 접수 중...' : '문의하기'}
 									</Button>
 								</div>
-							</div>
+							</form>
 						</div>
 
 						<div>
