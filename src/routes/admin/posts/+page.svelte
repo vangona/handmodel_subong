@@ -12,12 +12,11 @@
 
 	let posts: Array<PostTable> = [];
 	let filteredPosts: Array<PostTable> = [];
+	let dndItems: Array<PostTable> = [];
 	let errorMessage = '';
 	let categorySet: Set<string> = new Set();
 	let categoryArr: Array<string> = [];
 	let selectedCategories: Array<string> = [];
-	let currentPage = 1;
-	let postsPerPage = 10;
 	let searchQuery = '';
 	let loading = true;
 	let isMobile = false;
@@ -29,10 +28,7 @@
 	let successMessage = '';
 
 	$: sortedPosts = filteredPosts.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-	$: currentPosts = sortedPosts.slice(
-		(currentPage - 1) * postsPerPage,
-		currentPage * postsPerPage
-	);
+	$: dndItems = [...sortedPosts];
 
 	const loadPosts = async () => {
 		try {
@@ -77,7 +73,6 @@
 		} else {
 			filteredPosts = posts.filter(post => selectedCategories.some(cat => post.category.includes(cat)));
 		}
-		currentPage = 1;
 	};
 
 	const searchPosts = () => {
@@ -85,11 +80,6 @@
 			post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
 			post.description.toLowerCase().includes(searchQuery.toLowerCase())
 		);
-		currentPage = 1;
-	};
-
-	const paginate = (pageNumber: number) => {
-		currentPage = pageNumber;
 	};
 
 	const addPost = () => {
@@ -157,29 +147,29 @@
 	};
 
 	const handleDndConsider = (e: CustomEvent<{items: Array<PostTable>}>) => {
-		currentPosts = e.detail.items;
+		dndItems = e.detail.items;
 	};
 
 	const handleDndFinalize = async (e: CustomEvent<{items: Array<PostTable>}>) => {
-		currentPosts = e.detail.items;
+		dndItems = e.detail.items;
 		try {
 			loading = true;
 			errorMessage = '';
-			// 현재 페이지의 포스트 순서 업데이트
+			// 전체 포스트 순서 업데이트
 			const updatedPosts = [...posts];
-			currentPosts.forEach((post, index) => {
+			dndItems.forEach((post, index) => {
 				const postIndex = updatedPosts.findIndex(p => p.id === post.id);
 				if (postIndex !== -1) {
-					updatedPosts[postIndex] = { ...post, order: index + ((currentPage - 1) * postsPerPage) };
+					updatedPosts[postIndex] = { ...post, order: index };
 				}
 			});
 			
 			// Supabase에 순서 업데이트
 			const { error } = await supabase.from('posts')
 				.upsert(
-					currentPosts.map((post, index) => ({
+					dndItems.map((post, index) => ({
 						id: post.id,
-						order: index + ((currentPage - 1) * postsPerPage)
+						order: index
 					}))
 				);
 
@@ -230,8 +220,8 @@
 					<th class="w-24">액션</th>
 				</tr>
 			</thead>
-			<tbody use:dndzone={{items: currentPosts, flipDurationMs: 300}} on:consider={handleDndConsider} on:finalize={handleDndFinalize}>
-				{#each currentPosts as post (post.id)}
+			<tbody use:dndzone={{items: dndItems, flipDurationMs: 300}} on:consider={handleDndConsider} on:finalize={handleDndFinalize}>
+				{#each dndItems as post (post.id)}
 					<tr class="hover:bg-gray-100 transition-colors duration-200">
 						<td class="drag-handle cursor-move">
 							<div class="flex items-center justify-center w-full h-full hover:bg-gray-200 rounded p-1">
@@ -294,13 +284,6 @@
 				{/each}
 			</tbody>
 		</table>
-		<div class="pagination flex justify-center mt-4">
-			{#each Array(Math.ceil(sortedPosts.length / postsPerPage)).fill(0) as _, index}
-				<button class:active={currentPage === index + 1} on:click={() => paginate(index + 1)}>
-					{index + 1}
-				</button>
-			{/each}
-		</div>
 	{/if}
 </div>
 {#if showPositioner && currentPost}
