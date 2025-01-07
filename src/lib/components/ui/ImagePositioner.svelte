@@ -21,6 +21,7 @@
     const MIN_SCALE = 0.5;
     const MAX_SCALE = 3.0;
     const SCALE_STEP = 0.01;
+    const WHEEL_SCALE_STEP = 0.1;
 
     let startX: number;
     let startY: number;
@@ -50,13 +51,13 @@
         const deltaY = event.clientY - startY;
         const rect = container.getBoundingClientRect();
 
-        // 이동 거리를 퍼센트로 변환 (반대 방향으로 이동)
+        // 이동 거리를 퍼센트로 변환 (반전)
         const percentX = -(deltaX / rect.width) * 100;
         const percentY = -(deltaY / rect.height) * 100;
 
         // 위치 업데이트
-        positionX = Math.max(0, Math.min(100, startPositionX - percentX));
-        positionY = Math.max(0, Math.min(100, startPositionY - percentY));
+        positionX = Math.max(0, Math.min(100, startPositionX + percentX));
+        positionY = Math.max(0, Math.min(100, startPositionY + percentY));
 
         // 미리보기 이벤트 발생
         dispatch('preview', { positionX, positionY, scale });
@@ -129,9 +130,20 @@
         dispatch('preview', { positionX, positionY, scale });
     }
 
+    function handleWheel(event: WheelEvent) {
+        event.preventDefault();
+        const delta = -Math.sign(event.deltaY) * WHEEL_SCALE_STEP;
+        const newScale = Math.round(Math.max(MIN_SCALE, Math.min(MAX_SCALE, scale + delta)) * 100) / 100;
+        if (newScale !== scale) {
+            scale = newScale;
+            dispatch('preview', { positionX, positionY, scale });
+        }
+    }
+
     onMount(() => {
         if (container) {
             container.addEventListener('mousedown', handleMouseDown);
+            container.addEventListener('wheel', handleWheel);
             document.addEventListener('mousemove', handleMouseMove);
             document.addEventListener('mouseup', handleMouseUp);
         }
@@ -140,16 +152,23 @@
     onDestroy(() => {
         if (container) {
             container.removeEventListener('mousedown', handleMouseDown);
+            container.removeEventListener('wheel', handleWheel);
             document.removeEventListener('mousemove', handleMouseMove);
             document.removeEventListener('mouseup', handleMouseUp);
         }
     });
+
+    $: {
+        if (positionX !== undefined && positionY !== undefined) {
+            dispatch('preview', { positionX, positionY, scale });
+        }
+    }
 </script>
 
 <div class="flex flex-col gap-4">
     <div class="sr-only">
         <p>방향키로 이미지 위치를 조정할 수 있습니다.</p>
-        <p>크기는 슬라이더를 사용하여 조정할 수 있습니다.</p>
+        <p>크기는 슬라이더나 마우스 휠을 사용하여 조정할 수 있습니다.</p>
     </div>
 
     <div class="relative {containerClass} bg-gray-100 rounded-lg overflow-hidden">
@@ -158,15 +177,15 @@
             class="absolute inset-0 cursor-move"
             role="button"
             tabindex="0"
-            aria-label="이미지 위치 조정. 마우스로 드래그하거나 방향키로 조정하세요."
+            aria-label="이미지 위치 조정. 마우스로 드래그하거나 방향키로 조정하세요. 마우스 휠로 크기를 조정할 수 있습니다."
             on:keydown={handleKeyDown}
         >
             <div class="absolute inset-0 overflow-hidden">
                 <img 
                     src={imageUrl} 
                     alt="이미지 위치 조정" 
-                    class="w-full h-full object-cover select-none"
-                    style="transform: translate(-50%, -50%) scale({scale}); position: absolute; top: {positionY}%; left: {positionX}%;"
+                    class="absolute w-full h-full object-cover select-none"
+                    style="transform: translate(-50%, -50%) scale({scale}); object-position: {positionX}% {positionY}%; left: 50%; top: 50%;"
                     draggable="false"
                     aria-hidden="true"
                 />
