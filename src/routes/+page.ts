@@ -17,7 +17,7 @@ export const load: PageLoad = async () => {
     const { data: posts, error } = await supabase
         .from('posts')
         .select('*')
-        .order('created_at', { ascending: false })
+        .order('order', { ascending: true })
         .range(0, store.pageSize - 1);
 
     if (error) {

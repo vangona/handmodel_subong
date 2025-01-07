@@ -161,7 +161,7 @@
 		const { data: posts, error } = await supabase
 			.from('posts')
 			.select('*')
-			.order('created_at', { ascending: false })
+			.order('order', { ascending: true })
 			.range(
 				$postStore.currentPage * $postStore.pageSize,
 				($postStore.currentPage + 1) * $postStore.pageSize - 1

@@ -2,7 +2,10 @@ import { SupabaseStorage, SupabaseTable } from '$lib/constants/supabase';
 import { supabase, type PostTable } from './supabaseClient';
 
 export const apiGetPosts = async (): Promise<PostTable[]> => {
-	const { data, error } = await supabase.from(SupabaseTable.Posts).select('*');
+	const { data, error } = await supabase
+		.from(SupabaseTable.Posts)
+		.select('*')
+		.order('order', { ascending: true });
 	if (error) throw new Error(error.message);
 	return data ?? [];
 };
