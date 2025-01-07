@@ -8,6 +8,7 @@
 	import { browser } from '$app/environment';
 	import { page } from '$app/stores';
 	import { beforeNavigate } from '$app/navigation';
+	import { Toaster } from 'svelte-sonner';
 
 	const items = [
 		{ href: '/', label: '홈' },
@@ -203,6 +204,8 @@
 		<slot />
 	</main>
 </div>
+
+<Toaster richColors />
 
 <style lang="postcss">
 	nav {

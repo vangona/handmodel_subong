@@ -16,6 +16,7 @@ export interface SupabaseTables {
 			thumbnail_position_x: number;
 			thumbnail_position_y: number;
 			thumbnail_scale: number;
+			order: number | null;
 		};
 		Insert: {
 			title: string;
@@ -31,6 +32,7 @@ export interface SupabaseTables {
 			thumbnail_position_x?: number;
 			thumbnail_position_y?: number;
 			thumbnail_scale?: number;
+			order?: number | null;
 		};
 	};
 	[SupabaseTable.MainImages]: {

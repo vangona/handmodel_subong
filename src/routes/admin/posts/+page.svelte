@@ -6,6 +6,9 @@
 	import { apiGetPosts, apiDeletePost, apiUpdatePostThumbnail } from '$lib/api/posts';
 	import ImagePositioner from '$lib/components/ui/ImagePositioner.svelte';
 	import ImagePreview from '$lib/components/ui/ImagePreview.svelte';
+	import { dndzone } from 'svelte-dnd-action';
+	import { supabase } from '$lib/api/supabaseClient';
+	import { toast } from 'svelte-sonner';
 
 	let posts: Array<PostTable> = [];
 	let filteredPosts: Array<PostTable> = [];
@@ -25,7 +28,7 @@
 	let previewScale = 1;
 	let successMessage = '';
 
-	$: sortedPosts = filteredPosts.sort((a, b) => a.id - b.id);
+	$: sortedPosts = filteredPosts.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 	$: currentPosts = sortedPosts.slice(
 		(currentPage - 1) * postsPerPage,
 		currentPage * postsPerPage
@@ -57,11 +60,12 @@
 				await apiDeletePost(id);
 				posts = posts.filter(post => post.id !== id);
 				filterPosts();
+				toast.success('포스트가 삭제되었습니다.');
 			} catch (error) {
 				if (error instanceof Error) {
-					errorMessage = error.message;
+					toast.error(error.message);
 				} else {
-					errorMessage = '알 수 없는 오류가 발생했습니다.';
+					toast.error('알 수 없는 오류가 발생했습니다.');
 				}
 			}
 		}
@@ -142,15 +146,58 @@
 			previewPositionX = 50;
 			previewPositionY = 50;
 			previewScale = 1;
-			successMessage = '섬네일 위치가 성공적으로 업데이트되었습니다.';
+			toast.success('섬네일 위치가 성공적으로 업데이트되었습니다.');
 		} catch (error) {
 			if (error instanceof Error) {
-				errorMessage = error.message;
+				toast.error(error.message);
 			}
 		} finally {
 			loading = false;
 		}
-	}
+	};
+
+	const handleDndConsider = (e: CustomEvent<{items: Array<PostTable>}>) => {
+		currentPosts = e.detail.items;
+	};
+
+	const handleDndFinalize = async (e: CustomEvent<{items: Array<PostTable>}>) => {
+		currentPosts = e.detail.items;
+		try {
+			loading = true;
+			errorMessage = '';
+			// 현재 페이지의 포스트 순서 업데이트
+			const updatedPosts = [...posts];
+			currentPosts.forEach((post, index) => {
+				const postIndex = updatedPosts.findIndex(p => p.id === post.id);
+				if (postIndex !== -1) {
+					updatedPosts[postIndex] = { ...post, order: index + ((currentPage - 1) * postsPerPage) };
+				}
+			});
+			
+			// Supabase에 순서 업데이트
+			const { error } = await supabase.from('posts')
+				.upsert(
+					currentPosts.map((post, index) => ({
+						id: post.id,
+						order: index + ((currentPage - 1) * postsPerPage)
+					}))
+				);
+
+			if (error) throw error;
+
+			posts = updatedPosts;
+			filteredPosts = updatedPosts;
+			toast.success('포스트 순서가 업데이트되었습니다.');
+		} catch (error) {
+			if (error instanceof Error) {
+				toast.error(error.message);
+			} else {
+				toast.error('순서 업데이트 중 오류가 발생했습니다.');
+			}
+		} finally {
+			loading = false;
+		}
+	};
 
 	onMount(() => {
 		loadPosts();
@@ -158,11 +205,8 @@
 	});
 </script>
 
-<div class="admin-container">
+<div class="admin-container overflow-x-auto">
 	<h1 class="text-2xl font-bold mb-4">포스트 관리</h1>
-	{#if errorMessage}
-		<p class="text-red-500">{errorMessage}</p>
-	{/if}
 	<div class="search-bar flex gap-2 mb-4">
 			<input type="text" placeholder="검색..." bind:value={searchQuery} class="input input-bordered w-full" />
 			<button on:click={searchPosts} class="btn btn-primary">검색</button>
@@ -175,6 +219,7 @@
 		<table class="post-table table-auto w-full mt-4">
 			<thead>
 				<tr>
+					<th class="w-8"></th>
 					<th>ID</th>
 					<th>섬네일</th>
 					<th>제목</th>
@@ -185,9 +230,16 @@
 					<th class="w-24">액션</th>
 				</tr>
 			</thead>
-			<tbody>
-				{#each currentPosts as post}
-					<tr class="cursor-pointer hover:bg-gray-100" on:click={() => handleRowClick(post.id)}>
+			<tbody use:dndzone={{items: currentPosts, flipDurationMs: 300}} on:consider={handleDndConsider} on:finalize={handleDndFinalize}>
+				{#each currentPosts as post (post.id)}
+					<tr class="hover:bg-gray-100 transition-colors duration-200">
+						<td class="drag-handle cursor-move">
+							<div class="flex items-center justify-center w-full h-full hover:bg-gray-200 rounded p-1">
+								<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
+								</svg>
+							</div>
+						</td>
 						<td>{post.id}</td>
 						<td class="relative w-24">
 							{#if post.images && post.images.length > 0}
@@ -247,7 +299,6 @@
 		</div>
 	{/if}
 </div>
-
 {#if showPositioner && currentPost}
 	<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
 		<div class="bg-white rounded-lg w-full max-w-5xl h-[90vh] flex flex-col overflow-hidden">
@@ -293,11 +344,18 @@
 	.admin-container {
 		@apply max-w-4xl mx-auto p-8 bg-white rounded-lg shadow-lg;
 	}
+	.post-table {
+		@apply w-full border-collapse;
+	}
 	.post-table th, .post-table td {
 		@apply border border-gray-300 p-2;
+		min-width: max-content;
 	}
 	.post-table th {
-		@apply bg-gray-100;
+		@apply bg-gray-100 whitespace-nowrap;
+	}
+	.post-table td {
+		@apply bg-white;
 	}
 	.pagination {
 		button {
@@ -313,4 +371,20 @@
 	.btn-error {
 		@apply bg-red-500 hover:bg-red-600 text-white transition-colors duration-200;
 	}
+	:global(.dndzone-item) {
+		@apply transition-transform duration-300;
+	}
+	:global(.dndzone-item.dragged) {
+		@apply bg-white shadow-lg border-2 border-primary !important;
+		td {
+			@apply bg-white;
+		}
+	}
+	.drag-handle {
+		@apply w-8 p-0;
+	}
+	:global(.dndzone-item.dragged .drag-handle) {
+		@apply bg-primary bg-opacity-10;
+	}
 </style>
+
