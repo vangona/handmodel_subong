@@ -265,6 +265,10 @@
 										</button>
 									</div>
 								</div>
+							{:else}
+								<div class="w-24 h-24 bg-gray-200 flex items-center justify-center text-gray-500 text-sm rounded-lg">
+									No Image
+								</div>
 							{/if}
 						</td>
 						<td on:click={() => handleRowClick(post.id)}>{post.title}</td>
