@@ -1,15 +1,33 @@
 import { supabase } from './supabaseClient'
 
+interface AboutSections {
+  brief: string
+  introduction: string
+  activities: string[]
+}
+
+interface ContactSections {
+  brief: string
+  sns: string
+}
+
+interface SettingsContent {
+  site_title?: string
+  menu_items?: Record<string, string>
+}
+
+interface AboutContent {
+  sections: AboutSections
+}
+
+interface ContactContent {
+  sections: ContactSections
+}
+
 export interface PageContent {
   id: string
   page_type: 'intro' | 'collaboration' | 'settings'
-  content: {
-    content?: string
-    site_title?: string
-    menu_items?: {
-      [key: string]: string
-    }
-  }
+  content: AboutContent | ContactContent | SettingsContent
   created_at: string
   updated_at: string
 }

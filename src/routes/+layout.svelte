@@ -11,6 +11,16 @@
 	import { Toaster } from 'svelte-sonner';
 	import { getSiteSettings, type PageContent } from '$lib/api/pages';
 
+	interface SettingsContent {
+		site_title?: string
+		menu_items?: Record<string, string>
+	}
+
+	function isSettingsContent(content: any): content is SettingsContent {
+		return typeof content?.site_title === 'string' ||
+			   (typeof content?.menu_items === 'object' && content?.menu_items !== null)
+	}
+
 	let settings: PageContent | null = null;
 	
 	let containerRef: HTMLDivElement;
@@ -23,10 +33,15 @@
 	let showScrollTopButton = false;
 	let scrollY = 0;
 
-	$: menuItems = settings?.content.menu_items ? 
-		Object.entries(settings.content.menu_items).map(([href, label]) => href === 'home' ? { href: '/', label } : { href, label }) : 
+	$: content = settings?.content || null;
+	$: menuItems = isSettingsContent(content) && content.menu_items ? 
+		Object.entries(content.menu_items).map(([href, label]) => ({ 
+			href: href === 'home' ? '/' : `/${href}`, 
+			label 
+		})) : 
 		[{ href: '/', label: '홈' }];
-	
+	$: siteTitle = isSettingsContent(content) ? content.site_title || 'Handmodel Subong' : 'Handmodel Subong';
+
 	const handleClickBanner = () => {
 		if ($page.url.pathname !== '/') return;
 		isMobile && containerRef.scrollTop === 0 && containerRef.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
@@ -110,9 +125,6 @@
 	function toggleMenu() {
 		isMenuOpen = !isMenuOpen;
 	}
-
-	// 사이트 설정 반응형 변수
-	$: siteTitle = settings?.content.site_title || 'Handmodel Subong';
 </script>
 
 <svelte:head>

@@ -344,17 +344,6 @@
 	.post-table td {
 		@apply bg-white;
 	}
-	.pagination {
-		button {
-			@apply px-3 py-1 mx-1 rounded;
-			&.active {
-				@apply bg-primary text-white;
-			}
-			&:hover:not(.active) {
-				@apply bg-gray-100;
-			}
-		}
-	}
 	.btn-error {
 		@apply bg-red-500 hover:bg-red-600 text-white transition-colors duration-200;
 	}
