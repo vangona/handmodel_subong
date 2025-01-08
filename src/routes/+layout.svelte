@@ -9,14 +9,9 @@
 	import { page } from '$app/stores';
 	import { beforeNavigate } from '$app/navigation';
 	import { Toaster } from 'svelte-sonner';
+	import { getSiteSettings, type PageContent } from '$lib/api/pages';
 
-	const items = [
-		{ href: '/', label: '홈' },
-		{ href: '/about', label: '소개' },
-		{ href: '/contact', label: '협업' },
-		// { href: '/admin', label: '관리자' }
-	];
-
+	let settings: PageContent | null = null;
 	
 	let containerRef: HTMLDivElement;
 	let isNavVisible = true;
@@ -24,9 +19,13 @@
 	let isMenuOpen = false;
 	let innerHeight: number;
 	let isMobile: boolean;
-	let menuTransitionDuration = 300; // 밀리초 단위
+	let menuTransitionDuration = 300;
 	let showScrollTopButton = false;
 	let scrollY = 0;
+
+	$: menuItems = settings?.content.menu_items ? 
+		Object.entries(settings.content.menu_items).map(([href, label]) => href === 'home' ? { href: '/', label } : { href, label }) : 
+		[{ href: '/', label: '홈' }];
 	
 	const handleClickBanner = () => {
 		if ($page.url.pathname !== '/') return;
@@ -35,7 +34,7 @@
 
 	const handleScroll = (event: Event) => {
 		const target = event.target as HTMLElement | null;
-		if (!target) return;  // target이 null이면 함수 종료
+		if (!target) return;
 
 		const currentScrollY = target.scrollTop;
 		const scrollThreshold = isMobile ? target.clientHeight * 0.6 : 50;
@@ -68,7 +67,6 @@
 		containerRef.scrollTo({ top: isMobile ? window.innerHeight + 0 : 0, behavior: 'smooth' });
 	}
 
-	// 페이지 이동 완료 후 실행
 	beforeNavigate((navigated) => {
 		if (browser) {
 			if (navigated.to?.route.id === '/') {
@@ -81,7 +79,7 @@
 
 	onMount(() => {
 		const checkMobile = () => {
-			isMobile = window.innerWidth < 768; // md 브레이크포인트
+			isMobile = window.innerWidth < 768;
 		};
 
 		checkMobile();
@@ -91,6 +89,11 @@
 		if (browser) {
 			restoreScrollPosition();
 		}
+
+		// Load site settings
+		getSiteSettings().then(result => {
+			settings = result;
+		});
 
 		return () => {
 			window.removeEventListener('resize', checkMobile);
@@ -107,6 +110,9 @@
 	function toggleMenu() {
 		isMenuOpen = !isMenuOpen;
 	}
+
+	// 사이트 설정 반응형 변수
+	$: siteTitle = settings?.content.site_title || 'Handmodel Subong';
 </script>
 
 <svelte:head>
@@ -114,6 +120,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<link rel="icon" href="/favicon.png" />
 	<meta name="theme-color" content="#ffffff" />
+	<title>{siteTitle}</title>
 </svelte:head>
 
 <svelte:window bind:innerHeight />
@@ -126,21 +133,21 @@
 		 class:translate-y-0={isNavVisible}
 		 class:-translate-y-full={!isNavVisible}>
 		<div class="container mx-auto flex justify-between items-center">
-			<a href="/" class="text-lg sm:text-xl font-bold font-serif">Handmodel Subong</a>
-				<button class="md:hidden" on:click={toggleMenu}>
-					<svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-					</svg>
-				</button>
-				<ul class="hidden md:flex space-x-2 sm:space-x-4 font-serif">
-					{#each items as item}
-						<li>
-							<Button variant="ghost" class="hover:bg-gray-500 text-sm sm:text-base lg:text-lg px-2 py-1 sm:px-3 sm:py-2">
-								<a href={item.href}>{item.label}</a>
-							</Button>
-						</li>
-					{/each}
-				</ul>
+			<a href="/" class="text-lg sm:text-xl font-bold font-serif">{siteTitle}</a>
+			<button class="md:hidden" on:click={toggleMenu}>
+				<svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+				</svg>
+			</button>
+			<ul class="hidden md:flex space-x-2 sm:space-x-4 font-serif">
+				{#each menuItems as item}
+					<li>
+						<Button variant="ghost" class="hover:bg-gray-500 text-sm sm:text-base lg:text-lg px-2 py-1 sm:px-3 sm:py-2">
+							<a href={item.href}>{item.label}</a>
+						</Button>
+					</li>
+				{/each}
+			</ul>
 		</div>
 	</nav>
 
@@ -156,7 +163,7 @@
 					</svg>
 				</button>
 				<ul class="mt-8 space-y-4">
-					{#each items as item}
+					{#each menuItems as item}
 						<li>
 							<a href={item.href} class="block py-2 hover:bg-gray-700 rounded font-serif" on:click={toggleMenu}>{item.label}</a>
 						</li>
@@ -177,18 +184,8 @@
 			<path fill-rule="evenodd" clip-rule="evenodd" d="M104 0C46.56 0 0 36.71 0 82C0 111.14 18.86 136.78 47.35 152.51L35.26 190.39C34.34 193.38 37.51 195.97 40.17 194.45L87.12 164.41C92.65 165.46 98.31 166 104 166C161.44 166 208 129.29 208 84C208 38.71 161.44 0 104 0Z"/>
 		</svg>
 	</a>
+
 	{#if showScrollTopButton}
-		<a
-			href="https://open.kakao.com/o/sBSr9QCc"
-			target="_blank"
-			rel="noopener noreferrer"
-			class="fixed bottom-20 right-8 bg-primary text-white p-2 rounded-full shadow-lg z-40 hover:bg-primary-dark transition-colors duration-300"
-			transition:fade
-		>
-			<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 p-0.5" viewBox="0 0 208 191" fill="currentColor">
-				<path fill-rule="evenodd" clip-rule="evenodd" d="M104 0C46.56 0 0 36.71 0 82C0 111.14 18.86 136.78 47.35 152.51L35.26 190.39C34.34 193.38 37.51 195.97 40.17 194.45L87.12 164.41C92.65 165.46 98.31 166 104 166C161.44 166 208 129.29 208 84C208 38.71 161.44 0 104 0Z"/>
-			</svg>
-		</a>
 		<button
 			on:click={scrollToTop}
 			class="fixed bottom-8 right-8 bg-primary text-white p-2 rounded-full shadow-lg z-40 hover:bg-primary-dark transition-colors duration-300"

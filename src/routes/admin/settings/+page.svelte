@@ -3,14 +3,23 @@
   import { getSiteSettings, updateSiteSettings, type PageContent } from '$lib/api/pages'
   import { goto } from '$app/navigation'
 
-  let settings: PageContent | null = null
+  let settings: PageContent & { content: { menu_items: Record<string, string> } } | null = null
   let isLoading = false
   let isSaving = false
   let errorMessage = ''
 
   onMount(async () => {
     isLoading = true
-    settings = await getSiteSettings()
+    const data = await getSiteSettings()
+    if (data) {
+      settings = {
+        ...data,
+        content: {
+          ...data.content,
+          menu_items: data.content.menu_items || {}
+        }
+      }
+    }
     isLoading = false
   })
 
@@ -51,7 +60,7 @@
 
       <div>
         <h2 class="text-lg font-medium mb-4">메뉴 이름 설정</h2>
-        {#each Object.entries(settings.content.menu_items || {}) as [key, value]}
+        {#each Object.entries(settings.content.menu_items) as [key, value]}
           <div class="mb-4">
             <label for={key} class="block text-sm font-medium mb-2">{key}</label>
             <input
