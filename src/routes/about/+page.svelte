@@ -2,10 +2,34 @@
 	import { onMount } from 'svelte';
 	import { fade, fly } from 'svelte/transition';
 	import handSrc from '$lib/assets/images/hero-hand.png';
+	import { getPageContent, type PageContent } from '$lib/api/pages';
+
+	interface AboutSections {
+		brief: string
+		introduction: string
+		activities: string[]
+	}
+
+	interface AboutContent {
+		sections: AboutSections
+	}
+
+	function isAboutContent(content: any): content is AboutContent {
+		return content?.sections?.brief !== undefined &&
+			   content?.sections?.introduction !== undefined &&
+			   Array.isArray(content?.sections?.activities)
+	}
 
 	let visible = false;
+	let pageContent: PageContent | null = null;
+	let isLoading = true;
 
-	onMount(() => {
+	$: content = pageContent?.content || null;
+	$: sections = isAboutContent(content) ? content.sections : null;
+
+	onMount(async () => {
+		pageContent = await getPageContent('intro');
+		isLoading = false;
 		visible = true;
 	});
 </script>
@@ -23,7 +47,7 @@
 
 <div class="flex justify-center items-start pt-8 md:pt-12 min-h-screen w-full bg-offwhite bg-opacity-90 pb-24">
 	<div class="container mx-auto px-4 py-8 max-w-4xl">
-		{#if visible}
+		{#if visible && !isLoading && sections}
 			<div class="bg-white rounded-lg shadow-xl overflow-hidden" in:fade={{ duration: 500, delay: 200 }}>
 				<div class="md:flex">
 					<div class="md:flex-shrink-0">
@@ -31,24 +55,19 @@
 					</div>
 					<div class="p-8">
 						<h1 class="block mt-1 text-3xl leading-tight font-bold text-gray-900 font-serif" in:fly={{ y: 20, duration: 500, delay: 300 }}>심수연</h1>
-						<p class="mt-2 text-gray-600" in:fly={{ y: 20, duration: 500, delay: 400 }}>다양한 광고와 촬영에서 활동하는 전문 손모델입니다.</p>
+						<p class="mt-2 text-gray-600" in:fly={{ y: 20, duration: 500, delay: 400 }}>{sections.brief}</p>
 					</div>
 				</div>
-				
+
 				<div class="px-8 py-6">
 					<h2 class="text-2xl font-semibold text-gray-800 mb-4 font-serif" in:fly={{ y: 20, duration: 500, delay: 500 }}>소개</h2>
-					<p class="text-gray-600 mb-6" in:fly={{ y: 20, duration: 500, delay: 600 }}>
-						안녕하세요, 손모델 심수연입니다. 저는 섬세한 손동작과 아름다운 손 라인으로 다양한 제품과 브랜드의 매력을 전달하는 일을 하고 있습니다. 
-						화장품, 주얼리, 전자기기 등 다양한 분야에서 활동하며, 각 제품의 특성을 살리는 최적의 손 표현을 위해 노력하고 있습니다.
-					</p>
+					<p class="text-gray-600 mb-6 whitespace-pre-line" in:fly={{ y: 20, duration: 500, delay: 600 }}>{sections.introduction}</p>
 					
 					<h2 class="text-2xl font-semibold text-gray-800 mb-4 font-serif" in:fly={{ y: 20, duration: 500, delay: 700 }}>주요 활동</h2>
 					<ul class="list-disc pl-5 text-gray-600 space-y-2 mb-6" in:fly={{ y: 20, duration: 500, delay: 800 }}>
-						<li>다수의 화장품 브랜드 광고 촬영</li>
-						<li>주얼리 브랜드 카탈로그 및 화보 촬영</li>
-						<li>IT 기기 제품 소개 영상 참여</li>
-						<li>식품 광고 및 요리 프로그램 핸드 모델</li>
-						<li>패션 액세서리 브랜드 SNS 콘텐츠 제작</li>
+						{#each sections.activities as activity}
+							<li>{activity}</li>
+						{/each}
 					</ul>
 				</div>
 				
@@ -67,6 +86,14 @@
 					</div>
 				</div>
 			</div>
+		{:else if isLoading}
+			<div class="flex justify-center items-center min-h-[50vh]">
+				<p>로딩 중...</p>
+			</div>
+		{:else}
+			<div class="flex justify-center items-center min-h-[50vh]">
+				<p>컨텐츠를 불러올 수 없습니다.</p>
+			</div>
 		{/if}
 	</div>
 </div>
@@ -75,10 +102,5 @@
 	.btn {
 		@apply py-1 px-4 rounded-lg text-sm font-semibold transition-colors duration-300;
 	}
-	.btn-primary {
-		@apply bg-purple-600 text-white hover:bg-purple-700;
-	}
-	.btn-warning {
-		@apply bg-yellow-500 text-white hover:bg-yellow-600;
-	}
 </style>
+

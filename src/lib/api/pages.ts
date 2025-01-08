@@ -9,6 +9,7 @@ interface AboutSections {
 interface ContactSections {
   brief: string
   sns: string
+  notices: string[]
 }
 
 interface SettingsContent {

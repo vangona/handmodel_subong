@@ -12,6 +12,7 @@
   interface ContactSections {
     brief: string
     sns: string
+    notices: string[]
   }
 
   interface AboutContent {
@@ -30,7 +31,8 @@
 
   function isContactContent(content: any): content is ContactContent {
     return content?.sections?.brief !== undefined &&
-           content?.sections?.sns !== undefined
+           content?.sections?.sns !== undefined &&
+           Array.isArray(content?.sections?.notices)
   }
 
   function hasPageSections(content: any): content is AboutContent | ContactContent {
@@ -43,6 +45,7 @@
   let isSaving = false
   let errorMessage = ''
   let newActivity = ''
+  let newNotice = ''
 
   $: content = pageContent?.content || null
   $: activities = selectedPage === 'intro' && isAboutContent(content) ? content.sections.activities : []
@@ -65,7 +68,8 @@
         pageContent.content = {
           sections: {
             brief: '',
-            sns: ''
+            sns: '',
+            notices: []
           }
         }
       }
@@ -122,6 +126,28 @@
   function updateBrief(value: string) {
     if (!pageContent || !hasPageSections(pageContent.content)) return
     pageContent.content.sections.brief = value
+  }
+
+  function addNotice() {
+    if (!pageContent || !newNotice || !isContactContent(pageContent.content)) return
+    pageContent.content.sections.notices = [...pageContent.content.sections.notices, newNotice]
+    newNotice = ''
+  }
+
+  function removeNotice(index: number) {
+    if (!pageContent || !isContactContent(pageContent.content)) return
+    pageContent.content.sections.notices = pageContent.content.sections.notices.filter((_, i: number) => i !== index)
+  }
+
+  function moveNotice(index: number, direction: 'up' | 'down') {
+    if (!pageContent || !isContactContent(pageContent.content)) return
+    const newNotices = [...pageContent.content.sections.notices]
+    const newIndex = direction === 'up' ? index - 1 : index + 1
+    
+    if (newIndex >= 0 && newIndex < newNotices.length) {
+      [newNotices[index], newNotices[newIndex]] = [newNotices[newIndex], newNotices[index]]
+      pageContent.content.sections.notices = newNotices
+    }
   }
 </script>
 
@@ -223,6 +249,56 @@
             bind:value={content.sections.sns}
             class="w-full h-64 p-2 border rounded"
           />
+        </div>
+
+        <div>
+          <label for="notice-input" class="block text-sm font-medium mb-4">안내사항</label>
+          <div class="flex gap-2 mb-4">
+            <input
+              id="notice-input"
+              type="text"
+              bind:value={newNotice}
+              placeholder="새로운 안내사항 추가"
+              class="flex-1 p-2 border rounded"
+            />
+            <button
+              type="button"
+              on:click={addNotice}
+              class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              추가
+            </button>
+          </div>
+          <ul class="space-y-2">
+            {#each content.sections.notices as notice, i}
+              <li class="flex items-center gap-2">
+                <span class="flex-1 p-2 bg-gray-50 rounded">{notice}</span>
+                <button
+                  type="button"
+                  on:click={() => moveNotice(i, 'up')}
+                  disabled={i === 0}
+                  class="p-1 text-gray-500 hover:text-gray-700 disabled:opacity-30"
+                >
+                  ↑
+                </button>
+                <button
+                  type="button"
+                  on:click={() => moveNotice(i, 'down')}
+                  disabled={i === content.sections.notices.length - 1}
+                  class="p-1 text-gray-500 hover:text-gray-700 disabled:opacity-30"
+                >
+                  ↓
+                </button>
+                <button
+                  type="button"
+                  on:click={() => removeNotice(i)}
+                  class="p-1 text-red-500 hover:text-red-700"
+                >
+                  ×
+                </button>
+              </li>
+            {/each}
+          </ul>
         </div>
       {/if}
 
