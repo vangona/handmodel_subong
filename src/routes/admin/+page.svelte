@@ -41,6 +41,24 @@
 			</div>
 		</div>
 	{/if}
+
+	<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 mt-8">
+		<a
+			href="/admin/pages"
+			class="p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow"
+		>
+			<h2 class="text-xl font-semibold mb-2">페이지 컨텐츠 관리</h2>
+			<p class="text-gray-600">소개 페이지와 협업 페이지의 내용을 수정합니다.</p>
+		</a>
+
+		<a
+			href="/admin/settings"
+			class="p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow"
+		>
+			<h2 class="text-xl font-semibold mb-2">사이트 설정</h2>
+			<p class="text-gray-600">사이트 타이틀과 메뉴 이름을 수정합니다.</p>
+		</a>
+	</div>
 </div>
 
 <style lang="postcss">

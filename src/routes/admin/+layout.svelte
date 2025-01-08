@@ -88,6 +88,12 @@
 				<a href="/admin/dashboard" class="group flex items-center px-2 py-2 text-base leading-6 font-medium rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-100 transition ease-in-out duration-150" class:active={$page.url.pathname === '/admin/dashboard'}>
 					대시보드
 				</a>
+				<a href="/admin/pages" class="mt-1 group flex items-center px-2 py-2 text-base leading-6 font-medium rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-100 transition ease-in-out duration-150" class:active={$page.url.pathname === '/admin/pages'}>
+					페이지 컨텐츠 관리
+				</a>
+				<a href="/admin/settings" class="mt-1 group flex items-center px-2 py-2 text-base leading-6 font-medium rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-100 transition ease-in-out duration-150" class:active={$page.url.pathname === '/admin/settings'}>
+					사이트 설정
+				</a>
 				<a href="/admin/posts" class="mt-1 group flex items-center px-2 py-2 text-base leading-6 font-medium rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-100 transition ease-in-out duration-150" class:active={$page.url.pathname === '/admin/posts'}>
 					포스트 관리
 				</a>
@@ -124,11 +130,17 @@
 			<a href="/admin/dashboard" class="text-center p-2 {$page.url.pathname === '/admin/dashboard' ? 'text-blue-600' : 'text-gray-600'}">
 				대시보드
 			</a>
+			<a href="/admin/pages" class="text-center p-2 {$page.url.pathname === '/admin/pages' ? 'text-blue-600' : 'text-gray-600'}">
+				페이지
+			</a>
+			<a href="/admin/settings" class="text-center p-2 {$page.url.pathname === '/admin/settings' ? 'text-blue-600' : 'text-gray-600'}">
+				설정
+			</a>
 			<a href="/admin/posts" class="text-center p-2 {$page.url.pathname === '/admin/posts' ? 'text-blue-600' : 'text-gray-600'}">
 				포스트
 			</a>
 			<a href="/admin/images" class="text-center p-2 {$page.url.pathname === '/admin/images' ? 'text-blue-600' : 'text-gray-600'}">
-				메인 이미지 관리
+				이미지
 			</a>
 			<a href="/admin/categories" class="text-center p-2 {$page.url.pathname === '/admin/categories' ? 'text-blue-600' : 'text-gray-600'}">
 				카테고리
