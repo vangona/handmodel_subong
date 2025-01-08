@@ -17,11 +17,9 @@
   let isLoading = true
   let isSaving = false
   let errorMessage = ''
-  let newMenuItem = { key: '', value: '' }
 
   $: content = pageContent?.content || null
-  $: menuItems = isSettingsContent(content) && content.menu_items ? 
-    Object.entries(content.menu_items) : []
+  $: menuItems = isSettingsContent(content) ? content.menu_items || {} : {}
   $: siteTitle = isSettingsContent(content) ? content.site_title || '' : ''
 
   async function loadPageContent() {
@@ -32,7 +30,11 @@
       if (!isSettingsContent(pageContent.content)) {
         pageContent.content = {
           site_title: '',
-          menu_items: {}
+          menu_items: {
+            home: '홈',
+            about: '소개',
+            contact: '협업'
+          }
         }
       }
     }
@@ -59,22 +61,12 @@
     isSaving = false
   }
 
-  function addMenuItem() {
-    if (!pageContent || !isSettingsContent(pageContent.content) || !newMenuItem.key || !newMenuItem.value) return
-    
+  function updateMenuItem(key: string, value: string) {
+    if (!pageContent || !isSettingsContent(pageContent.content)) return
     pageContent.content.menu_items = {
       ...pageContent.content.menu_items,
-      [newMenuItem.key]: newMenuItem.value
+      [key]: value
     }
-    
-    newMenuItem = { key: '', value: '' }
-  }
-
-  function removeMenuItem(key: string) {
-    if (!pageContent || !isSettingsContent(pageContent.content)) return
-    
-    const { [key]: _, ...rest } = pageContent.content.menu_items || {}
-    pageContent.content.menu_items = rest
   }
 
   function updateSiteTitle(value: string) {
@@ -102,45 +94,39 @@
       </div>
 
       <div>
-        <label for="menu-key" class="block text-sm font-medium mb-4">메뉴 항목</label>
-        <div class="flex gap-2 mb-4">
-          <input
-            id="menu-key"
-            type="text"
-            bind:value={newMenuItem.key}
-            placeholder="메뉴 경로 (예: about)"
-            class="flex-1 p-2 border rounded"
-          />
-          <input
-            id="menu-value"
-            type="text"
-            bind:value={newMenuItem.value}
-            placeholder="메뉴 이름 (예: 소개)"
-            class="flex-1 p-2 border rounded"
-            aria-label="메뉴 이름"
-          />
-          <button
-            type="button"
-            on:click={addMenuItem}
-            class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            추가
-          </button>
+        <h2 class="text-sm font-medium mb-4">메뉴 이름 설정</h2>
+        <div class="space-y-4">
+          <div>
+            <label for="menu-home" class="block text-sm text-gray-600 mb-1">홈 메뉴</label>
+            <input
+              id="menu-home"
+              type="text"
+              value={menuItems.home || '홈'}
+              on:input={(e) => updateMenuItem('home', e.currentTarget.value)}
+              class="w-full p-2 border rounded"
+            />
+          </div>
+          <div>
+            <label for="menu-about" class="block text-sm text-gray-600 mb-1">소개 메뉴</label>
+            <input
+              id="menu-about"
+              type="text"
+              value={menuItems.about || '소개'}
+              on:input={(e) => updateMenuItem('about', e.currentTarget.value)}
+              class="w-full p-2 border rounded"
+            />
+          </div>
+          <div>
+            <label for="menu-contact" class="block text-sm text-gray-600 mb-1">협업 메뉴</label>
+            <input
+              id="menu-contact"
+              type="text"
+              value={menuItems.contact || '협업'}
+              on:input={(e) => updateMenuItem('contact', e.currentTarget.value)}
+              class="w-full p-2 border rounded"
+            />
+          </div>
         </div>
-        <ul class="space-y-2">
-          {#each menuItems as [key, value]}
-            <li class="flex items-center gap-2">
-              <span class="flex-1 p-2 bg-gray-50 rounded">{key} → {value}</span>
-              <button
-                type="button"
-                on:click={() => removeMenuItem(key)}
-                class="p-1 text-red-500 hover:text-red-700"
-              >
-                ×
-              </button>
-            </li>
-          {/each}
-        </ul>
       </div>
 
       {#if errorMessage}
