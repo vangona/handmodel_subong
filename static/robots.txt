@@ -1,4 +1,9 @@
 User-agent: *
 Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+# 크롤링 속도 제어
+Crawl-delay: 10
 
 Sitemap: https://subong.vercel.app/sitemap.xml

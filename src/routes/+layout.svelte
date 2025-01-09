@@ -133,6 +133,19 @@
 	<link rel="icon" href="/favicon.png" />
 	<meta name="theme-color" content="#ffffff" />
 	<title>손모델 심수연 | 포트폴리오</title>
+	<meta name="description" content="손모델 심수연의 포트폴리오 사이트입니다. 광고, 제품, 주얼리 등 다양한 분야의 손 모델링 작품을 만나보세요." />
+	<meta name="keywords" content="손모델,심수연,포트폴리오,광고촬영,제품촬영,주얼리,핸드모델" />
+	<meta name="author" content="심수연" />
+	<meta property="og:site_name" content="손모델 심수연" />
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="https://subong.vercel.app" />
+	<meta property="og:title" content="손모델 심수연 | 포트폴리오" />
+	<meta property="og:description" content="손모델 심수연의 포트폴리오 사이트입니다. 광고, 제품, 주얼리 등 다양한 분야의 손 모델링 작품을 만나보세요." />
+	<meta property="og:image" content="https://subong.vercel.app/og-image.jpg" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="손모델 심수연 | 포트폴리오" />
+	<meta name="twitter:description" content="손모델 심수연의 포트폴리오 사이트입니다. 광고, 제품, 주얼리 등 다양한 분야의 손 모델링 작품을 만나보세요." />
+	<meta name="twitter:image" content="https://subong.vercel.app/og-image.jpg" />
 </svelte:head>
 
 <svelte:window bind:innerHeight />
