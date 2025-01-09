@@ -40,7 +40,7 @@ const config: Config = {
 				background: 'hsl(var(--background) / <alpha-value>)',
 				foreground: 'hsl(var(--foreground) / <alpha-value>)',
 				primary: {
-					DEFAULT: '#A8A29E',
+					DEFAULT: '#BAB5B1',
 					foreground: '#1F2937', // 어두운 회색 추가
 				},
 				secondary: {
@@ -84,7 +84,7 @@ const config: Config = {
 		themes: [
 			{
 				mytheme: {
-					primary: '#A8A29E',
+					primary: '#BAB5B1',
 					'primary-foreground': '#1F2937',
 					secondary: '#D1D5DB',
 					'secondary-foreground': '#1F2937', // DaisyUI 테마에도 추가

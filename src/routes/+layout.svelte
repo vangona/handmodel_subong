@@ -145,7 +145,7 @@
 		 class:translate-y-0={isNavVisible}
 		 class:-translate-y-full={!isNavVisible}>
 		<div class="container mx-auto flex justify-between items-center">
-			<a href="/" class="text-lg sm:text-xl font-normal tracking-wider">{siteTitle}</a>
+			<a href="/" class="text-base sm:text-lg font-normal tracking-wider">{siteTitle}</a>
 			<button class="md:hidden" on:click={toggleMenu}>
 				<svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
