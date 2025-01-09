@@ -132,7 +132,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<link rel="icon" href="/favicon.png" />
 	<meta name="theme-color" content="#ffffff" />
-	<title>{siteTitle}</title>
+	<title>손모델 심수연 | 포트폴리오</title>
 </svelte:head>
 
 <svelte:window bind:innerHeight />
