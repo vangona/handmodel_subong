@@ -60,7 +60,7 @@
 		// URL 파라미터 업데이트
 		const url = new URL(window.location.href);
 		url.searchParams.set('post', postId.toString());
-		goto(url.toString(), { replaceState: false });
+		goto(url.toString(), { replaceState: true, noScroll: true });
 	}
 
 	async function mountPostFetchData() {
@@ -132,7 +132,7 @@
 	function handleClosePost() {
 		const url = new URL(window.location.href);
 		url.searchParams.delete('post');
-		goto(url.toString(), { replaceState: true });
+		goto(url.toString(), { replaceState: true, noScroll: true });
 	}
 
 	// 그리드 투명도 상태 관리

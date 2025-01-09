@@ -71,7 +71,7 @@
 	function restoreScrollPosition() {
 		if ($page.url.pathname !== '/') return;
 		const storedScrollY = sessionStorage.getItem('scrollY');
-		if (storedScrollY) { 
+		if (storedScrollY && !$page.url.searchParams.get('post')) {
 			setTimeout(() => {
 				containerRef.scrollTo({ top: parseInt(storedScrollY), behavior: 'smooth' });
 			}, 100);
@@ -85,7 +85,9 @@
 	beforeNavigate((navigated) => {
 		if (browser) {
 			if (navigated.to?.route.id === '/') {
-				restoreScrollPosition();
+				if (!navigated.to.url.searchParams.get('post')) {
+					restoreScrollPosition();
+				}
 			} else {
 				sessionStorage.setItem('scrollY', scrollY.toString());
 			}
