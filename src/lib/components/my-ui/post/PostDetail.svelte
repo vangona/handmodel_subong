@@ -31,19 +31,21 @@
     $: prevPost = currentIndex > 0 ? posts[currentIndex - 1] : null;
     $: nextPost = currentIndex < posts.length - 1 ? posts[currentIndex + 1] : null;
     $: hasMultipleImages = post.images && post.images.length > 1;
+    $: isFirstImage = currentImageIndex === 0;
+    $: isLastImage = hasMultipleImages && currentImageIndex === post.images.length - 1;
 
     function handleKeydown(event: KeyboardEvent) {
         if (event.key === 'ArrowLeft') {
-            if (event.shiftKey && hasMultipleImages) {
-                navigateImage(-1);
-            } else if (prevPost) {
+            if (isFirstImage && prevPost) {
                 navigateToPost(prevPost.id);
+            } else {
+                navigateImage(-1);
             }
         } else if (event.key === 'ArrowRight') {
-            if (event.shiftKey && hasMultipleImages) {
-                navigateImage(1);
-            } else if (nextPost) {
+            if (isLastImage && nextPost) {
                 navigateToPost(nextPost.id);
+            } else {
+                navigateImage(1);
             }
         }
     }
@@ -56,8 +58,11 @@
     }
 
     function navigateImage(direction: number) {
-        if (!post.images) return;
-        currentImageIndex = (currentImageIndex + direction + post.images.length) % post.images.length;
+        if (!hasMultipleImages) return;
+        const newIndex = currentImageIndex + direction;
+        if (newIndex >= 0 && newIndex < post.images.length) {
+            currentImageIndex = newIndex;
+        }
     }
 
     function selectImage(index: number) {
