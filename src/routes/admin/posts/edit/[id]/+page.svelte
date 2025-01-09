@@ -210,7 +210,7 @@
 		</div>
 		<div>
 			<label for="description" class="block text-sm font-medium text-gray-700">설명</label>
-			<textarea id="description" bind:value={description} required class="textarea textarea-bordered w-full mt-1"></textarea>
+			<textarea id="description" bind:value={description} class="textarea textarea-bordered w-full mt-1"></textarea>
 		</div>
 		<div>
 			<label for="categories" class="block text-sm font-medium text-gray-700">카테고리</label>
