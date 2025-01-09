@@ -129,12 +129,8 @@
 		{#if visible && !isLoading && sections}
 			<div class="bg-white rounded-lg shadow-xl overflow-hidden" in:fade={{ duration: 500, delay: 200 }}>
 				<div class="md:flex">
-					<div class="md:flex-shrink-0">
-						<img class="h-48 w-full object-cover md:h-full md:w-48" src={handSrc} alt="손모델 심수연" />
-					</div>
-					<div class="p-8">
-						<h1 class="block mt-1 text-3xl leading-tight font-bold text-gray-900 font-serif" in:fly={{ y: 20, duration: 500, delay: 300 }}>손모델 심수연</h1>
-						<p class="mt-2 text-gray-600" in:fly={{ y: 20, duration: 500, delay: 400 }}>{sections.brief}</p>
+					<div class="p-2">
+						<p class=" text-gray-600" in:fly={{ y: 20, duration: 500, delay: 400 }}>{sections.brief}</p>
 					</div>
 				</div>
 
