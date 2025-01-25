@@ -144,7 +144,7 @@
 		: '손모델 심수연 | 포트폴리오';
 	$: metaDescription = selectedPost
 		? selectedPost.description.slice(0, 150) + (selectedPost.description.length > 150 ? '...' : '')
-		: '손모델 심수연의 포트폴리오 사이트 | 다년 간의 촬영 경험과 다양한 제품을 다뤄본 노하우를 바탕으로 원활한 소통과 만족스러운 결과물을 약속드립니다.';
+		: '손모델 심수연의 포트폴리오 | 다년 간의 촬영 경험과 다양한 제품을 다뤄본 노하우를 바탕으로 원활한 소통과 만족스러운 결과물을 약속드립니다.';
 	$: metaImage = selectedPost?.images?.[0] ?? 'https://umpactdflfdhwbufbzzp.supabase.co/storage/v1/object/public/post-images/0.6739137500664765.jpg';
 
 	// 초기 데이터 설정
@@ -216,7 +216,7 @@
 	"@type": "WebSite",
 	"name": "손모델 심수연 | 포트폴리오",
 	"url": "https://subong.vercel.app",
-	"description": "손모델 심수연의 포트폴리오 사이트입니다.",
+	"description": "손모델 심수연의 포트폴리오입니다.",
 	"publisher": {
 		"@type": "Person",
 		"name": "심수연",

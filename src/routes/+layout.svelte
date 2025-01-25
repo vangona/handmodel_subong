@@ -140,18 +140,18 @@
 	<link rel="icon" href="/favicon.ico" />
 	<meta name="theme-color" content="#ffffff" />
 	<title>손모델 심수연 | 포트폴리오</title>
-	<meta name="description" content="손모델 심수연의 포트폴리오 사이트 | 다년 간의 촬영 경험과 다양한 제품을 다뤄본 노하우를 바탕으로 원활한 소통과 만족스러운 결과물을 약속드립니다." />
+	<meta name="description" content="손모델 심수연의 포트폴리오 | 다년 간의 촬영 경험과 다양한 제품을 다뤄본 노하우를 바탕으로 원활한 소통과 만족스러운 결과물을 약속드립니다." />
 	<meta name="keywords" content="손모델,심수연,포트폴리오,광고촬영,제품촬영,주얼리,핸드모델" />
 	<meta name="author" content="심수연" />
 	<meta property="og:site_name" content="손모델 심수연" />
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content="https://subong.vercel.app" />
 	<meta property="og:title" content="손모델 심수연 | 포트폴리오" />
-	<meta property="og:description" content="손모델 심수연의 포트폴리오 사이트 | 다년 간의 촬영 경험과 다양한 제품을 다뤄본 노하우를 바탕으로 원활한 소통과 만족스러운 결과물을 약속드립니다." />
+	<meta property="og:description" content="손모델 심수연의 포트폴리오 | 다년 간의 촬영 경험과 다양한 제품을 다뤄본 노하우를 바탕으로 원활한 소통과 만족스러운 결과물을 약속드립니다." />
 	<meta property="og:image" content="https://umpactdflfdhwbufbzzp.supabase.co/storage/v1/object/public/post-images/0.6739137500664765.jpg" />
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:title" content="손모델 심수연 | 포트폴리오" />
-	<meta name="twitter:description" content="손모델 심수연의 포트폴리오 사이트 | 다년 간의 촬영 경험과 다양한 제품을 다뤄본 노하우를 바탕으로 원활한 소통과 만족스러운 결과물을 약속드립니다." />
+	<meta name="twitter:description" content="손모델 심수연의 포트폴리오 | 다년 간의 촬영 경험과 다양한 제품을 다뤄본 노하우를 바탕으로 원활한 소통과 만족스러운 결과물을 약속드립니다." />
 	<meta name="twitter:image" content="https://umpactdflfdhwbufbzzp.supabase.co/storage/v1/object/public/post-images/0.6739137500664765.jpg" />
 	<script type="application/ld+json">
 {
@@ -163,7 +163,7 @@
   "sameAs": [
     "https://open.kakao.com/o/sBSr9QCc"
   ],
-  "description": "손모델 심수연의 포트폴리오 사이트 | 다년 간의 촬영 경험과 다양한 제품을 다뤄본 노하우를 바탕으로 원활한 소통과 만족스러운 결과물을 약속드립니다."
+  "description": "손모델 심수연의 포트폴리오 | 다년 간의 촬영 경험과 다양한 제품을 다뤄본 노하우를 바탕으로 원활한 소통과 만족스러운 결과물을 약속드립니다."
 }
 	</script>
 </svelte:head>
