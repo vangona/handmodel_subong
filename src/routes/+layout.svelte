@@ -11,8 +11,10 @@
 	import { Toaster } from 'svelte-sonner';
 	import { getSiteSettings, type PageContent } from '$lib/api/pages';
 	import { injectAnalytics } from '@vercel/analytics/sveltekit'
+	import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
 
 	injectAnalytics({ mode: dev ? 'development' : 'production' })
+	injectSpeedInsights();
 
 	interface SettingsContent {
 		site_title?: string
