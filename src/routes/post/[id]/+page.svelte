@@ -94,9 +94,30 @@
 	<meta property="og:image" content={post && post.images && post.images.length > 0 ? post.images[0] : 'https://umpactdflfdhwbufbzzp.supabase.co/storage/v1/object/public/post-images/0.6739137500664765.jpg'} />
 	<meta property="og:type" content="article" />
 	<meta property="og:url" content={`https://subong.vercel.app/post/${$page.params.id}`} />
-	<script type="application/ld+json">
-		{JSON.stringify(data.imageSchema)}
-	</script>
+	{#if post}
+		{@html `
+			<script type="application/ld+json">
+			{
+				"@context": "https://schema.org",
+				"@type": "ImageObject",
+				"name": "${post.title}",
+				"description": "${post.description}",
+				"contentUrl": "${post.images[0]}",
+				"thumbnailUrl": "${post.images[0]}",
+				"datePublished": "${post.created_at}",
+				"author": {
+					"@type": "Person",
+					"name": "심수연",
+					"jobTitle": "손모델",
+					"url": "https://subong.vercel.app/about"
+				},
+				"keywords": "${post.category.join(', ')}",
+				"license": "All rights reserved",
+				"acquireLicensePage": "https://subong.vercel.app/contact"
+			}
+			</script>
+		`}
+	{/if}
 </svelte:head>
 
 <div class="container mx-auto px-4 py-12 max-w-3xl">
