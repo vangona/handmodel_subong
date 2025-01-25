@@ -144,7 +144,7 @@
 		: '손모델 심수연 | 포트폴리오';
 	$: metaDescription = selectedPost
 		? selectedPost.description.slice(0, 150) + (selectedPost.description.length > 150 ? '...' : '')
-		: '손모델 심수연의 포트폴리오 사이트입니다. 다양한 광고와 촬영 작품을 확인하세요.';
+		: '손모델 심수연의 포트폴리오 사이트 | 다년 간의 촬영 경험과 다양한 제품을 다뤄본 노하우를 바탕으로 원활한 소통과 만족스러운 결과물을 약속드립니다.';
 	$: metaImage = selectedPost?.images?.[0] ?? '/og-image.jpg';
 
 	// 초기 데이터 설정
