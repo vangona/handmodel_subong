@@ -19,6 +19,25 @@
 	let currentSlide = 1;
 	let totalSlides = 0;
 
+	$: imageSchema = post ? {
+		"@context": "https://schema.org",
+		"@type": "ImageObject",
+		"name": post.title,
+		"description": post.description,
+		"contentUrl": post.images[0],
+		"thumbnailUrl": post.images[0],
+		"datePublished": post.created_at,
+		"author": {
+			"@type": "Person",
+			"name": "심수연",
+			"jobTitle": "손모델",
+			"url": "https://subong.vercel.app/about"
+		},
+		"keywords": post.category.join(", "),
+		"license": "All rights reserved",
+		"acquireLicensePage": "https://subong.vercel.app/contact"
+	} : null;
+
 	onMount(async () => {
 		const postId = Number($page.params.id);
 		try {
@@ -75,6 +94,11 @@
 	<meta property="og:image" content={post && post.images && post.images.length > 0 ? post.images[0] : '/og-image-default.jpg'} />
 	<meta property="og:type" content="article" />
 	<meta property="og:url" content={`https://subong.vercel.app/post/${$page.params.id}`} />
+	{#if imageSchema}
+		<script type="application/ld+json">
+			{JSON.stringify(imageSchema)}
+		</script>
+	{/if}
 </svelte:head>
 
 <div class="container mx-auto px-4 py-12 max-w-3xl">

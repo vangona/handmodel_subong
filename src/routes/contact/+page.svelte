@@ -111,6 +111,19 @@
 		isLoading = false;
 		visible = true;
 	});
+
+	const contactSchema = {
+		"@context": "https://schema.org",
+		"@type": "ContactPage",
+		"name": "손모델 심수연 연락처",
+		"description": "손모델 심수연과 협업 문의를 위한 연락처 페이지입니다.",
+		"mainEntity": {
+			"@type": "ContactPoint",
+			"contactType": "customer service",
+			"url": "https://open.kakao.com/o/sBSr9QCc",
+			"availableLanguage": ["Korean"]
+		}
+	};
 </script>
 
 <svelte:head>
@@ -122,6 +135,9 @@
 	<meta property="og:image" content="https://umpactdflfdhwbufbzzp.supabase.co/storage/v1/object/public/post-images/0.6739137500664765.jpg" />
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content="https://subong.vercel.app/contact" />
+	<script type="application/ld+json">
+		{JSON.stringify(contactSchema)}
+	</script>
 </svelte:head>
 
 <div class="flex justify-center items-start pt-8 md:pt-12 min-h-screen w-full bg-offwhite bg-opacity-90">
