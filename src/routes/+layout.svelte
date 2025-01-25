@@ -5,11 +5,14 @@
 	import Button from '$lib/components/ui/button/button.svelte';
 	import '../app.css';
 	import { slide, fade } from 'svelte/transition';
-	import { browser } from '$app/environment';
+	import { browser, dev } from '$app/environment';
 	import { page } from '$app/stores';
 	import { beforeNavigate } from '$app/navigation';
 	import { Toaster } from 'svelte-sonner';
 	import { getSiteSettings, type PageContent } from '$lib/api/pages';
+	import { injectAnalytics } from '@vercel/analytics/sveltekit'
+
+	injectAnalytics({ mode: dev ? 'development' : 'production' })
 
 	interface SettingsContent {
 		site_title?: string
