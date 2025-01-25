@@ -141,7 +141,7 @@
 	<meta name="theme-color" content="#ffffff" />
 	<title>손모델 심수연 | 포트폴리오</title>
 	<meta name="description" content="손모델 심수연의 포트폴리오 | 다년 간의 촬영 경험과 다양한 제품을 다뤄본 노하우를 바탕으로 원활한 소통과 만족스러운 결과물을 약속드립니다." />
-	<meta name="keywords" content="손모델,심수연,포트폴리오,광고촬영,제품촬영,주얼리,핸드모델" />
+	<meta name="keywords" content="손모델,심수연,포트폴리오,광고촬영,제품촬영,주얼리,핸드모델,구인,레퍼런스" />
 	<meta name="author" content="심수연" />
 	<meta property="og:site_name" content="손모델 심수연" />
 	<meta property="og:type" content="website" />

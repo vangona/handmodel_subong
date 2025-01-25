@@ -116,7 +116,7 @@
 <svelte:head>
 	<title>협업 | 손모델 심수연</title>
 	<meta name="description" content="손모델 심수연의 포트폴리오 | 손모델, 부분모델 협업 문의" />
-	<meta name="keywords" content="손모델, 심수연, 연락처, 문의, 인스타그램, 카카오톡" />
+	<meta name="keywords" content="손모델, 심수연, 연락처, 문의, 인스타그램, 카카오톡, 구인, 레퍼런스" />
 	<meta property="og:title" content="손모델 심수연 | 협업" />
 	<meta property="og:description" content="손모델 심수연의 포트폴리오 | 손모델, 부분모델 협업 문의" />
 	<meta property="og:image" content="https://umpactdflfdhwbufbzzp.supabase.co/storage/v1/object/public/post-images/0.6739137500664765.jpg" />
