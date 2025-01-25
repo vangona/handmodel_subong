@@ -94,11 +94,9 @@
 	<meta property="og:image" content={post && post.images && post.images.length > 0 ? post.images[0] : 'https://umpactdflfdhwbufbzzp.supabase.co/storage/v1/object/public/post-images/0.6739137500664765.jpg'} />
 	<meta property="og:type" content="article" />
 	<meta property="og:url" content={`https://subong.vercel.app/post/${$page.params.id}`} />
-	{#if imageSchema}
-		<script type="application/ld+json">
-			{@html JSON.stringify(imageSchema)}
-		</script>
-	{/if}
+	<script type="application/ld+json">
+		{JSON.stringify(data.imageSchema)}
+	</script>
 </svelte:head>
 
 <div class="container mx-auto px-4 py-12 max-w-3xl">

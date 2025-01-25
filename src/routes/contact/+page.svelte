@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { fade, fly } from 'svelte/transition';
 	import { onMount } from 'svelte';
-	import handSrc from '$lib/assets/images/hero-hand.png';
 	import { Input } from "$lib/components/ui/input";
 	import { Label } from "$lib/components/ui/label";
 	import { Button } from "$lib/components/ui/button";
@@ -111,19 +110,6 @@
 		isLoading = false;
 		visible = true;
 	});
-
-	const contactSchema = {
-		"@context": "https://schema.org",
-		"@type": "ContactPage",
-		"name": "손모델 심수연 연락처",
-		"description": "손모델 심수연과 협업 문의를 위한 연락처 페이지입니다.",
-		"mainEntity": {
-			"@type": "ContactPoint",
-			"contactType": "customer service",
-			"url": "https://open.kakao.com/o/sBSr9QCc",
-			"availableLanguage": ["Korean"]
-		}
-	};
 </script>
 
 <svelte:head>
@@ -136,7 +122,7 @@
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content="https://subong.vercel.app/contact" />
 	<script type="application/ld+json">
-		{@html JSON.stringify(contactSchema)}
+		{JSON.stringify(data.contactSchema)}
 	</script>
 </svelte:head>
 
