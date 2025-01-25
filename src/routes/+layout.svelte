@@ -135,7 +135,7 @@
 <svelte:head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<link rel="icon" href="/favicon.png" />
+	<link rel="icon" href="/favicon.ico" />
 	<meta name="theme-color" content="#ffffff" />
 	<title>손모델 심수연 | 포트폴리오</title>
 	<meta name="description" content="손모델 심수연의 포트폴리오 사이트 | 다년 간의 촬영 경험과 다양한 제품을 다뤄본 노하우를 바탕으로 원활한 소통과 만족스러운 결과물을 약속드립니다." />
@@ -157,7 +157,7 @@
   "@type": "Organization",
   "name": "손모델 심수연",
   "url": "https://subong.vercel.app",
-  "logo": "https://subong.vercel.app/favicon.png",
+  "logo": "https://subong.vercel.app/favicon.ico",
   "sameAs": [
     "https://open.kakao.com/o/sBSr9QCc"
   ],
