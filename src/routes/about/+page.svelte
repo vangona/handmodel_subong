@@ -57,7 +57,7 @@
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content="https://subong.vercel.app/about" />
 	<script type="application/ld+json">
-		{JSON.stringify(personSchema)}
+		{@html JSON.stringify(personSchema)}
 	</script>
 </svelte:head>
 

@@ -229,7 +229,7 @@
 		<link rel="canonical" href={$page.url.href} />
 	{/if}
 	<script type="application/ld+json">
-		{JSON.stringify(websiteSchema)}
+		{@html JSON.stringify(websiteSchema)}
 	</script>
 </svelte:head>
 

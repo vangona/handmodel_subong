@@ -136,7 +136,7 @@
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content="https://subong.vercel.app/contact" />
 	<script type="application/ld+json">
-		{JSON.stringify(contactSchema)}
+		{@html JSON.stringify(contactSchema)}
 	</script>
 </svelte:head>
 

@@ -96,7 +96,7 @@
 	<meta property="og:url" content={`https://subong.vercel.app/post/${$page.params.id}`} />
 	{#if imageSchema}
 		<script type="application/ld+json">
-			{JSON.stringify(imageSchema)}
+			{@html JSON.stringify(imageSchema)}
 		</script>
 	{/if}
 </svelte:head>
