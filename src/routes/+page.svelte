@@ -258,7 +258,12 @@
 		</div>
 	{:else if processedData.length > 0}
 		<div class="card-container py-4 sm:py-6 md:py-8 lg:py-12 mb-20 md:mb-0" in:fade={{ duration: 300, delay: 200 }}>
-			<h2 class="text-3xl font-bold text-center my-8 font-serif text-gray-900">촬영기록</h2>
+			<h2 class="text-xl font-bold text-center mt-6 font-serif text-gray-900">
+				손모델 심수연
+			</h2>
+			<p class="text-center text-sm md:text-base text-gray-600 mt-2 mb-6 md:mb-8 font-serif">
+				브랜드가 쌓아나가는 과정을 정교함으로 돕습니다
+			</p>
 			<div class="mb-6 md:mb-10" class:opacity-50={isDetailView}>
 				<CategoryFilter categories={categoryArr} selectedCategories={selectedCategories} onSelect={handleClickCategory} />
 			</div>
