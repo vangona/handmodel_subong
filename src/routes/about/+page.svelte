@@ -26,6 +26,7 @@
 
 	$: content = pageContent?.content || null;
 	$: sections = isAboutContent(content) ? content.sections : null;
+	$: metaDescription = `손모델 심수연의 포트폴리오 | ${new Date().getFullYear() - 2019}년 간의 촬영 경험과 다양한 제품을 다뤄본 노하우를 바탕으로 원활한 소통과 만족스러운 결과물을 약속드립니다.`;
 
 	onMount(async () => {
 		pageContent = await getPageContent('intro');
@@ -36,10 +37,10 @@
 
 <svelte:head>
 	<title>소개 | 손모델 심수연</title>
-	<meta name="description" content="손모델 심수연의 포트폴리오 | 다년 간의 촬영 경험과 다양한 제품을 다뤄본 노하우를 바탕으로 원활한 소통과 만족스러운 결과물을 약속드립니다." />
+	<meta name="description" content={metaDescription} />
 	<meta name="keywords" content="손모델, 심수연, 소개, 경력, 특기, 주요 활동, 구인, 레퍼런스" />
 	<meta property="og:title" content="손모델 심수연 | 소개" />
-	<meta property="og:description" content="손모델 심수연의 포트폴리오 | 다년 간의 촬영 경험과 다양한 제품을 다뤄본 노하우를 바탕으로 원활한 소통과 만족스러운 결과물을 약속드립니다." />
+	<meta property="og:description" content={metaDescription} />
 	<meta property="og:image" content="https://umpactdflfdhwbufbzzp.supabase.co/storage/v1/object/public/post-images/0.6739137500664765.jpg" />
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content="https://subong.vercel.app/about" />
@@ -51,7 +52,7 @@
 	"jobTitle": "손모델",
 	"url": "https://subong.vercel.app/about",
 	"image": "https://umpactdflfdhwbufbzzp.supabase.co/storage/v1/object/public/post-images/0.6739137500664765.jpg",
-	"description": "다년 간의 촬영 경험과 다양한 제품을 다뤄본 노하우를 바탕으로 원활한 소통과 만족스러운 결과물을 약속드립니다.",
+	"description": {metaDescription},
 	"sameAs": [
 		"https://www.instagram.com/handmodel_subong/",
 		"https://open.kakao.com/o/sBSr9QCc"
