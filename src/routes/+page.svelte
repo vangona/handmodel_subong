@@ -7,7 +7,8 @@
 	import CategoryFilter from '$lib/components/ui/CategoryFilter.svelte';
 	import ImagePreview from '$lib/components/ui/ImagePreview.svelte';
 	import { goto } from '$app/navigation';
-	import { fade, fly, blur } from 'svelte/transition';
+	import { fade, fly, blur, slide, scale } from 'svelte/transition';
+	import { flip } from 'svelte/animate';
 	import { page } from '$app/stores';
 	import PostDetail from '$lib/components/my-ui/post/PostDetail.svelte';
 	import { postStore, filteredPosts } from '$lib/stores/postStore';
@@ -15,6 +16,17 @@
 	import type { PageData } from './$types';
 
 	export let data: PageData;
+
+	// 플립 애니메이션을 위한 문구 배열
+	let phrases = [
+		"' 브랜드가 쌓아나가는 과정을 정교함으로 돕습니다 '",
+		"' 섬세한 손길로 제품의 고유한 가치를 표현합니다 '",
+		"' 난 이 촬영을... 한 번 해봤어요...! '",
+		"' 브랜드가 쌓아나가는 과정을 정교함으로 돕습니다 '",
+		"' 섬세한 손길로 제품의 고유한 가치를 표현합니다 '",
+	];
+	let currentPhraseIndex = 0;
+	let phraseInterval: ReturnType<typeof setInterval>;
 
 	let selectedCategories = ['all'];
 	let categorySet: Set<string> = new Set();
@@ -91,6 +103,18 @@
 
 	onMount(() => {
 		mountPostFetchData();
+		
+		// 문구 자동 변경 인터벌 설정
+		phraseInterval = setInterval(() => {
+			currentPhraseIndex = (currentPhraseIndex + 1) % phrases.length;
+		}, 3000); // 3초마다 변경
+
+		return () => {
+			if (observer) {
+				observer.disconnect();
+			}
+			clearInterval(phraseInterval);
+		};
 	});
 
 	afterUpdate(() => {
@@ -261,9 +285,21 @@
 			<h2 class="text-xl font-bold text-center mt-6 font-serif text-gray-900">
 				손모델 심수연
 			</h2>
-			<p class="text-center text-sm md:text-base text-gray-600 mt-2 mb-6 md:mb-8 font-serif">
-				브랜드가 쌓아나가는 과정을 정교함으로 돕습니다
-			</p>
+
+			<div class="text-center text-sm md:text-base text-gray-600 mt-2 mb-6 md:mb-8 font-serif h-6 overflow-hidden">
+				<div class="phrase-container">
+					{#each [phrases[currentPhraseIndex]] as phrase (currentPhraseIndex)}
+						<p 
+							in:fly={{ y: 20, duration: 300 }}
+							out:fly={{ y: -20, duration: 300 }}
+							animate:flip={{ duration: 400 }}
+						>
+							{phrase}
+						</p>
+					{/each}
+				</div>
+			</div>
+
 			<div class="mb-6 md:mb-10" class:opacity-50={isDetailView}>
 				<CategoryFilter categories={categoryArr} selectedCategories={selectedCategories} onSelect={handleClickCategory} />
 			</div>
@@ -341,6 +377,14 @@
 		&:active {
 			@apply transform scale-95;
 		}
+	}
+
+	.phrase-container {
+		@apply relative;
+	}
+
+	.phrase-container p {
+		@apply absolute left-0 right-0;
 	}
 </style>
 
