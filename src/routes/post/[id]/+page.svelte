@@ -123,7 +123,7 @@
 <div class="container mx-auto px-4 py-12 max-w-3xl">
 	<div class="p-4 sm:pt-10 text-md sm:text-lg font-serif">
 		{#if post?.scene_description}
-			#{post?.scene_description}
+			#{post.scene_description}
 		{:else}
 			#촬영기록
 		{/if}

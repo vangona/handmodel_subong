@@ -16,6 +16,7 @@
 	}
 	let title = '';
 	let description = '';
+	let scene_description = '';
 	let categories: Array<string> = [];
 	let errorMessage = '';
 	let categoryArr: Array<string> = [];
@@ -28,7 +29,13 @@
 
 	const handleAddPost = async () => {
 		try {
-			await apiPostAddPost({ title, description, category: categories, images: Array.from(images, item => item.url) });
+			await apiPostAddPost({ 
+				title, 
+				description, 
+				scene_description, 
+				category: categories, 
+				images: Array.from(images, item => item.url) 
+			});
 			successMessage = '포스트가 성공적으로 추가되었습니다.';
 			goto('/admin/posts');
 		} catch (error) {
@@ -186,6 +193,11 @@
 		<div>
 			<label for="description" class="block text-sm font-medium text-gray-700">설명</label>
 			<textarea id="description" bind:value={description} class="textarea textarea-bordered w-full mt-1"></textarea>
+		</div>
+		<div>
+			<label for="scene_description" class="block text-sm font-medium text-gray-700">장면 설명 (선택사항)</label>
+			<input id="scene_description" type="text" bind:value={scene_description} class="input input-bordered w-full mt-1" placeholder="예: 촬영기록, 브랜드명, 제품명 등" />
+			<p class="text-xs text-gray-500 mt-1">입력하면 포스트 상세 페이지에 #장면설명으로 표시됩니다. 비워두면 #촬영기록으로 표시됩니다.</p>
 		</div>
 		<div>
 			<label for="categories" class="block text-sm font-medium text-gray-700">카테고리</label>

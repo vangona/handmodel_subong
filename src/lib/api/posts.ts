@@ -15,7 +15,13 @@ export const apiDeletePost = async (id: number): Promise<void> => {
 	if (error) throw new Error(error.message);
 };
 
-export const apiPostAddPost = async (post: { title: string; description: string; category: string[]; images: string[] }): Promise<void> => {
+export const apiPostAddPost = async (post: { 
+	title: string; 
+	description: string; 
+	scene_description?: string; 
+	category: string[]; 
+	images: string[] 
+}): Promise<void> => {
 	const { data: { user } } = await supabase.auth.getUser();
 	if (!user) throw new Error('사용자가 인증되지 않았습니다.');
 
@@ -33,7 +39,13 @@ export const apiGetPostById = async (postId: number): Promise<PostTable> => {
 	return data;
 };
 
-export const apiPutUpdatePost = async (postId: number, post: { title: string; description: string; category: string[]; images: string[] }): Promise<void> => {
+export const apiPutUpdatePost = async (postId: number, post: { 
+	title: string; 
+	description: string; 
+	scene_description?: string; 
+	category: string[]; 
+	images: string[] 
+}): Promise<void> => {
 	const { error } = await supabase.from(SupabaseTable.Posts).update(post).eq('id', postId);
 	if (error) throw new Error(error.message);
 };
