@@ -32,7 +32,7 @@
     $: nextPost = currentIndex < posts.length - 1 ? posts[currentIndex + 1] : null;
     $: hasMultipleImages = post.images && post.images.length > 1;
     $: isFirstImage = currentImageIndex === 0;
-    $: isLastImage = hasMultipleImages && currentImageIndex === post.images.length - 1;
+    $: isLastImage = hasMultipleImages && currentImageIndex === (post.images?.length ?? 0) - 1;
 
     function handleKeydown(event: KeyboardEvent) {
         if (event.key === 'ArrowLeft') {
@@ -60,7 +60,7 @@
     function navigateImage(direction: number) {
         if (!hasMultipleImages) return;
         const newIndex = currentImageIndex + direction;
-        if (newIndex >= 0 && newIndex < post.images.length) {
+        if (newIndex >= 0 && newIndex < (post.images?.length ?? 0)) {
             currentImageIndex = newIndex;
         }
     }
@@ -354,7 +354,7 @@
                 <div class="max-w-4xl mx-auto mb-6">
                     <div class="flex flex-col items-center gap-4">
                         <div class="flex gap-3 items-center">
-                            {#each post.images as _, i}
+                            {#each post.images ?? [] as _, i}
                                 <button
                                     class="group relative"
                                     on:click={() => selectImage(i)}
@@ -366,7 +366,7 @@
                                         }`}
                                     >
                                         <ImagePreview
-                                            imageUrl={post.images[i]}
+                                            imageUrl={post.images?.[i] ?? ''}
                                             positionX={i === 0 ? (post.thumbnail_position_x ?? 50) : 50}
                                             positionY={i === 0 ? (post.thumbnail_position_y ?? 50) : 50}
                                             scale={i === 0 ? (post.thumbnail_scale ?? 1) : 1}
@@ -387,7 +387,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                                 </svg>
                             </button>
-                            <span>{currentImageIndex + 1} / {post.images.length}</span>
+                            <span>{currentImageIndex + 1} / {(post.images?.length ?? 0)}</span>
                             <button
                                 class="p-2 rounded-full hover:bg-white/10 transition-colors"
                                 on:click={() => navigateImage(1)}
@@ -405,7 +405,7 @@
             <div class="max-w-4xl mx-auto">
                 <h2 id="post-title" class="text-3xl font-bold mb-4 font-serif text-white">{post.title}</h2>
                 <div class="flex flex-wrap gap-2 mb-4">
-                    {#each post.category as category}
+                    {#each post.category ?? [] as category}
                         <span class="badge">{category}</span>
                     {/each}
                 </div>
@@ -422,7 +422,7 @@
     <div class="px-6">
         <h2 class="text-2xl font-bold mb-4 font-serif text-gray-900">{post.title}</h2>
         <div class="flex flex-wrap gap-2 mb-4">
-            {#each post.category as category}
+            {#each post.category ?? [] as category}
                 <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
                     {category}
                 </span>
@@ -433,7 +433,7 @@
         {#if hasMultipleImages}
             <div class="mt-6 mb-4">
                 <div class="flex gap-3 items-center overflow-x-auto py-2">
-                    {#each post.images as _, i}
+                    {#each post.images ?? [] as _, i}
                         <button
                             class="group relative flex-none"
                             on:click={() => selectImage(i)}
@@ -445,7 +445,7 @@
                                 }`}
                             >
                                 <ImagePreview
-                                    imageUrl={post.images[i]}
+                                    imageUrl={post.images?.[i] ?? ''}
                                     positionX={i === 0 ? (post.thumbnail_position_x ?? 50) : 50}
                                     positionY={i === 0 ? (post.thumbnail_position_y ?? 50) : 50}
                                     scale={i === 0 ? (post.thumbnail_scale ?? 1) : 1}
@@ -466,7 +466,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                         </svg>
                     </button>
-                    <span>{currentImageIndex + 1} / {post.images.length}</span>
+                    <span>{currentImageIndex + 1} / {(post.images?.length ?? 0)}</span>
                     <button
                         class="p-2 rounded-full hover:bg-gray-100 transition-colors"
                         on:click={() => navigateImage(1)}
