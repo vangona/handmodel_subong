@@ -47,7 +47,7 @@
 				<img src={handSrc} alt="손모델 심수연의 손" class="max-w-full max-h-full object-contain" />
 			{/if}
 		</div>
-		<div class="w-full px-6 z-10 mb-12">
+		<div class="w-full px-6 z-10 mb-12 sm:hidden">
 			<div class=" text-white flex flex-col w-full">
 				<h2 class="text-xl font-bold mt-6 font-serif indent-1">
 					손모델 심수연
