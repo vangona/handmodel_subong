@@ -120,8 +120,8 @@
 	{/if}
 </svelte:head>
 
-<div class="container mx-auto px-4 py-12 max-w-3xl">
-	<div class="pt-4 sm:pt-0 text-md sm:text-lg font-serif">
+<div class="container mx-auto px-4 py-12 sm:pt-4 max-w-3xl">
+	<div class="pt-4 pb-2 sm:pt-0 text-md sm:text-lg font-serif">
 		{#if post?.scene_description}
 			#{post.scene_description}
 		{:else}
@@ -166,7 +166,7 @@
 				</div>
 			{/if}
 			<div class="p-6" in:fly={{ y: 20, duration: 300, delay: 300 }}>
-				<h1 class="text-3xl font-bold mb-4 text-gray-800 font-serif">{post.title}</h1>
+				<h1 class="text-2xl sm:text-3xl font-bold mb-4 text-gray-800 font-serif">{post.title}</h1>
 				<div class="mb-4 flex flex-wrap">
 					{#each post.category || [] as category}
 						<span class="badge mr-2 mb-2">{category}</span>
