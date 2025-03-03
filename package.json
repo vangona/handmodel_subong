@@ -61,6 +61,7 @@
 		"clsx": "^2.1.1",
 		"locomotive-scroll": "^4.1.4",
 		"postcss-nested": "^6.2.0",
+		"supabase": "^2.15.8",
 		"svelte-dnd-action": "^0.9.52",
 		"swiper": "^11.1.14",
 		"tailwind-merge": "^2.3.0",

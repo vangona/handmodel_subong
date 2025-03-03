@@ -1,40 +1,56 @@
 import type { SupabaseTable } from '$lib/constants/supabase';
 import { createClient } from '@supabase/supabase-js';
+import type { Database } from './supabase.database';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 export interface SupabaseTables {
 	[SupabaseTable.Posts]: {
-		Row: {
-			id: number;
-			created_at: string;
-			title: string;
-			category: Array<string>;
-			description: string;
-			images: Array<string>;
-			thumbnail_position_x: number;
-			thumbnail_position_y: number;
-			thumbnail_scale: number;
-			order: number | null;
-		};
-		Insert: {
-			title: string;
-			description: string;
-			category: Array<string>;
-			images?: Array<string>;
-		};
-		Update: {
-			title?: string;
-			description?: string;
-			category?: Array<string>;
-			images?: Array<string>;
-			thumbnail_position_x?: number;
-			thumbnail_position_y?: number;
-			thumbnail_scale?: number;
-			order?: number | null;
-		};
-	};
+        Row: {
+          category: string[] | null
+          created_at: string
+          description: string | null
+          id: number
+          images: string[] | null
+          order: number
+          scene_description: string | null
+          thumbnail_position_x: number
+          thumbnail_position_y: number
+          thumbnail_scale: number
+          title: string | null
+          user_id: string | null
+        }
+        Insert: {
+          category?: string[] | null
+          created_at?: string
+          description?: string | null
+          id?: number
+          images?: string[] | null
+          order?: number
+          scene_description?: string | null
+          thumbnail_position_x?: number
+          thumbnail_position_y?: number
+          thumbnail_scale?: number
+          title?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          category?: string[] | null
+          created_at?: string
+          description?: string | null
+          id?: number
+          images?: string[] | null
+          order?: number
+          scene_description?: string | null
+          thumbnail_position_x?: number
+          thumbnail_position_y?: number
+          thumbnail_scale?: number
+          title?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
 	[SupabaseTable.MainImages]: {
 		Row: {
 			id: number;
@@ -65,4 +81,4 @@ export interface SupabaseDatabase {
 
 export type PostTable = SupabaseTables[SupabaseTable.Posts]['Row'];
 export type MainImage = SupabaseTables[SupabaseTable.MainImages]['Row'];
-export const supabase = createClient<SupabaseDatabase>(supabaseUrl, supabaseAnonKey);
+export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey);

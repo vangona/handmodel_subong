@@ -53,7 +53,7 @@
 		if (storedCategories) {
 			selectedCategories = JSON.parse(storedCategories);
 			processedData = fetchedData.filter(post => 
-				post.category.some(cat => selectedCategories[0] === 'all' || selectedCategories.includes(cat))
+				post.category?.some(cat => selectedCategories[0] === 'all' || selectedCategories.includes(cat)) ?? false
 			);
 		}
 
@@ -79,7 +79,7 @@
 		try {
 			const data = await apiGetPosts();
 			data?.forEach((postRow) => {			
-				postRow.category.forEach(item => categorySet.add(item));
+				postRow.category?.forEach(item => categorySet.add(item));
 			});
 
 			categoryArr = Array.from(categorySet);
@@ -140,7 +140,7 @@
 		sessionStorage.setItem('selectedCategories', JSON.stringify(selectedCategories));
 		
 		processedData = fetchedData.filter(post => 
-			post.category.some(cat => selectedCategories[0] === 'all' || selectedCategories.includes(cat))
+			post.category?.some(cat => selectedCategories[0] === 'all' || selectedCategories.includes(cat)) ?? false
 		);
 	}
 
@@ -167,7 +167,7 @@
 		? `${selectedPost.title} | 손모델 심수연 포트폴리오` 
 		: '손모델 심수연 | 포트폴리오';
 	$: metaDescription = selectedPost
-		? selectedPost.description.slice(0, 150) + (selectedPost.description.length > 150 ? '...' : '')
+		? selectedPost.description?.slice(0, 150) + (selectedPost.description && selectedPost.description.length > 150 ? '...' : '')
 		: `손모델 심수연의 포트폴리오 | ${new Date().getFullYear() - 2019}년 간의 촬영 경험과 다양한 제품을 다뤄본 노하우를 바탕으로 원활한 소통과 만족스러운 결과물을 약속드립니다.`;
 	$: metaImage = selectedPost?.images?.[0] ?? 'https://umpactdflfdhwbufbzzp.supabase.co/storage/v1/object/public/post-images/0.6739137500664765.jpg';
 
@@ -335,7 +335,7 @@
 							<div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-4">
 								<h3 class="text-white text-xl font-medium mb-2 text-center tracking-widest">{postRow.title}</h3>
 								<div class="flex flex-wrap justify-center gap-2 mb-2">
-									{#each postRow.category as categoryData}
+									{#each postRow.category || [] as categoryData}
 										<span class="badge">{categoryData}</span>
 									{/each}
 								</div>

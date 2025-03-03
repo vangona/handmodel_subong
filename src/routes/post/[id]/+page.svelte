@@ -24,8 +24,8 @@
 		"@type": "ImageObject",
 		"name": post.title,
 		"description": post.description,
-		"contentUrl": post.images[0],
-		"thumbnailUrl": post.images[0],
+		"contentUrl": post.images?.[0],
+		"thumbnailUrl": post.images?.[0],
 		"datePublished": post.created_at,
 		"author": {
 			"@type": "Person",
@@ -33,7 +33,7 @@
 			"jobTitle": "손모델",
 			"url": "https://subong.vercel.app/about"
 		},
-		"keywords": post.category.join(", "),
+		"keywords": post.category?.join(", ") || "",
 		"license": "All rights reserved",
 		"acquireLicensePage": "https://subong.vercel.app/contact"
 	} : null;
@@ -88,7 +88,7 @@
 <svelte:head>
 	<title>{post ? `${post.title} | 손모델 심수연` : '손모델 심수연'}</title>
 	<meta name="description" content={post ? post.description : '손모델 심수연의 포트폴리오 상세 페이지입니다.'} />
-	<meta name="keywords" content={post ? `손모델, 심수연, 구인, 레퍼런스 ${post.category.join(', ')}` : '손모델, 심수연, 포트폴리오, 구인, 레퍼런스'} />
+	<meta name="keywords" content={post ? `손모델, 심수연, 구인, 레퍼런스 ${post.category?.join(', ') || ''}` : '손모델, 심수연, 포트폴리오, 구인, 레퍼런스'} />
 	<meta property="og:title" content={post ? `${post.title} | 손모델 심수연` : '손모델 심수연'} />
 	<meta property="og:description" content={post ? post.description : '손모델 심수연의 포트폴리오 상세 페이지입니다.'} />
 	<meta property="og:image" content={post && post.images && post.images.length > 0 ? post.images[0] : 'https://umpactdflfdhwbufbzzp.supabase.co/storage/v1/object/public/post-images/0.6739137500664765.jpg'} />
@@ -102,8 +102,8 @@
 				"@type": "ImageObject",
 				"name": "${post.title}",
 				"description": "${post.description}",
-				"contentUrl": "${post.images[0]}",
-				"thumbnailUrl": "${post.images[0]}",
+				"contentUrl": "${post.images?.[0]}",
+				"thumbnailUrl": "${post.images?.[0]}",
 				"datePublished": "${post.created_at}",
 				"author": {
 					"@type": "Person",
@@ -111,7 +111,7 @@
 					"jobTitle": "손모델",
 					"url": "https://subong.vercel.app/about"
 				},
-				"keywords": "${post.category.join(', ')}",
+				"keywords": "${post.category?.join(', ') || ''}",
 				"license": "All rights reserved",
 				"acquireLicensePage": "https://subong.vercel.app/contact"
 			}
@@ -121,6 +121,13 @@
 </svelte:head>
 
 <div class="container mx-auto px-4 py-12 max-w-3xl">
+	<div class="p-4 sm:pt-10 text-md sm:text-lg font-serif">
+		{#if post?.scene_description}
+			#{post?.scene_description}
+		{:else}
+			#촬영기록
+		{/if}
+	</div>
 	{#if loading}
 		<div class="flex justify-center items-center h-64" in:fade>
 			<div class="loader"></div>
@@ -161,7 +168,7 @@
 			<div class="p-6" in:fly={{ y: 20, duration: 300, delay: 300 }}>
 				<h1 class="text-3xl font-bold mb-4 text-gray-800 font-serif">{post.title}</h1>
 				<div class="mb-4 flex flex-wrap">
-					{#each post.category as category}
+					{#each post.category || [] as category}
 						<span class="badge mr-2 mb-2">{category}</span>
 					{/each}
 				</div>
