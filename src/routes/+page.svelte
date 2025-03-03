@@ -25,6 +25,11 @@
 		"' 브랜드가 쌓아나가는 과정을 정교함으로 돕습니다 '",
 		"' 섬세한 손길로 제품의 고유한 가치를 표현합니다 '",
 	];
+
+	let mobile_phrases = [
+		"' 브랜드가 쌓아나가는 과정을 정교함으로 돕습니다 '",
+		"' 섬세한 손길로 제품의 고유한 가치를 표현합니다 '",
+	];
 	let currentPhraseIndex = 0;
 	let phraseInterval: ReturnType<typeof setInterval>;
 
@@ -257,7 +262,7 @@
 
 <svelte:window on:keydown={handleKeydown} />
 
-<Hero />
+<Hero phrases={mobile_phrases} />
 
 {#if selectedPost}
 	<PostDetail 

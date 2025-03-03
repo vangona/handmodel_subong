@@ -2,6 +2,8 @@
 	import { onMount } from 'svelte';
 	import MovingTitle from './moving-title.svelte';
 
+	export let phrases: string[] = [];
+
 	let scrollY: number;
 	let innerHeight: number;
 	let isMobile: boolean;
@@ -43,7 +45,7 @@
 >
 	<div class="hero-overlay bg-warmgray-dark opacity-50"></div>
 	<div class="hero-content w-full h-full p-0">
-		<MovingTitle />
+		<MovingTitle {phrases} />
 	</div>
 </div>
 
