@@ -36,7 +36,7 @@
 			posts = await apiGetPosts() ?? [];
 			filteredPosts = posts;
 			posts.forEach((post) => {
-				post.category.forEach((cat: string) => categorySet.add(cat));
+				post.category?.forEach((cat: string) => categorySet.add(cat));
 			});
 			categoryArr = Array.from(categorySet);
 		} catch (error) {
@@ -71,14 +71,14 @@
 		if (selectedCategories.length === 0 || selectedCategories.includes('all')) {
 			filteredPosts = posts;
 		} else {
-			filteredPosts = posts.filter(post => selectedCategories.some(cat => post.category.includes(cat)));
+			filteredPosts = posts.filter(post => selectedCategories.some(cat => post.category?.includes(cat) ?? false));
 		}
 	};
 
 	const searchPosts = () => {
 		filteredPosts = posts.filter(post =>
-			post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-			post.description.toLowerCase().includes(searchQuery.toLowerCase())
+			(post.title?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
+			(post.description?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false)
 		);
 	};
 
@@ -264,7 +264,7 @@
 						<td on:click={() => handleRowClick(post.id)}>{post.title}</td>
 						<td>
 							<div class="flex flex-wrap gap-1">
-								{#each post.category as cat}
+								{#each post.category ?? [] as cat}
 									<span class="bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded">{cat}</span>
 								{/each}
 							</div>
@@ -296,7 +296,7 @@
 			<div class="flex-1 flex gap-8 p-4 min-h-0 overflow-y-auto">
 				<div class="flex-1">
 					<ImagePositioner
-						imageUrl={currentPost.images[0]}
+						imageUrl={currentPost.images?.[0] ?? ''}
 						positionX={currentPost.thumbnail_position_x ?? 50}
 						positionY={currentPost.thumbnail_position_y ?? 50}
 						scale={currentPost.thumbnail_scale ?? 1}
@@ -311,7 +311,7 @@
 						<h3 class="text-sm font-medium text-gray-500 mb-2">썸네일 프리뷰</h3>
 						<div class="bg-gray-50 rounded-lg p-4">
 							<ImagePreview
-								imageUrl={currentPost.images[0]}
+								imageUrl={currentPost.images?.[0] ?? ''}
 								positionX={previewPositionX}
 								positionY={previewPositionY}
 								scale={previewScale}

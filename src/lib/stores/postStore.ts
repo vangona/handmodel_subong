@@ -67,6 +67,6 @@ export const postStore = createPostStore();
 export const filteredPosts = derived(postStore, $postStore => {
     if (!$postStore.category) return $postStore.posts;
     return $postStore.posts.filter(post => 
-        post.category.includes($postStore.category!)
+        post.category?.includes($postStore.category!) ?? false
     );
 }); 

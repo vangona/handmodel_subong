@@ -53,7 +53,7 @@ export async function apiUploadMainImage(file: File, positionX: number = 50, pos
     // 기존 이미지들 삭제
     if (existingImages && existingImages.length > 0) {
         for (const image of existingImages) {
-            const fileName = image.url.split('/').pop();
+            const fileName = image.url?.split('/').pop();
             if (!fileName) throw new Error('이미지 파일 이름을 찾을 수 없습니다.');
 
             await supabase.storage

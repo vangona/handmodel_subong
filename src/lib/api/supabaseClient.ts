@@ -54,21 +54,21 @@ export interface SupabaseTables {
 	[SupabaseTable.MainImages]: {
 		Row: {
 			id: number;
-			url: string;
-			position_x: number;
-			position_y: number;
-				scale: number;
+			url: string | null;
+			position_x: number | null;
+			position_y: number | null;
+      scale: number | null;
 			created_at: string;
 		};
 		Insert: {
-			url: string;
-			position_x?: number;
-			position_y?: number;
+			url: string | null;
+			position_x?: number | null;
+			position_y?: number | null;
 		};
 		Update: {
-			url?: string;
-			position_x?: number;
-			position_y?: number;
+			url?: string | null;
+			position_x?: number | null;
+			position_y?: number | null;
 		};
 	};
 }

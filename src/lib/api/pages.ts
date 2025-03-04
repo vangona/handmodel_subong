@@ -1,3 +1,4 @@
+import type { Json } from './supabase.database'
 import { supabase } from './supabaseClient'
 
 interface AboutSections {
@@ -45,14 +46,14 @@ export async function getPageContent(pageType: string): Promise<PageContent | nu
     return null
   }
 
-  return data
+  return data as PageContent | null
 }
 
 export async function updatePageContent(pageType: string, content: object): Promise<boolean> {
   const { error } = await supabase
     .from('page_contents')
     .update({ 
-      content,
+      content: content as Json,
       updated_at: new Date().toISOString()
     })
     .eq('page_type', pageType)
