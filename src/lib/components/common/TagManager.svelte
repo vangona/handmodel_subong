@@ -1,6 +1,6 @@
 <svelte:head>
 	<!-- Google Tag Manager -->
-	<script async>
+	<script>
 		(function (w, d, s, l, i) {
 			w[l] = w[l] || [];
 			w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
@@ -10,7 +10,7 @@
 			j.async = true;
 			j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
 			f.parentNode.insertBefore(j, f);
-		})(window, document, 'script', 'dataLayer', 'GTM-KG2TVTCV');
+		})(window, document, 'script', 'dataLayer', 'GTM-5SZ9638D');
 	</script>
 	<!-- End Google Tag Manager -->
 </svelte:head>

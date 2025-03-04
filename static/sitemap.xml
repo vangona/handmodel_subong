@@ -3,7 +3,7 @@
     <!-- 메인 페이지 -->
     <url>
         <loc>https://subong.vercel.app/</loc>
-        <lastmod>2025-03-03</lastmod>
+        <lastmod>2025-03-04</lastmod>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
     </url>
@@ -355,7 +355,7 @@
     <!-- About 페이지 -->
     <url>
         <loc>https://subong.vercel.app/about</loc>
-        <lastmod>2025-03-03</lastmod>
+        <lastmod>2025-03-04</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
@@ -363,7 +363,7 @@
     <!-- Contact 페이지 -->
     <url>
         <loc>https://subong.vercel.app/contact</loc>
-        <lastmod>2025-03-03</lastmod>
+        <lastmod>2025-03-04</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
