@@ -18,9 +18,9 @@
 	export let data: PageData;
 
 	// 플립 애니메이션을 위한 문구 배열
-	let phrases = [];
+	let phrases: string[] = [];
 
-	let mobile_phrases = [];
+	let mobile_phrases: string[] = [];
 	let currentPhraseIndex = 0;
 	let phraseInterval: ReturnType<typeof setInterval>;
 
@@ -284,15 +284,17 @@
 
 			<div class="text-center text-sm md:text-base text-gray-600 mt-2 mb-6 md:mb-8 font-serif h-6 overflow-hidden">
 				<div class="phrase-container">
-					{#each [phrases[currentPhraseIndex]] as phrase (currentPhraseIndex)}
-						<p 
+					{#if phrases.length > 0}
+						{#each [phrases[currentPhraseIndex]] as phrase (currentPhraseIndex)}
+							<p 
 							in:fly={{ y: 20, duration: 300 }}
 							out:fly={{ y: -20, duration: 300 }}
 							animate:flip={{ duration: 400 }}
 						>
 							{phrase}
 						</p>
-					{/each}
+						{/each}
+					{/if}
 				</div>
 			</div>
 
