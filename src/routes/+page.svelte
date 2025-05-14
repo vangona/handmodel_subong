@@ -18,15 +18,9 @@
 	export let data: PageData;
 
 	// 플립 애니메이션을 위한 문구 배열
-	let phrases = [
-		"' 브랜드가 쌓아나가는 과정을 정교함으로 돕습니다 '",
-		"' 섬세한 손길로 제품의 고유한 가치를 표현합니다 '",
-	];
+	let phrases = [];
 
-	let mobile_phrases = [
-		"' 브랜드가 쌓아나가는 과정을 정교함으로 돕습니다 '",
-		"' 섬세한 손길로 제품의 고유한 가치를 표현합니다 '",
-	];
+	let mobile_phrases = [];
 	let currentPhraseIndex = 0;
 	let phraseInterval: ReturnType<typeof setInterval>;
 
